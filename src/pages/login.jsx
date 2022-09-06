@@ -1,5 +1,9 @@
 import { Link as RouterLink, useNavigate } from "react-router-dom";
-import { auth, logInWithEmailAndPassword, signInWithGoogle } from "../lib/firebase";
+import {
+  auth,
+  logInWithEmailAndPassword,
+  signInWithGoogle,
+} from "../lib/firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useState, useEffect } from "react";
 import Button from "@mui/material/Button";
@@ -13,9 +17,16 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Google } from "@mui/icons-material";
 
+import googleImageUrl from '../assets/google_logo.png';
+
 function Copyright(props) {
   return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
+    <Typography
+      variant="body2"
+      color="text.secondary"
+      align="center"
+      {...props}
+    >
       {"Copyright © "}
       <RouterLink to="/">doit</RouterLink> {new Date().getFullYear()}
       {"."}
@@ -25,7 +36,7 @@ function Copyright(props) {
 
 const { palette } = createTheme();
 const { augmentColor } = palette;
-const createColor = mainColor => augmentColor({ color: { main: mainColor } });
+const createColor = (mainColor) => augmentColor({ color: { main: mainColor } });
 const theme = createTheme({
   palette: {
     white: createColor("#FFFFFF"),
@@ -33,7 +44,7 @@ const theme = createTheme({
 });
 
 export default function Login() {
-  const handleSubmit = e => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
     logInWithEmailAndPassword(data.get("email"), data.get("password"));
@@ -68,7 +79,12 @@ export default function Login() {
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
-          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+          <Box
+            component="form"
+            onSubmit={handleSubmit}
+            noValidate
+            sx={{ mt: 1 }}
+          >
             <TextField
               margin="normal"
               required
@@ -77,7 +93,6 @@ export default function Login() {
               label="Email Address"
               name="email"
               autoComplete="email"
-              autoFocus
             />
             <TextField
               margin="normal"
@@ -89,7 +104,12 @@ export default function Login() {
               id="password"
               autoComplete="current-password"
             />
-            <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+            >
               Sign In
             </Button>
             <Button
@@ -99,19 +119,20 @@ export default function Login() {
               onClick={signInWithGoogle}
               color="white"
             >
-              <Google />
-              Login with Google
+              <img
+                src={googleImageUrl}
+                width={31}
+                height={30}
+                style={{ marginRight: 10 }}
+              />
+              Register with Google
             </Button>
             <Grid container>
-              <Grid item xs>
-                <Link href="#" variant="body2">
-                  Forgot password?
-                </Link>
-              </Grid>
+              <Grid item xs></Grid>
               <Grid item>
-                <Link href="#" variant="body2">
-                  {"Don't have an account? Sign Up"}
-                </Link>
+                <RouterLink to="/register">
+                  <Link>Don't have an account? Register</Link>
+                </RouterLink>
               </Grid>
             </Grid>
           </Box>
