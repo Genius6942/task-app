@@ -5,19 +5,22 @@ import { useNavigate, Link } from "react-router-dom";
 
 import { useEffect, useState } from "react";
 
-import AppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
-import MenuIcon from "@mui/icons-material/Menu";
-import MenuItem from "@mui/material/MenuItem";
-import Tooltip from "@mui/material/Tooltip";
-import Avatar from "@mui/material/Avatar";
-import Container from "@mui/material/Container";
-import Box from "@mui/material/Box";
-import Menu from "@mui/material/Menu";
+import {
+  AppBar,
+  Toolbar,
+  IconButton,
+  Typography,
+  Tooltip,
+  Avatar,
+  Container,
+  Box,
+  Menu,
+  MenuItem,
+} from "@mui/material";
 
-export default function NavBar({ openMenu }) {
+import { Undo, Redo, Menu as MenuIcon } from "@mui/icons-material";
+
+export default function NavBar({ openMenu, onUndo, onRedo }) {
   const [user, loading, error] = useAuthState(auth);
   const navigate = useNavigate();
   useEffect(() => {
@@ -56,6 +59,30 @@ export default function NavBar({ openMenu }) {
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }} />
 
           <Box sx={{ flexGrow: 0 }}>
+            <Tooltip title="Undo">
+              <IconButton
+                size="large"
+                edge="start"
+                color="inherit"
+                aria-label="menu"
+                sx={{ mr: 2 }}
+                onClick={() => onUndo()}
+              >
+                <Undo />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Redo">
+              <IconButton
+                size="large"
+                edge="start"
+                color="inherit"
+                aria-label="menu"
+                sx={{ mr: 2 }}
+                onClick={() => onRedo()}
+              >
+                <Redo />
+              </IconButton>
+            </Tooltip>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 <Avatar

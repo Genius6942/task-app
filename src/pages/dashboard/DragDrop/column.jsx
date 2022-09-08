@@ -1,45 +1,170 @@
 import { Draggable, Droppable } from "react-beautiful-dnd";
 
-import Card from "./card";
+import TaskCard from "./card";
+import {
+  Card,
+  CardContent,
+  CardActions,
+  IconButton,
+  Typography,
+  Box,
+  Tooltip,
+} from "@mui/material";
+import { Delete, Edit, ColorLens, Add } from "@mui/icons-material";
+
+import { pSBC, shadeColor } from "./lightenColor";
+
+import { useState } from "react";
+import { TwitterPicker } from "react-color";
+import AddCardModal from "../addCard";
 
 /**
  *
  * @param {Object} props
  * @param {number} props.index
- * @param {{ id: number; title: string; items: { id: number; text: string}[] }} props.data
+ * @param {import('../types').colState} props.data
+ * @param {(newState: import('../types').colState) => void} props.onColChange
+ * @param {(newState: import('../types').cardState, cardIdx: number) => void} props.onCardChange
+ * @param {() => void} props.onAdd
  * @returns
  */
-export default function Column({ data, index }) {
+export default function Column({
+  data,
+  index,
+  onColChange = () => {},
+  onCardChange = () => {},
+  onAdd = () => {},
+}) {
+  const [colorPickerOpen, setColorPickerOpen] = useState(false);
+
+  /**
+   * @param {import('react-color').ColorResult} color
+   */
+  const onColorChange = (color) => {
+    const shallowCopy = { ...data };
+    data.color = color.hex;
+    onColChange(data);
+  };
+
   return (
     <Draggable draggableId={data.id.toString()} index={index}>
       {(provided, snapshot) => (
-        <div
+        // card has issues ngl
+        <Card
           ref={provided.innerRef}
           {...provided.draggableProps}
-          style={{ ...provided.draggableProps.style, margin: 10 }}
+          style={{
+            ...provided.draggableProps.style,
+            margin: 10,
+            display: "inline-block",
+            borderRadius: "10px",
+            boxShadow: "0 25px 50px -12px rgb(0 0 0 / 0.5)",
+          }}
         >
           {/* header */}
-          <div
-            style={{
-              padding: 10,
-              background: snapshot.isDragging ? "lightgreen" : "green",
+          <Box
+            sx={{
+              backgroundColor: data.color,
+              zIndex: 1,
+              position: "relative",
             }}
-            {...provided.dragHandleProps}
           >
-            {data.title}
-          </div>
+            <CardActions
+              style={{
+                padding: 10,
+                backdropFilter: snapshot.isDragging
+                  ? "brightness(.8)"
+                  : "brightness(1)",
+                transition: "backdrop-filter .2s ease",
+              }}
+              {...provided.dragHandleProps}
+            >
+              {/* title */}
+              <Box style={{ display: "flex", flexGrow: 1 }}>
+                <Typography fontSize={20}>{data.title}</Typography>
+              </Box>
+
+              {/* icons */}
+              <Tooltip title="Add">
+                <IconButton onClick={() => onAdd(data.title)}>
+                  <Add />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Edit">
+                <IconButton>
+                  <Edit />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Color">
+                <IconButton
+                  onClick={() => setColorPickerOpen(!colorPickerOpen)}
+                >
+                  <ColorLens />
+                  {colorPickerOpen ? (
+                    <Box
+                      sx={{ position: "absolute", top: "110%", right: "0" }}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <TwitterPicker
+                        color={data.color}
+                        triangle="top-right"
+                        onChangeComplete={onColorChange}
+                      />
+                    </Box>
+                  ) : null}
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Delete">
+                <IconButton onClick={() => onColChange(null)}>
+                  <Delete />
+                </IconButton>
+              </Tooltip>
+            </CardActions>
+          </Box>
           {/* content */}
           <Droppable droppableId={data.id.toString()} type="CARD">
             {(provided, snapshot) => (
-              <div ref={provided.innerRef} {...provided.droppableProps}>
-                {data.items.map((item, index) => (
-                  <Card key={index} data={item} index={index}></Card>
-                ))}
-                {provided.placeholder}
-              </div>
+              <Box
+                sx={{
+                  backgroundColor: snapshot.isDraggingOver
+                    ? shadeColor(data.color, -20)
+                    : shadeColor(data.color, 20),
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  transition: "background-color .2s ease",
+                }}
+                style={{ minHeight: 201, minWidth: 430 }}
+                ref={provided.innerRef}
+                {...provided.droppableProps}
+              >
+                <CardContent
+                  style={{ position: "relative" }}
+                  // class="col-backdrop-container"
+                >
+                  <Box>
+                    {data.items.length > 0
+                      ? data.items.map((item, index) => (
+                          <TaskCard
+                            key={item.id.toString()}
+                            data={item}
+                            index={index}
+                            onChange={(data) => onCardChange(data, index)}
+                          />
+                        ))
+                      : !snapshot.isDraggingOver && (
+                          <Typography fontSize={20}>
+                            Create or drag and drop a task to get started.
+                          </Typography>
+                        )}
+                    {provided.placeholder}
+                  </Box>
+                </CardContent>
+              </Box>
             )}
           </Droppable>
-        </div>
+        </Card>
       )}
     </Draggable>
   );
