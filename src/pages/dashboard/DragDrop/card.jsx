@@ -6,6 +6,7 @@ import {
   Card,
   Box,
   Typography,
+  Link,
 } from "@mui/material";
 import { color, Container } from "@mui/system";
 import { Draggable } from "react-beautiful-dnd";
@@ -38,6 +39,25 @@ export default function TaskCard({
     return <div style={{ width: 398, height: 161 }}></div>;
   }
 
+  const text = data.text;
+  const regexp = /(https?:\/\/[^\s]+)/g;
+
+  const result = Array.from(text.matchAll(regexp), (m) => m[0]);
+
+  const output = text.split(regexp).filter((item) => !regexp.test(item));
+
+  Array(result.length)
+    .fill()
+    .forEach((_, idx) => {
+      output.splice(
+        result.length - idx,
+        0,
+        <Link href={result[result.length - idx - 1]} target="_blank" rel="noopener">
+          {result[result.length - idx - 1]}
+        </Link>
+      );
+    });
+
   return (
     <Draggable draggableId={data.id.toString()} index={index}>
       {(provided, snapshot) => (
@@ -46,7 +66,13 @@ export default function TaskCard({
           {...provided.draggableProps}
           ref={provided.innerRef}
         >
-          <Card sx={{ width: 350, backgroundColor: data.color || "#cccccc", overflow: 'visible' }}>
+          <Card
+            sx={{
+              width: 350,
+              backgroundColor: data.color || "#cccccc",
+              overflow: "visible",
+            }}
+          >
             <CardActions disableSpacing>
               <Container
                 sx={{ display: "flex" }}
@@ -96,7 +122,7 @@ export default function TaskCard({
               </Container>
             </CardActions>
             <CardContent>
-              <Typography>{data.text}</Typography>
+              <Typography>{output}</Typography>
             </CardContent>
           </Card>
         </Box>

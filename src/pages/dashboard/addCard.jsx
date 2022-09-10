@@ -16,22 +16,24 @@ import {
 import moment from "moment";
 import { useState, useEffect } from "react";
 
+/**
+ * @param {object} props
+ * @param {boolean} props.open
+ * @param {(data: object) => void} props.onClose
+ * @param {object} props.defaults
+ * @param {string[]} props.categories
+*/
 export default function AddCardModal({
   open,
-  value,
   onClose,
+  defaults,
   categories,
-  defaultCategory,
 }) {
-  const [currentTime, setCurrentTime] = useState(value);
-  const [category, setCategory] = useState(defaultCategory);
+  const [data, setData] = useState(defaults);
 
   useEffect(() => {
-    setCurrentTime(value);
-  }, [value]);
-  useEffect(() => {
-    setCategory(defaultCategory);
-  }, [defaultCategory]);
+    setData(defaults);
+  }, [defaults]);
   return (
     <LocalizationProvider dateAdapter={AdapterMoment}>
       <Dialog open={open} onClose={() => onClose(value)}>
@@ -40,22 +42,35 @@ export default function AddCardModal({
           <FormControl variant="outlined">
             <Select
               autoWidth
-              value={category}
-              onChange={({ target }) => setCategory(target.value)}
+              value={data.category}
+              onChange={({ target }) =>
+                setData({ ...data, category: target.value })
+              }
             >
-              {categories.map((item) => (
-                <MenuItem value={item}>{item}</MenuItem>
+              {categories.map((item, idx) => (
+                <MenuItem value={item} key={idx}>
+                  {item}
+                </MenuItem>
               ))}
             </Select>
+            <TextField
+              sx={{ marginY: 4 }}
+              label="Task"
+              multiline
+              value={data.text}
+              onChange={({ target }) => {
+                setData({ ...data, text: target.value });
+              }}
+            ></TextField>
             <DateTimePicker
               label="Finish by date"
-              value={currentTime}
-              onChange={(newTime) => setCurrentTime(newTime)}
+              value={data.time}
+              onChange={(newTime) => setData({ ...data, time: newTime })}
               renderInput={(props) => (
-                <TextField {...props} sx={{ ...props.sx, margin: 4 }} />
+                <TextField {...props} sx={{ ...props.sx, marginY: 4 }} />
               )}
             />
-            <Button variant="contained" fullWidth={true}>
+            <Button variant="contained" fullWidth={true} onClick={() => onClose(data)}>
               Add task
             </Button>
           </FormControl>

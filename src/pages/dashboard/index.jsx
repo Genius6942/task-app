@@ -64,7 +64,7 @@ export default function Dashboard() {
       items: [
         {
           id: 3,
-          text: "hi",
+          text: "hi\nhttps://google.com",
         },
         {
           id: 4,
@@ -104,7 +104,7 @@ export default function Dashboard() {
     const deepCopy = JSON.parse(JSON.stringify(cardState));
     if (!data) {
       deepCopy.splice(idx, 1);
-      openUndoBar('Category deleted')
+      openUndoBar("Category deleted");
     } else {
       deepCopy[idx] = data;
     }
@@ -134,7 +134,7 @@ export default function Dashboard() {
         .items.push(...deepCopy[source.index].items);
       deepCopy.splice(source.index, 1);
       setCardState(deepCopy);
-      openUndoBar('Categories combined')
+      openUndoBar("Categories combined");
       return;
     }
 
@@ -187,10 +187,8 @@ export default function Dashboard() {
   const { width, height } = useWindowSize();
 
   const [addModalOpen, setAddModalOpen] = useState(false);
-  const [time, setTime] = useState(moment);
-  const [addModalCategory, setAddModalCategory] = useState('');
+  const [addModalCategory, setAddModalCategory] = useState("");
   const onAddModalClose = (value) => {
-    setTime(value);
     setAddModalOpen(false);
   };
   const startAddCard = async (colTitle) => {
@@ -270,9 +268,9 @@ export default function Dashboard() {
       </Box>
       <AddCardModal
         onClose={onAddModalClose}
-        value={time}
+        defaults={{ time: moment(), text: "", category: addModalCategory }}
         open={addModalOpen}
-        categories={cardState.map(item => item.title)}
+        categories={cardState.map((item) => item.title)}
         defaultCategory={addModalCategory}
       />
       <Snackbar
