@@ -74,6 +74,9 @@ export default function Dashboard() {
     },
   ]);
 
+	const nextAvailibleColId = () => Math.max(...cardState.map(col => col.id)) + 1;
+	const nextAvailibleCardId = () => Math.max(...cardState.map(col => Math.max(...col.items.map(card => card.id)))) + 1;
+
   const [undoBarOpen, setUndoBarOpen] = useState(false);
   const [undoBarMessage, setUndoBarMessage] = useState("");
 
@@ -188,9 +191,23 @@ export default function Dashboard() {
 
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [addModalCategory, setAddModalCategory] = useState("");
-  const onAddModalClose = (value) => {
+  const onAddModalClose = () => {
     setAddModalOpen(false);
   };
+
+	const onAddModalSubmit = (data) => {
+		const deepCopy = JSON.parse(JSON.stringify(cardState));
+		const categoryIndex = deepCopy.findIndex((item) => item.id.toString() === data.category);
+		deepCopy[categoryIndex].items.push({
+			id: nextAvailibleCardId(),
+			text: data.text,
+			completionDate: data.time,
+		});
+
+		setCardState(deepCopy);
+	};
+
+
   const startAddCard = async (colTitle) => {
     setAddModalOpen(true);
     setAddModalCategory(colTitle);
@@ -267,7 +284,8 @@ export default function Dashboard() {
         </DragDropContext>
       </Box>
       <AddCardModal
-        onClose={onAddModalClose}
+        onClose={() => onAddModalClose(false)}
+				onSubmit={onAddModalSubmit}
         defaults={{ time: moment(), text: "", category: addModalCategory }}
         open={addModalOpen}
         categories={cardState.map((item) => item.title)}

@@ -22,12 +22,14 @@ import { useState, useEffect } from "react";
  * @param {(data: object) => void} props.onClose
  * @param {object} props.defaults
  * @param {string[]} props.categories
+ * @param {(data: object) => void} props.onSubmit
 */
 export default function AddCardModal({
   open,
   onClose,
   defaults,
   categories,
+	onSubmit,
 }) {
   const [data, setData] = useState(defaults);
 
@@ -36,7 +38,7 @@ export default function AddCardModal({
   }, [defaults]);
   return (
     <LocalizationProvider dateAdapter={AdapterMoment}>
-      <Dialog open={open} onClose={() => onClose(value)}>
+      <Dialog open={open} onClose={() => onClose()}>
         <Box sx={{ padding: 3 }}>
           <DialogTitle>Create New Task</DialogTitle>
           <FormControl variant="outlined">
@@ -70,7 +72,7 @@ export default function AddCardModal({
                 <TextField {...props} sx={{ ...props.sx, marginY: 4 }} />
               )}
             />
-            <Button variant="contained" fullWidth={true} onClick={() => onClose(data)}>
+            <Button variant="contained" fullWidth={true} onClick={() => {onClose(); onSubmit(data)}}>
               Add task
             </Button>
           </FormControl>
