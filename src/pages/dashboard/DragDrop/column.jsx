@@ -57,8 +57,8 @@ export default function Column({
             ...provided.draggableProps.style,
             margin: 10,
             display: "inline-block",
-            borderRadius: "10px",
             boxShadow: "0 25px 50px -12px rgb(0 0 0 / 0.5)",
+            overflow: "visible"
           }}
         >
           {/* header */}
@@ -67,6 +67,8 @@ export default function Column({
               backgroundColor: data.color,
               zIndex: 1,
               position: "relative",
+              borderTopLeftRadius: "10px",
+              borderTopRightRadius: "10px",
             }}
           >
             <CardActions
@@ -134,6 +136,8 @@ export default function Column({
                   justifyContent: "center",
                   alignItems: "center",
                   transition: "background-color .2s ease",
+                  borderBottomLeftRadius: "10px",
+                  borderBottomRightRadius: "10px",
                 }}
                 style={{ minHeight: 201, minWidth: 430 }}
                 ref={provided.innerRef}
