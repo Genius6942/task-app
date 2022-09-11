@@ -197,11 +197,11 @@ export default function Dashboard() {
 
 	const onAddModalSubmit = (data) => {
 		const deepCopy = JSON.parse(JSON.stringify(cardState));
-		const categoryIndex = deepCopy.findIndex((item) => item.id.toString() === data.category);
+		const categoryIndex = deepCopy.findIndex((item) => item.title === data.category);
 		deepCopy[categoryIndex].items.push({
 			id: nextAvailibleCardId(),
 			text: data.text,
-			completionDate: data.time,
+			time: data.time.format('MMMM Do YYYY, h:mm:ss a'),
 		});
 
 		setCardState(deepCopy);

@@ -58,7 +58,7 @@ export default function TaskCard({ data, index, onChange, placeholder = false })
   return (
     <Draggable draggableId={data.id.toString()} index={index}>
       {(provided, snapshot) => (
-        <Box sx={{ padding: 3 }} {...provided.draggableProps} ref={provided.innerRef}>
+        <Box sx={{ padding: 3, paddingBottom: data.time ? 0 : null }} {...provided.draggableProps} ref={provided.innerRef}>
           <Card
             sx={{
               width: 350,
@@ -116,6 +116,7 @@ export default function TaskCard({ data, index, onChange, placeholder = false })
             </CardActions>
             <CardContent>
               <Typography whiteSpace="pre-wrap" textOverflow="ellipsis">{output}</Typography>
+              <Typography whiteSpace="pre-wrap" textOverflow="ellipsis" fontSize={10}>{data.time}</Typography>
             </CardContent>
           </Card>
         </Box>
