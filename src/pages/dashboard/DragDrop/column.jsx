@@ -16,7 +16,7 @@ import { pSBC, shadeColor } from "./lightenColor";
 
 import { useState } from "react";
 import { TwitterPicker } from "react-color";
-import AddCardModal from "../addCard";
+import { useWindowSize } from "react-use";
 
 /**
  *
@@ -35,6 +35,8 @@ export default function Column({
   onCardChange = () => {},
   onAdd = () => {},
 }) {
+	const { width, height } = useWindowSize();
+
   const [colorPickerOpen, setColorPickerOpen] = useState(false);
 
   /**
@@ -46,6 +48,8 @@ export default function Column({
     onColChange(data);
   };
 
+	const margin = 20;
+
   return (
     <Draggable draggableId={data.id.toString()} index={index}>
       {(provided, snapshot) => (
@@ -55,10 +59,11 @@ export default function Column({
           {...provided.draggableProps}
           style={{
             ...provided.draggableProps.style,
-            margin: 10,
+            margin: `${margin}px`,
             display: "inline-block",
             boxShadow: "0 25px 50px -12px rgb(0 0 0 / 0.5)",
-            overflow: "visible"
+            overflow: "visible",
+						maxWidth: `${width - margin * 2}px`,
           }}
         >
           {/* header */}
@@ -139,7 +144,7 @@ export default function Column({
                   borderBottomLeftRadius: "10px",
                   borderBottomRightRadius: "10px",
                 }}
-                style={{ minHeight: 201, minWidth: 430 }}
+                style={{ minHeight: 201, maxWidth: `${width - margin * 2}px` }}
                 ref={provided.innerRef}
                 {...provided.droppableProps}
               >
