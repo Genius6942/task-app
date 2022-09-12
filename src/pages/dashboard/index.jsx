@@ -26,7 +26,7 @@ import setDocumentTitle from "../../lib/title";
 
 export default function Dashboard() {
   setDocumentTitle('Dashboard');
-  
+
   const [user, loading, error] = useAuthState(auth);
   const navigate = useNavigate();
   useEffect(() => {
@@ -245,7 +245,7 @@ export default function Dashboard() {
       >
         <NavBar
           // disable for now
-          openMenu={() => setMenuOpen(true)}
+          openMenu={null}
           onUndo={undoCardState}
           onRedo={redoCardState}
         ></NavBar>
