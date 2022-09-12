@@ -18,7 +18,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Google } from "@mui/icons-material";
 
 import googleImageUrl from "../assets/google_logo.png";
-import setDocumentTitle from "../lib/title";
+import { setDocumentTitle } from "../lib/utils";
 
 function Copyright(props) {
   return (

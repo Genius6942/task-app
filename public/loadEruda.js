@@ -1,17 +1,19 @@
 try {
-eruda.init();
-if (localStorage.getItem("eruda-auto-show") === "1") eruda.show();
-window.addEventListener("keydown", e => {
+  eruda.init();
+  if (localStorage.getItem("eruda-auto-show") === "1") eruda.show();
+  window.addEventListener("keydown", (e) => {
     const { key, ctrlKey } = e;
     if (key === "e" && ctrlKey) {
-    e.preventDefault();
-    if (localStorage.getItem("eruda-auto-show") === "1") {
+      e.preventDefault();
+      if (localStorage.getItem("eruda-auto-show") === "1") {
         localStorage.setItem("eruda-auto-show", "0");
         eruda.hide();
-    } else {
+      } else {
         localStorage.setItem("eruda-auto-show", "1");
         eruda.show();
+      }
     }
-    }
-});
-} catch (e) {console.error(e)}
+  });
+} catch (e) {
+  console.error(e);
+}

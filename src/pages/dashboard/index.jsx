@@ -22,10 +22,10 @@ import AddCardModal from "./addCard";
 import useUndoableState from "./undoableState";
 
 import "./dashboard.css";
-import setDocumentTitle from "../../lib/title";
+import { setDocumentTitle, useSmallScreen } from "../../lib/utils";
 
 export default function Dashboard() {
-  setDocumentTitle('Dashboard');
+  setDocumentTitle("Dashboard");
 
   const [user, loading, error] = useAuthState(auth);
   const navigate = useNavigate();
@@ -77,8 +77,12 @@ export default function Dashboard() {
     },
   ]);
 
-	const nextAvailibleColId = () => Math.max(...cardState.map(col => col.id)) + 1;
-	const nextAvailibleCardId = () => Math.max(...cardState.map(col => Math.max(...col.items.map(card => card.id)))) + 1;
+  const nextAvailibleColId = () =>
+    Math.max(...cardState.map((col) => col.id)) + 1;
+  const nextAvailibleCardId = () =>
+    Math.max(
+      ...cardState.map((col) => Math.max(...col.items.map((card) => card.id)))
+    ) + 1;
 
   const [undoBarOpen, setUndoBarOpen] = useState(false);
   const [undoBarMessage, setUndoBarMessage] = useState("");
@@ -190,30 +194,30 @@ export default function Dashboard() {
     }
   };
 
-  const { width, height } = useWindowSize();
-
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [addModalCategory, setAddModalCategory] = useState("");
   const onAddModalClose = () => {
     setAddModalOpen(false);
   };
 
-	const onAddModalSubmit = (data) => {
-		const deepCopy = JSON.parse(JSON.stringify(cardState));
-		const categoryIndex = deepCopy.findIndex((item) => item.title === data.category);
-		deepCopy[categoryIndex].items.push({
-			id: nextAvailibleCardId(),
-			text: data.text,
-			time: data.time.format('MMMM Do YYYY, h:mm:ss a'),
+  const onAddModalSubmit = (data) => {
+    const deepCopy = JSON.parse(JSON.stringify(cardState));
+    const categoryIndex = deepCopy.findIndex(
+      (item) => item.title === data.category
+    );
+    deepCopy[categoryIndex].items.push({
+      id: nextAvailibleCardId(),
+      text: data.text,
+      time: data.time.format("MMMM Do YYYY, h:mm:ss a"),
       title: data.title,
-		});
+    });
 
-		setCardState(deepCopy);
-	};
-
+    setCardState(deepCopy);
+  };
 
   const startAddCard = async (colTitle) => {
-    setAddModalCategory(colTitle);``
+    setAddModalCategory(colTitle);
+    ``;
     setAddModalOpen(true);
   };
 
@@ -237,6 +241,8 @@ export default function Dashboard() {
       window.removeEventListener("keydown", keydownListener);
     };
   }, [cardStateIndex]);
+
+  const smallScreen = useSmallScreen();
   return (
     <>
       <Menu open={menuOpen} setOpen={setMenuOpen}></Menu>
@@ -254,7 +260,7 @@ export default function Dashboard() {
           <Droppable
             droppableId="board"
             type="COLUMN"
-            direction={width < 600 ? "vertical" : "horizontal"}
+            direction={smallScreen ? "vertical" : "horizontal"}
             isCombineEnabled={true}
           >
             {(provided, snapshot) => (
@@ -263,11 +269,11 @@ export default function Dashboard() {
                 {...provided.droppableProps}
                 sx={{
                   display: "flex",
-                  alignItems: "flex-start",
-                  padding: 5,
+                  alignItems: smallScreen ? "center" : "flex-start",
+                  padding: smallScreen ? "40px 0" : "40px",
                   flexGrow: 1,
                   overflow: "auto",
-                  flexDirection: width < 600 ? "column" : "row",
+                  flexDirection: smallScreen ? "column" : "row",
                 }}
               >
                 {cardState.map((column, index) => (
@@ -290,8 +296,13 @@ export default function Dashboard() {
       </Box>
       <AddCardModal
         onClose={() => onAddModalClose(false)}
-				onSubmit={onAddModalSubmit}
-        defaults={{ time: moment(), title: "", text: "", category: addModalCategory }}
+        onSubmit={onAddModalSubmit}
+        defaults={{
+          time: moment(),
+          title: "",
+          text: "",
+          category: addModalCategory,
+        }}
         open={addModalOpen}
         categories={cardState.map((item) => item.title)}
         defaultCategory={addModalCategory}

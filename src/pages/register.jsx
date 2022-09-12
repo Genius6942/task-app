@@ -16,7 +16,7 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import googleImageUrl from '../assets/google_logo.png';
-import setDocumentTitle from "../lib/title";
+import { setDocumentTitle } from "../lib/utils";
 
 function Copyright(props) {
   return (

@@ -18,6 +18,8 @@ import { useState } from "react";
 import { TwitterPicker } from "react-color";
 import { useWindowSize } from "react-use";
 
+import { useSmallScreen } from "../../../lib/utils";
+
 /**
  *
  * @param {Object} props
@@ -50,6 +52,8 @@ export default function Column({
 
 	const margin = 20;
 
+  const smallScreen = useSmallScreen();
+
   return (
     <Draggable draggableId={data.id.toString()} index={index}>
       {(provided, snapshot) => (
@@ -59,7 +63,7 @@ export default function Column({
           {...provided.draggableProps}
           style={{
             ...provided.draggableProps.style,
-            margin: `${margin}px`,
+            margin: smallScreen ? `${margin}px 0` : `${margin}px`,
             display: "inline-block",
             boxShadow: "0 25px 50px -12px rgb(0 0 0 / 0.5)",
             overflow: "visible",
