@@ -16,6 +16,7 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import googleImageUrl from '../assets/google_logo.png';
+import setDocumentTitle from "../lib/title";
 
 function Copyright(props) {
   return (
@@ -44,7 +45,9 @@ const theme = createTheme({
   },
 });
 
-export default function Login() {
+export default function Register() {
+  setDocumentTitle('Register');
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const data = new FormData(e.currentTarget);

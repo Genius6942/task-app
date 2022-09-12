@@ -17,7 +17,8 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Google } from "@mui/icons-material";
 
-import googleImageUrl from '../assets/google_logo.png';
+import googleImageUrl from "../assets/google_logo.png";
+import setDocumentTitle from "../lib/title";
 
 function Copyright(props) {
   return (
@@ -44,6 +45,8 @@ const theme = createTheme({
 });
 
 export default function Login() {
+  setDocumentTitle("Login");
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
@@ -125,7 +128,7 @@ export default function Login() {
                 height={30}
                 style={{ marginRight: 10 }}
               />
-              Register with Google
+              Login with Google
             </Button>
             <Grid container>
               <Grid item xs></Grid>

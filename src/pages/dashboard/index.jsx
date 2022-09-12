@@ -22,8 +22,11 @@ import AddCardModal from "./addCard";
 import useUndoableState from "./undoableState";
 
 import "./dashboard.css";
+import setDocumentTitle from "../../lib/title";
 
 export default function Dashboard() {
+  setDocumentTitle('Dashboard');
+  
   const [user, loading, error] = useAuthState(auth);
   const navigate = useNavigate();
   useEffect(() => {
