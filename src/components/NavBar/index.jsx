@@ -42,21 +42,28 @@ export default function NavBar({ openMenu, onUndo, onRedo }) {
     <AppBar position="static">
       <Container maxWidth="">
         <Toolbar disableGutters>
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            sx={{ mr: 2 }}
-            onClick={() => openMenu()}
+          {openMenu && (
+            <IconButton
+              size="large"
+              edge="start"
+              color="inherit"
+              aria-label="menu"
+              sx={{ mr: 2 }}
+              onClick={() => openMenu()}
+            >
+              <MenuIcon />
+            </IconButton>
+          )}
+
+          <Box
+            sx={{
+              flexGrow: 1,
+              display: "flex",
+              justifyContent: { sm: "center", md: "flex-start" },
+            }}
           >
-            <MenuIcon />
-          </IconButton>
-
-          <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}></Box>
-          <Typography fontSize={20}>My Dashboard</Typography>
-
-          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }} />
+            <Typography fontSize={20}>My Dashboard</Typography>
+          </Box>
 
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Undo">

@@ -241,6 +241,7 @@ export default function Dashboard() {
         sx={{ maxHeight: "100vh", display: "flex", flexDirection: "column" }}
       >
         <NavBar
+          // disable for now
           openMenu={() => setMenuOpen(true)}
           onUndo={undoCardState}
           onRedo={redoCardState}
