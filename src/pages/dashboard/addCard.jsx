@@ -11,6 +11,8 @@ import {
   Select,
   MenuItem,
   FormControl,
+  FormControlLabel,
+  Typography,
 } from "@mui/material";
 
 import moment from "moment";
@@ -23,19 +25,24 @@ import { useState, useEffect } from "react";
  * @param {object} props.defaults
  * @param {string[]} props.categories
  * @param {(data: object) => void} props.onSubmit
-*/
+ */
 export default function AddCardModal({
   open,
   onClose,
   defaults,
   categories,
-	onSubmit,
+  onSubmit,
 }) {
   const [data, setData] = useState(defaults);
 
   useEffect(() => {
     // only allow change when modal not open
-    !open && setData(defaults);
+    if (!open) {
+      setData(defaults);
+    } else {
+      // only override category
+      setData({ ...data, category: defaults.category });
+    }
   }, [defaults]);
   return (
     <LocalizationProvider dateAdapter={AdapterMoment}>
@@ -43,9 +50,12 @@ export default function AddCardModal({
         <Box sx={{ padding: 3 }}>
           <DialogTitle>Create New Task</DialogTitle>
           <FormControl variant="outlined">
+            <Typography>Select a parent category</Typography>
             <Select
+              id="category-select"
               autoWidth
               value={data.category}
+              sx={{ marginY: 2 }}
               onChange={({ target }) =>
                 setData({ ...data, category: target.value })
               }
@@ -57,8 +67,17 @@ export default function AddCardModal({
               ))}
             </Select>
             <TextField
-              sx={{ marginY: 4 }}
-              label="Task"
+              sx={{ marginY: 2 }}
+              label="Title"
+              multiline
+              value={data.title}
+              onChange={({ target }) => {
+                setData({ ...data, title: target.value });
+              }}
+            ></TextField>
+            <TextField
+              sx={{ marginY: 2 }}
+              label="Task content"
               multiline
               value={data.text}
               onChange={({ target }) => {
@@ -70,10 +89,19 @@ export default function AddCardModal({
               value={data.time}
               onChange={(newTime) => setData({ ...data, time: newTime })}
               renderInput={(props) => (
-                <TextField {...props} sx={{ ...props.sx, marginY: 4 }} />
+                <TextField
+                  {...props}
+                  sx={{ ...props.sx, marginY: 2, marginBottom: 4 }}
+                />
               )}
             />
-            <Button variant="contained" onClick={() => {onClose(); onSubmit(data)}}>
+            <Button
+              variant="contained"
+              onClick={() => {
+                onClose();
+                onSubmit(data);
+              }}
+            >
               Add task
             </Button>
           </FormControl>

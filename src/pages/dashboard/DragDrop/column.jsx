@@ -44,8 +44,8 @@ export default function Column({
    */
   const onColorChange = (color) => {
     const shallowCopy = { ...data };
-    data.color = color.hex;
-    onColChange(data);
+    shallowCopy.color = color.hex;
+    onColChange(shallowCopy);
   };
 
 	const margin = 20;

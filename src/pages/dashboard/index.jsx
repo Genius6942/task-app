@@ -205,6 +205,7 @@ export default function Dashboard() {
 			id: nextAvailibleCardId(),
 			text: data.text,
 			time: data.time.format('MMMM Do YYYY, h:mm:ss a'),
+      title: data.title,
 		});
 
 		setCardState(deepCopy);
@@ -212,8 +213,8 @@ export default function Dashboard() {
 
 
   const startAddCard = async (colTitle) => {
+    setAddModalCategory(colTitle);``
     setAddModalOpen(true);
-    setAddModalCategory(colTitle);
   };
 
   useEffect(() => {
@@ -290,7 +291,7 @@ export default function Dashboard() {
       <AddCardModal
         onClose={() => onAddModalClose(false)}
 				onSubmit={onAddModalSubmit}
-        defaults={{ time: moment(), text: "", category: addModalCategory }}
+        defaults={{ time: moment(), title: "", text: "", category: addModalCategory }}
         open={addModalOpen}
         categories={cardState.map((item) => item.title)}
         defaultCategory={addModalCategory}
