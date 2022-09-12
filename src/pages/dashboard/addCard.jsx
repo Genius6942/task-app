@@ -34,7 +34,8 @@ export default function AddCardModal({
   const [data, setData] = useState(defaults);
 
   useEffect(() => {
-    setData(defaults);
+    // only allow change when modal not open
+    !open && setData(defaults);
   }, [defaults]);
   return (
     <LocalizationProvider dateAdapter={AdapterMoment}>
@@ -72,7 +73,7 @@ export default function AddCardModal({
                 <TextField {...props} sx={{ ...props.sx, marginY: 4 }} />
               )}
             />
-            <Button variant="contained" fullWidth={true} onClick={() => {onClose(); onSubmit(data)}}>
+            <Button variant="contained" onClick={() => {onClose(); onSubmit(data)}}>
               Add task
             </Button>
           </FormControl>

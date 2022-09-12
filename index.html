@@ -2,13 +2,48 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-		<meta name="viewport" content="initial-scale=1, width=device-width" />
-    <title>task app</title>
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <meta name="viewport" content="initial-scale=1, width=device-width" />
+    <title>doit</title>
     <script src="/eruda.js"></script>
+    <style>
+      #splash {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+
+        background-color: #2074d4;
+        color: white;
+        font-size: 50px;
+
+        font-family: 'Courier New', Courier, monospace;
+        text-decoration: underline;
+
+        z-index: 100;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+      }
+
+      #splash .icon {
+        margin-bottom: 10px;
+      }
+
+      @keyframes spin {
+        
+      }
+    </style>
   </head>
   <body>
-  <script src="/loadEruda.js"></script>
+    <script src="/loadEruda.js"></script>
+    <div id="splash">
+      <img src="/favicon.png" alt="doit logo" class="icon"/>
+      doit
+    </div>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
