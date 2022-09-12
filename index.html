@@ -4,7 +4,10 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/favicon.png" />
     <meta name="viewport" content="initial-scale=1, width=device-width" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="description" content="The app for managing your work, tasks, and life. Join now for free to access a full organization tool."/>
     <title>doit</title>
+    <script>document.title='doit | ' + location.pathname.substring(1)</script>
     <script src="/eruda.js"></script>
     <style>
       #splash {
@@ -16,10 +19,9 @@
 
         background-color: #2074d4;
         color: white;
-        font-size: 50px;
+        font-size: 25px;
 
         font-family: 'Courier New', Courier, monospace;
-        text-decoration: underline;
 
         z-index: 100;
 
@@ -31,10 +33,26 @@
 
       #splash .icon {
         margin-bottom: 10px;
+        animation: spin 1s cubic-bezier(.66,-0.01,.3,1) infinite;
+      }
+
+      #splash .title {
+        font-size: 50px;
+        text-decoration: underline;
       }
 
       @keyframes spin {
-        
+        from {
+          transform: rotate(0deg);
+        }
+
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      #splash.hidden {
+        display: none
       }
     </style>
   </head>
@@ -42,7 +60,8 @@
     <script src="/loadEruda.js"></script>
     <div id="splash">
       <img src="/favicon.png" alt="doit logo" class="icon"/>
-      doit
+      <div class="title">doit</div>
+      is loading...
     </div>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
