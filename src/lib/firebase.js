@@ -16,15 +16,17 @@ import {
   where,
   addDoc,
 } from "firebase/firestore";
+
 const firebaseConfig = {
-  apiKey: "AIzaSyDIXJ5YT7hoNbBFqK3TBcV41-TzIO-7n7w",
-  authDomain: "task-app-faed4.firebaaseapp.com",
-  projectId: "task-app-faed4.web.app",
+  apiKey: "AIzaSyBSMufU9gxj5qyPge6UgDORlJm0sLZXSeQ",
+  authDomain: "task-app-faed4.firebaseapp.com",
+  projectId: "task-app-faed4",
   storageBucket: "task-app-faed4.appspot.com",
-  messagingSenderId: "904760319835",
-  appId: "1:904760319835:web:44fd0d957f114b4e51447e",
-  measurementId: "G-Q4TYKH9GG7",
+  messagingSenderId: "505503051840",
+  appId: "1:505503051840:web:00b0dc6ea3816fe4c4efa5",
+  measurementId: "G-8R6F190JH2"
 };
+
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
