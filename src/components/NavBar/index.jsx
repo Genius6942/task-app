@@ -62,7 +62,7 @@ export default function NavBar({ openMenu, onUndo, onRedo }) {
               justifyContent: { sm: "center", md: "flex-start" },
             }}
           >
-            <Typography fontSize={20}>My Dashboard</Typography>
+            <Typography fontSize={20} whiteSpace="nowrap">My Dashboard</Typography>
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>

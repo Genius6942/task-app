@@ -23,6 +23,7 @@ import useUndoableState from "./undoableState";
 
 import "./dashboard.css";
 import { setDocumentTitle, useSmallScreen } from "../../lib/utils";
+import { getUserBoard } from "../../lib/firestore";
 
 export default function Dashboard() {
   setDocumentTitle("Dashboard");
@@ -31,10 +32,14 @@ export default function Dashboard() {
   const navigate = useNavigate();
   useEffect(() => {
     if (loading) return;
-    if (!user) navigate("/login");
+    if (!user) return navigate("/login");
+    (async () => {
+      console.log(await getUserBoard(user.uid));
+    })();
   }, [user, loading]);
 
   const [menuOpen, setMenuOpen] = useState(false);
+  
 
   const {
     state: cardState,
@@ -256,43 +261,54 @@ export default function Dashboard() {
           onUndo={undoCardState}
           onRedo={redoCardState}
         ></NavBar>
-        <DragDropContext onDragEnd={onDragEnd}>
-          <Droppable
-            droppableId="board"
-            type="COLUMN"
-            direction={smallScreen ? "vertical" : "horizontal"}
-            isCombineEnabled={true}
-          >
-            {(provided, snapshot) => (
-              <Box
-                ref={provided.innerRef}
-                {...provided.droppableProps}
-                sx={{
-                  display: "flex",
-                  alignItems: smallScreen ? "center" : "flex-start",
-                  padding: smallScreen ? "40px 0" : "40px",
-                  flexGrow: 1,
-                  overflow: "auto",
-                  flexDirection: smallScreen ? "column" : "row",
-                }}
-              >
-                {cardState.map((column, index) => (
-                  <Column
-                    key={"col-" + column.id.toString()}
-                    data={column}
-                    index={index}
-                    onCardChange={(data, cardIdx) =>
-                      onCardChange(data, index, cardIdx)
-                    }
-                    onAdd={startAddCard}
-                    onColChange={(data) => onColChange(data, index)}
-                  ></Column>
-                ))}
-                {provided.placeholder}
-              </Box>
-            )}
-          </Droppable>
-        </DragDropContext>
+        {cardState.length >= 1 ? (
+          <DragDropContext onDragEnd={onDragEnd}>
+            <Droppable
+              droppableId="board"
+              type="COLUMN"
+              direction={smallScreen ? "vertical" : "horizontal"}
+              isCombineEnabled={true}
+            >
+              {(provided, snapshot) => (
+                <Box
+                  ref={provided.innerRef}
+                  {...provided.droppableProps}
+                  sx={{
+                    display: "flex",
+                    alignItems: smallScreen ? "center" : "flex-start",
+                    padding: smallScreen ? "40px 0" : "40px",
+                    flexGrow: 1,
+                    overflow: "auto",
+                    flexDirection: smallScreen ? "column" : "row",
+                  }}
+                >
+                  {cardState.map((column, index) => (
+                    <Column
+                      key={"col-" + column.id.toString()}
+                      data={column}
+                      index={index}
+                      onCardChange={(data, cardIdx) =>
+                        onCardChange(data, index, cardIdx)
+                      }
+                      onAdd={startAddCard}
+                      onColChange={(data) => onColChange(data, index)}
+                    ></Column>
+                  ))}
+                  {provided.placeholder}
+                </Box>
+              )}
+            </Droppable>
+          </DragDropContext>
+        ) : (
+          <Box
+            sx={{
+              flexGrow: 1,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          ></Box>
+        )}
       </Box>
       <AddCardModal
         onClose={() => onAddModalClose(false)}
