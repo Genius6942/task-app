@@ -15,6 +15,10 @@ const setDocumentTitle = (page) => {
 const useSmallScreen = (smallSize = 600) => {
   const { width } = useWindowSize();
   return width <= smallSize;
-}
+};
 
-export { setDocumentTitle, useSmallScreen };
+const hideSplash = () => {
+  document.getElementById("splash").style.display = "none";
+};
+
+export { setDocumentTitle, useSmallScreen, hideSplash };

@@ -1,5 +1,5 @@
 {
-  "name": "task-app",
+  "name": "doit",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -25,7 +25,8 @@
     "react-dom": "^18.2.0",
     "react-firebase-hooks": "^5.0.3",
     "react-router-dom": "^6.3.0",
-    "react-use": "^17.4.0"
+    "react-use": "^17.4.0",
+    "vite-plugin-pwa": "^0.12.7"
   },
   "devDependencies": {
     "@types/react": "^18.0.17",

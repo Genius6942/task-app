@@ -18,9 +18,9 @@ import {
   MenuItem,
 } from "@mui/material";
 
-import { Undo, Redo, Menu as MenuIcon } from "@mui/icons-material";
+import { Undo, Redo, Menu as MenuIcon, Add } from "@mui/icons-material";
 
-export default function NavBar({ openMenu, onUndo, onRedo }) {
+export default function NavBar({ openMenu, onUndo, onRedo, onAddCol }) {
   const [user, loading, error] = useAuthState(auth);
   const navigate = useNavigate();
   useEffect(() => {
@@ -76,6 +76,18 @@ export default function NavBar({ openMenu, onUndo, onRedo }) {
                 onClick={() => onUndo()}
               >
                 <Undo />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Add Category">
+              <IconButton
+                size="large"
+                edge="start"
+                color="inherit"
+                aria-label="menu"
+                sx={{ mr: 2 }}
+                onClick={() => onAddCol()}
+              >
+                <Add />
               </IconButton>
             </Tooltip>
             <Tooltip title="Redo">

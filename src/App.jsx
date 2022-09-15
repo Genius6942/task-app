@@ -5,7 +5,6 @@ import Home from "./pages/home";
 import Login from "./pages/login";
 import Register from "./pages/register";
 import Dashboard from "./pages/dashboard";
-import { useEffectOnce } from "react-use";
 
 function App() {
   const [cards, setCards] = useState([
@@ -14,10 +13,6 @@ function App() {
       value: 1,
     },
   ]);
-
-  useEffectOnce(() => {
-    document.getElementById("splash").classList.add("hidden");
-  });
 
   return (
     <div className="app">

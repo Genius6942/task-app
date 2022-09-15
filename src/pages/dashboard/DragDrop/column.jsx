@@ -73,7 +73,7 @@ export default function Column({
           {/* header */}
           <Box
             sx={{
-              backgroundColor: data.color,
+              backgroundColor: data.color || '#bbbbbb',
               zIndex: 1,
               position: "relative",
               borderTopLeftRadius: "10px",
@@ -117,7 +117,7 @@ export default function Column({
                       onClick={(e) => e.stopPropagation()}
                     >
                       <TwitterPicker
-                        color={data.color}
+                        color={data.color || "#bbbbbb"}
                         triangle="top-right"
                         onChangeComplete={onColorChange}
                       />
@@ -138,8 +138,8 @@ export default function Column({
               <Box
                 sx={{
                   backgroundColor: snapshot.isDraggingOver
-                    ? shadeColor(data.color, -20)
-                    : shadeColor(data.color, 20),
+                    ? shadeColor(data.color || "#bbbbbb", -20)
+                    : shadeColor(data.color || "#bbbbbb", 20),
                   display: "flex",
                   flexDirection: "column",
                   justifyContent: "center",
