@@ -4,9 +4,40 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="initial-scale=1, width=device-width" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta name="description" content="The app for managing your work, tasks, and life. Join now for free to access a full organization tool."/>
+    <meta
+      name="description"
+      content="The app for managing your work, tasks, and life. Join now for free to access a full organization tool."
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="57x57"
+      href="/apple-touch-icon-57x57.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="60x60"
+      href="/apple-touch-icon-60x60.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="72x72"
+      href="/apple-touch-icon-72x72.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="76x76"
+      href="/apple-touch-icon-76x76.png"
+    />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5" />
+    <meta name="msapplication-TileColor" content="#2d89ef" />
+    <meta name="theme-color" content="#2074d4" />
     <title>doit</title>
-    <script>document.title='doit | ' + location.pathname.substring(1)</script>
+    <script>
+      document.title = "doit | " + location.pathname.substring(1);
+    </script>
     <style>
       #splash {
         position: fixed;
@@ -19,7 +50,7 @@
         color: white;
         font-size: 25px;
 
-        font-family: 'Courier New', Courier, monospace;
+        font-family: "Courier New", Courier, monospace;
 
         z-index: 100;
 
@@ -31,7 +62,7 @@
 
       #splash .icon {
         margin-bottom: 10px;
-        animation: spin 1s cubic-bezier(.66,-0.01,.3,1) infinite;
+        animation: spin 1s cubic-bezier(0.66, -0.01, 0.3, 1) infinite;
       }
 
       #splash .title {
@@ -50,13 +81,13 @@
       }
 
       #splash.hidden {
-        display: none
+        display: none;
       }
     </style>
   </head>
   <body>
     <div id="splash">
-      <img src="/favicon.ico" alt="doit logo" class="icon"/>
+      <img src="/favicon.ico" alt="doit logo" class="icon" />
       <div class="title">doit</div>
       is loading...
     </div>
