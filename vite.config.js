@@ -6,20 +6,24 @@ import { VitePWA } from "vite-plugin-pwa";
 export default defineConfig({
   build: {
     rollupOptions: {
-      // manualChunks: (id) => {
-      //   if (id.includes("@mui/icons-material")) {
-      //     return "mui-icons";
-      //   } else if (id.includes("@mui/material")) {
-      //     return "mui-material";
-      //   } else if (id.includes("lodash")) {
-      //     return "lodash";
-      //   } else if (id.includes("firebase")) {
-      //     // also firebase-ui included
-      //     return "firebase";
-      //   } else if (id.includes("react")) {
-      //     return "react";
-      //   }
-      // },
+      manualChunks: (id) => {
+        // if (id.includes("@mui/icons-material")) {
+        //   return "mui-icons";
+        // }
+        if (id.includes("@mui/material")) {
+          return "mui-material";
+        }
+        if (id.includes("lodash")) {
+          return "lodash";
+        }
+        if (id.includes("firebase")) {
+          // also firebase-ui included
+          return "firebase";
+        }
+        // if (id.includes("react")) {
+        //   return "react";
+        // }
+      },
     },
   },
   plugins: [
