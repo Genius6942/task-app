@@ -19,7 +19,7 @@ export default defineConfig({
       //   } else if (id.includes("react")) {
       //     return "react";
       //   }
-      },
+      // },
     },
   },
   plugins: [
