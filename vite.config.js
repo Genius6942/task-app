@@ -31,6 +31,7 @@ export default defineConfig({
         start_url: "/dashboard",
         name: "DoIt",
         short_name: "DoIt",
+        description: "The app for managing your work, tasks, and life. Join now for free to access a full organization tool.",
         icons: [
           {
             src: "/android-chrome-36x36.png",

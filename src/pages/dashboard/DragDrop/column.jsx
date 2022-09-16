@@ -101,41 +101,33 @@ export default function Column({
               </Box>
 
               {/* icons */}
-              <Box sx={{ display: "flex", flexGrow: 0 }}>
-                <Tooltip title="Add">
-                  <IconButton onClick={() => onAdd(data.title)}>
-                    <Add />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title="Edit">
-                  <IconButton>
-                    <Edit />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title="Color">
-                  <IconButton
-                    onClick={() => setColorPickerOpen(!colorPickerOpen)}
-                  >
-                    <ColorLens />
-                    {colorPickerOpen ? (
-                      <Box
-                        sx={{ position: "absolute", top: "110%", right: "0" }}
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <TwitterPicker
-                          color={data.color || "#bbbbbb"}
-                          triangle="top-right"
-                          onChangeComplete={onColorChange}
-                        />
-                      </Box>
-                    ) : null}
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title="Delete">
-                  <IconButton onClick={() => onColChange(null)}>
-                    <Delete />
-                  </IconButton>
-                </Tooltip>
+              <Box sx={{ display: "flex", gap: 1 }}>
+                <IconButton onClick={() => onAdd(data.title)}>
+                  <Add /> 
+                </IconButton>
+                <IconButton>
+                  <Edit />
+                </IconButton>
+                <IconButton
+                  onClick={() => setColorPickerOpen(!colorPickerOpen)}
+                >
+                  <ColorLens />
+                  {colorPickerOpen ? (
+                    <Box
+                      sx={{ position: "absolute", top: "110%", right: "0" }}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <TwitterPicker
+                        color={data.color || "#bbbbbb"}
+                        triangle="top-right"
+                        onChangeComplete={onColorChange}
+                      />
+                    </Box>
+                  ) : null}
+                </IconButton>
+                <IconButton onClick={() => onColChange(null)}>
+                  <Delete />
+                </IconButton>
               </Box>
             </CardActions>
           </Box>
