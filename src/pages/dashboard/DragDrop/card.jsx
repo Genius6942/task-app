@@ -1,14 +1,20 @@
-import { ColorLens, Delete, Edit, DragIndicator } from "@mui/icons-material";
-import {
-  CardActions,
-  CardContent,
-  IconButton,
-  Card,
-  Box,
-  Typography,
-  Link,
-} from "@mui/material";
-import { color, Container } from "@mui/system";
+// mui
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import CardActions from "@mui/material/CardActions";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import Box from '@mui/material/Box';
+import Tooltip from '@mui/material/Toolbar'
+import Link from '@mui/material/Link';
+
+// material icons
+import Delete from '@mui/icons-material/Delete';
+import Edit from '@mui/icons-material/Edit';
+import ColorLens from '@mui/icons-material/ColorLens';
+import DragIndicator from '@mui/icons-material/DragIndicator';
+
+import { color, Container } from "@mui/system/";
 import { Draggable } from "react-beautiful-dnd";
 import { TwitterPicker } from "react-color";
 import { useState } from "react";

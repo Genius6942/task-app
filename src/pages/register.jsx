@@ -1,11 +1,15 @@
-import { Link as RouterLink, useNavigate } from "react-router-dom";
+// firebase
 import {
   auth,
   registerWithEmailAndPassword,
   signInWithGoogle,
 } from "../lib/firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { useState, useEffect } from "react";
+// react
+import { useEffect } from "react";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
+
+// mui
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
@@ -15,8 +19,10 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import googleImageUrl from '../assets/google_logo.png';
-import { setDocumentTitle } from "../lib/utils";
+
+// custom
+import googleImageUrl from "../assets/google_logo.png";
+import { hideSplash, setDocumentTitle } from "../lib/utils";
 
 function Copyright(props) {
   return (
@@ -47,6 +53,7 @@ const theme = createTheme({
 
 export default function Register() {
   setDocumentTitle('Register');
+  hideSplash();
 
   const handleSubmit = (e) => {
     e.preventDefault();

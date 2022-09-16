@@ -1,12 +1,12 @@
-import {
-  TextField,
-  Box,
-  Dialog,
-  DialogTitle,
-  Button,
-  FormControl,
-} from "@mui/material";
+// mui
+import TextField from "@mui/material/TextField";
+import Box from '@mui/material/Box';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from "@mui/material/DialogTitle";
+import Button from '@mui/material/Button';
+import FormControl from '@mui/material/FormControl';
 
+// react
 import { useState, useEffect } from "react";
 
 /**

@@ -1,7 +1,12 @@
+// react dnd
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
+
+// custom
 import { useSmallScreen } from "../../../lib/utils";
 import Column from "./column";
-import { Box } from "@mui/material";
+
+// mui components
+import Box from '@mui/material/Box';
 
 export default function Board({ cardState, setCardState, startAddCard, openUndoBar }) {
   const smallScreen = useSmallScreen();
