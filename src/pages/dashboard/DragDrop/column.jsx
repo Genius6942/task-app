@@ -5,14 +5,14 @@ import CardContent from "@mui/material/CardContent";
 import CardActions from "@mui/material/CardActions";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
-import Box from '@mui/material/Box';
-import Tooltip from '@mui/material/Toolbar'
+import Box from "@mui/material/Box";
+import Tooltip from "@mui/material/Toolbar";
 
 // material icons
-import Delete from '@mui/icons-material/Delete';
-import Edit from '@mui/icons-material/Edit';
-import ColorLens from '@mui/icons-material/ColorLens';
-import Add from '@mui/icons-material/Add';
+import Delete from "@mui/icons-material/Delete";
+import Edit from "@mui/icons-material/Edit";
+import ColorLens from "@mui/icons-material/ColorLens";
+import Add from "@mui/icons-material/Add";
 
 // custom
 import { shadeColor } from "./lightenColor";
@@ -41,7 +41,7 @@ export default function Column({
   onCardChange = () => {},
   onAdd = () => {},
 }) {
-	const { width, height } = useWindowSize();
+  const { width, height } = useWindowSize();
 
   const [colorPickerOpen, setColorPickerOpen] = useState(false);
 
@@ -54,7 +54,7 @@ export default function Column({
     onColChange(shallowCopy);
   };
 
-	const margin = 20;
+  const margin = 20;
 
   const smallScreen = useSmallScreen();
 
@@ -71,13 +71,13 @@ export default function Column({
             display: "inline-block",
             boxShadow: "0 25px 50px -12px rgb(0 0 0 / 0.5)",
             overflow: "visible",
-						maxWidth: `${width - margin * 2}px`,
+            maxWidth: `${width - margin * 2}px`,
           }}
         >
           {/* header */}
           <Box
             sx={{
-              backgroundColor: data.color || '#bbbbbb',
+              backgroundColor: data.color || "#bbbbbb",
               zIndex: 1,
               position: "relative",
               borderTopLeftRadius: "10px",
@@ -90,6 +90,7 @@ export default function Column({
                 backdropFilter: snapshot.isDragging
                   ? "brightness(.8)"
                   : "brightness(1)",
+                display: "flex",
                 transition: "backdrop-filter .2s ease",
               }}
               {...provided.dragHandleProps}
@@ -100,40 +101,42 @@ export default function Column({
               </Box>
 
               {/* icons */}
-              <Tooltip title="Add">
-                <IconButton onClick={() => onAdd(data.title)}>
-                  <Add />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title="Edit">
-                <IconButton>
-                  <Edit />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title="Color">
-                <IconButton
-                  onClick={() => setColorPickerOpen(!colorPickerOpen)}
-                >
-                  <ColorLens />
-                  {colorPickerOpen ? (
-                    <Box
-                      sx={{ position: "absolute", top: "110%", right: "0" }}
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <TwitterPicker
-                        color={data.color || "#bbbbbb"}
-                        triangle="top-right"
-                        onChangeComplete={onColorChange}
-                      />
-                    </Box>
-                  ) : null}
-                </IconButton>
-              </Tooltip>
-              <Tooltip title="Delete">
-                <IconButton onClick={() => onColChange(null)}>
-                  <Delete />
-                </IconButton>
-              </Tooltip>
+              <Box sx={{ display: "flex", flexGrow: 0 }}>
+                <Tooltip title="Add">
+                  <IconButton onClick={() => onAdd(data.title)}>
+                    <Add />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Edit">
+                  <IconButton>
+                    <Edit />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Color">
+                  <IconButton
+                    onClick={() => setColorPickerOpen(!colorPickerOpen)}
+                  >
+                    <ColorLens />
+                    {colorPickerOpen ? (
+                      <Box
+                        sx={{ position: "absolute", top: "110%", right: "0" }}
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <TwitterPicker
+                          color={data.color || "#bbbbbb"}
+                          triangle="top-right"
+                          onChangeComplete={onColorChange}
+                        />
+                      </Box>
+                    ) : null}
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Delete">
+                  <IconButton onClick={() => onColChange(null)}>
+                    <Delete />
+                  </IconButton>
+                </Tooltip>
+              </Box>
             </CardActions>
           </Box>
           {/* content */}

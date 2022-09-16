@@ -47,6 +47,17 @@ export default defineConfig({
             sizes: "72x72",
             type: "image/png",
           },
+          {
+            src: "/favicon-512x512.png",
+            sizes: "512x512",
+            type: "image/png",
+          },
+          {
+            src: "/maskable_icon_x72.png",
+            sizes: "72x72",
+            type: "image/png",
+            purpose: "maskable",
+          },
         ],
         theme_color: "#2074d4",
         background_color: "#2074d4",
