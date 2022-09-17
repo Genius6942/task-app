@@ -6,7 +6,7 @@ import CardActions from "@mui/material/CardActions";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import Tooltip from "@mui/material/Toolbar";
+import Tooltip from "@mui/material/Tooltip";
 
 // material icons
 import Delete from "@mui/icons-material/Delete";
