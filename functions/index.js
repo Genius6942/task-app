@@ -15,6 +15,11 @@ exports.helloWorld = functions.https.onRequest((request, response) => {
 
 exports.startPushNofication = functions.https.onRequest((request, response) => {
   const uid = request.body.uid;
+  if (!request.body.uid || !request.body.data) {
+    response.status(400).send("Bad Request");
+    console.log("Bad Request");
+    return;
+  }
   const data = JSON.parse(request.body.data);
   admin
     .firestore()
@@ -29,13 +34,14 @@ exports.startPushNofication = functions.https.onRequest((request, response) => {
         doc.ref
           .get()
           .then(doc => {
-            const FCMToken = doc.data().FCMToken;const payload = {
+            const FCMToken = doc.data().FCMToken;
+            const payload = {
               token: FCMToken,
               notification: {
                 ...data,
               },
             };
-            if (!FCMToken){
+            if (!FCMToken) {
               response.json({
                 success: false,
                 message: "User does not have a registered FCM token",

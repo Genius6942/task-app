@@ -15,6 +15,7 @@ import {
   collection,
   where,
   addDoc,
+  updateDoc,
 } from "firebase/firestore";
 
 import { getMessaging, getToken } from "firebase/messaging";
@@ -72,7 +73,7 @@ const registerWithEmailAndPassword = async (name, email, password) => {
     console.error(err);
   }
 };
-const sendPasswordReset = async (email) => {
+const sendPasswordReset = async email => {
   try {
     await sendPasswordResetEmail(auth, email);
     alert("Password reset link sent!");
@@ -88,7 +89,7 @@ const messaging = getMessaging();
 
 const requestPermission = () => {
   console.log("Requesting permission...");
-  Notification.requestPermission().then((permission) => {
+  Notification.requestPermission().then(permission => {
     if (permission === "granted") {
       console.log("Notification permission granted.");
     } else {
@@ -97,15 +98,24 @@ const requestPermission = () => {
   });
 };
 
-const startFirebaseMessaging = () => {
+const startFirebaseMessaging = uid => {
   getToken(messaging, {
     vapidKey:
       "BLxc8iw6ehuBXt3ldupe1knjg7iQXwjsdJcX646DPsV3EHFQEnFYU4mzE7qXenwAZ50uRPwVhtte-kDwSn3DQVQ",
   })
-    .then((currentToken) => {
+    .then(async currentToken => {
       if (currentToken) {
-        // Send the token to your server and update the UI if necessary
-        console.log(currentToken);
+				console.log(currentToken);
+        // Add the FCMToken property to the user's document in firestore
+        const q = query(collection(db, "users"), where("uid", "==", uid));
+        const docs = await getDocs(q);
+
+        if (docs.docs.length >= 0) {
+          const result = await updateDoc(docs.docs[0].ref, {
+            FCMToken: currentToken,
+          });
+          return result;
+        }
       } else {
         // Show permission request UI
         console.log(
@@ -114,7 +124,7 @@ const startFirebaseMessaging = () => {
         // ...
       }
     })
-    .catch((err) => {
+    .catch(err => {
       console.log("An error occurred while retrieving token. ", err);
       // ...
     });
