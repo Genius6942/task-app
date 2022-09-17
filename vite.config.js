@@ -29,7 +29,7 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      includeAssets: ['/favicon.ico'],
+      includeAssets: ['/favicon.ico', "/*.png"],
       registerType: "autoUpdate",
       injectRegister: "auto",
       manifest: {

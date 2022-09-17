@@ -1,9 +1,5 @@
 // firebase
-import {
-  auth,
-  registerWithEmailAndPassword,
-  signInWithGoogle,
-} from "../lib/firebase";
+import { auth, registerWithEmailAndPassword, signInWithGoogle } from "../lib/firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 // react
 import { useEffect } from "react";
@@ -21,17 +17,11 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 // custom
-import googleImageUrl from "../assets/google_logo.png";
 import { hideSplash, setDocumentTitle } from "../lib/utils";
 
 function Copyright(props) {
   return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
+    <Typography variant="body2" color="text.secondary" align="center" {...props}>
       {"Copyright © "}
       <RouterLink to="/">
         <Link>doit</Link>
@@ -44,7 +34,7 @@ function Copyright(props) {
 
 const { palette } = createTheme();
 const { augmentColor } = palette;
-const createColor = (mainColor) => augmentColor({ color: { main: mainColor } });
+const createColor = mainColor => augmentColor({ color: { main: mainColor } });
 const theme = createTheme({
   palette: {
     white: createColor("#FFFFFF"),
@@ -52,13 +42,17 @@ const theme = createTheme({
 });
 
 export default function Register() {
-  setDocumentTitle('Register');
+  setDocumentTitle("Register");
   hideSplash();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = e => {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
-    registerWithEmailAndPassword(data.get('name'), data.get("email"), data.get("password"));
+    registerWithEmailAndPassword(
+      data.get("name"),
+      data.get("email"),
+      data.get("password")
+    );
   };
 
   const [user, loading, error] = useAuthState(auth);
@@ -90,12 +84,7 @@ export default function Register() {
           <Typography component="h1" variant="h5">
             Register
           </Typography>
-          <Box
-            component="form"
-            onSubmit={handleSubmit}
-            noValidate
-            sx={{ mt: 1 }}
-          >
+          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
             <TextField
               margin="normal"
               required
@@ -125,12 +114,7 @@ export default function Register() {
               id="password"
               autoComplete="current-password"
             />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
+            <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
               Register
             </Button>
             <Button
@@ -140,14 +124,20 @@ export default function Register() {
               onClick={signInWithGoogle}
               color="white"
             >
-              <img src={googleImageUrl} width={31} height={30} style={{marginRight: 10}}/>
+              <img
+                src="/google_logo.png"
+                alt="google logo"
+                width={31}
+                height={30}
+                style={{ marginRight: 10 }}
+              />
               Register with Google
             </Button>
             <Grid container>
               <Grid item xs></Grid>
               <Grid item>
                 <RouterLink to="/login">
-                  <Link>Already have an account? Log in</Link>
+                  Already have an account? Log in.
                 </RouterLink>
               </Grid>
             </Grid>
