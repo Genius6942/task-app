@@ -1,5 +1,10 @@
 // firebase
-import { auth } from "../../lib/firebase";
+import {
+  auth,
+  requestPermission,
+  startFirebaseMessaging,
+} from "../../lib/firebase";
+import { getUserBoard, updateUserBoard } from "../../lib/firestore";
 import { useAuthState } from "react-firebase-hooks/auth";
 
 // react
@@ -7,13 +12,13 @@ import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 // material icons
-import CloseIcon from '@mui/icons-material/Close';
+import CloseIcon from "@mui/icons-material/Close";
 // material ui
-import Box from '@mui/material/Box';
-import Snackbar from '@mui/material/Snackbar';
-import IconButton from '@mui/material/IconButton';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
+import Box from "@mui/material/Box";
+import Snackbar from "@mui/material/Snackbar";
+import IconButton from "@mui/material/IconButton";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
 
 // moment for time stuff
 import moment from "moment";
@@ -24,13 +29,11 @@ import NavBar from "../../components/NavBar";
 import AddCardModal from "./addCard";
 import useUndoableState from "./undoableState";
 import { hideSplash, setDocumentTitle, useSmallScreen } from "../../lib/utils";
-import { getUserBoard, updateUserBoard } from "../../lib/firestore";
 import AddColModal from "./addCol";
 import Board from "./DragDrop/board";
 
 // css
 import "./dashboard.css";
-
 
 export default function Dashboard() {
   setDocumentTitle("Dashboard");
@@ -49,6 +52,9 @@ export default function Dashboard() {
       setCardState(loadedState);
       setDataLoaded(true);
     })();
+
+    requestPermission();
+    startFirebaseMessaging();
   }, [user, loading]);
 
   const [menuOpen, setMenuOpen] = useState(false);

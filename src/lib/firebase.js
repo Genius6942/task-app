@@ -17,6 +17,8 @@ import {
   addDoc,
 } from "firebase/firestore";
 
+import { getMessaging, getToken } from "firebase/messaging";
+
 const firebaseConfig = {
   apiKey: "AIzaSyBSMufU9gxj5qyPge6UgDORlJm0sLZXSeQ",
   authDomain: "task-app-faed4.firebaseapp.com",
@@ -24,7 +26,7 @@ const firebaseConfig = {
   storageBucket: "task-app-faed4.appspot.com",
   messagingSenderId: "505503051840",
   appId: "1:505503051840:web:00b0dc6ea3816fe4c4efa5",
-  measurementId: "G-8R6F190JH2"
+  measurementId: "G-8R6F190JH2",
 };
 
 const app = initializeApp(firebaseConfig);
@@ -86,6 +88,42 @@ const logout = () => {
   signOut(auth);
 };
 
+const messaging = getMessaging();
+
+const requestPermission = () => {
+  console.log("Requesting permission...");
+  Notification.requestPermission().then((permission) => {
+    if (permission === "granted") {
+      console.log("Notification permission granted.");
+    } else {
+      console.log("permission denied - no notifications");
+    }
+  });
+};
+
+const startFirebaseMessaging = () => {
+  getToken(messaging, {
+    vapidKey:
+      "BLxc8iw6ehuBXt3ldupe1knjg7iQXwjsdJcX646DPsV3EHFQEnFYU4mzE7qXenwAZ50uRPwVhtte-kDwSn3DQVQ",
+  })
+    .then((currentToken) => {
+      if (currentToken) {
+        // Send the token to your server and update the UI if necessary
+        console.log(currentToken);
+      } else {
+        // Show permission request UI
+        console.log(
+          "No registration token available. Request permission to generate one."
+        );
+        // ...
+      }
+    })
+    .catch((err) => {
+      console.log("An error occurred while retrieving token. ", err);
+      // ...
+    });
+};
+
 export {
   auth,
   db,
@@ -94,4 +132,6 @@ export {
   registerWithEmailAndPassword,
   sendPasswordReset,
   logout,
+  requestPermission,
+  startFirebaseMessaging,
 };
