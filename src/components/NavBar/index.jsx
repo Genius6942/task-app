@@ -22,7 +22,13 @@ import { Undo, Redo, Menu as MenuIcon, Add } from "@mui/icons-material";
 import CloudDone from "@mui/icons-material/CloudDone";
 import { app_name } from "../../lib/constants";
 
-export default function NavBar({ openMenu, onUndo, onRedo, onAddCol, savedOnline }) {
+export default function NavBar({
+  openMenu,
+  onUndo,
+  onRedo,
+  onAddCol,
+  savedOnline,
+}) {
   const [user, loading, error] = useAuthState(auth);
   const navigate = useNavigate();
   useEffect(() => {
@@ -32,7 +38,7 @@ export default function NavBar({ openMenu, onUndo, onRedo, onAddCol, savedOnline
 
   const [anchorElUser, setAnchorElUser] = useState(null);
 
-  const handleOpenUserMenu = event => {
+  const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
   };
 
@@ -62,16 +68,23 @@ export default function NavBar({ openMenu, onUndo, onRedo, onAddCol, savedOnline
               flexGrow: 1,
               display: "flex",
               justifyContent: { sm: "center", md: "flex-start" },
+              alignItems: "center",
             }}
           >
-            <img src="/favicon-32x32.png" alt="logo" style={{ marginRight: 10 }} />
+            <img src="/favicon-32x32.png" alt="logo" />
 
-            <Typography fontSize={20} whiteSpace="nowrap">
+            <Typography fontSize={20} whiteSpace="nowrap" sx={{ mx: 2 }}>
               {app_name}
             </Typography>
-            <Tooltip title="save">
-              <IconButton>
-                <CloudDone color="white"/>
+            <Tooltip title="Undo">
+              <IconButton
+                size="large"
+                edge="start"
+                color="inherit"
+                aria-label="Saved"
+                sx={{ mr: 2 }}
+              >
+                <CloudDone />
               </IconButton>
             </Tooltip>
           </Box>
@@ -82,7 +95,7 @@ export default function NavBar({ openMenu, onUndo, onRedo, onAddCol, savedOnline
                 size="large"
                 edge="start"
                 color="inherit"
-                aria-label="menu"
+                aria-label="undo"
                 sx={{ mr: 2 }}
                 onClick={() => onUndo()}
               >
@@ -94,7 +107,7 @@ export default function NavBar({ openMenu, onUndo, onRedo, onAddCol, savedOnline
                 size="large"
                 edge="start"
                 color="inherit"
-                aria-label="menu"
+                aria-label="add"
                 sx={{ mr: 2 }}
                 onClick={() => onAddCol()}
               >
@@ -106,7 +119,7 @@ export default function NavBar({ openMenu, onUndo, onRedo, onAddCol, savedOnline
                 size="large"
                 edge="start"
                 color="inherit"
-                aria-label="menu"
+                aria-label="redo"
                 sx={{ mr: 2 }}
                 onClick={() => onRedo()}
               >

@@ -1,7 +1,7 @@
 {
   "name": "doit",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.1",
   "type": "module",
   "scripts": {
     "dev": "vite --port 5173",
@@ -16,7 +16,6 @@
     "@mui/icons-material": "^5.10.3",
     "@mui/material": "^5.10.3",
     "@mui/x-date-pickers": "^5.0.0",
-    "bubblewrap": "0.2.0",
     "firebase": "^9.9.4",
     "firebase-admin": "^11.0.1",
     "firebase-functions": "^3.23.0",
