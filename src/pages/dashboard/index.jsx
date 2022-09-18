@@ -58,7 +58,7 @@ export default function Dashboard() {
   }, [user, loading]);
 
   const [menuOpen, setMenuOpen] = useState(false);
-
+  
   const {
     state: cardState,
     setState: setCardState,

@@ -1,0 +1,8 @@
+app/web/task_app_faed4/twa/LauncherActivity.java
+ app.web.task_app_faed4.twa.LauncherActivity
+app/web/task_app_faed4/twa/Application.java
+ app.web.task_app_faed4.twa.Application
+app/web/task_app_faed4/twa/BuildConfig.java
+ app.web.task_app_faed4.twa.BuildConfig
+app/web/task_app_faed4/twa/DelegationService.java
+ app.web.task_app_faed4.twa.DelegationService

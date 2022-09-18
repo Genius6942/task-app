@@ -1,7 +1,6 @@
 /* eslint-disable */
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
-const { doc } = require("firebase/firestore");
 
 admin.initializeApp();
 

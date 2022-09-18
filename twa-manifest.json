@@ -1,0 +1,41 @@
+{
+  "packageId": "app.web.task_app_faed4.twa",
+  "host": "task-app-faed4.web.app",
+  "name": "doit",
+  "launcherName": "doit",
+  "display": "standalone",
+  "themeColor": "#2074D4",
+  "navigationColor": "#000000",
+  "navigationColorDark": "#000000",
+  "navigationDividerColor": "#000000",
+  "navigationDividerColorDark": "#000000",
+  "backgroundColor": "#2074D4",
+  "enableNotifications": true,
+  "startUrl": "/dashboard",
+  "iconUrl": "https://task-app-faed4.web.app/favicon-512x512.png",
+  "splashScreenFadeOutDuration": 300,
+  "signingKey": {
+    "path": "/workspace/task-app/android.keystore",
+    "alias": "android"
+  },
+  "appVersionName": "1",
+  "appVersionCode": 1,
+  "shortcuts": [],
+  "generatorApp": "bubblewrap-cli",
+  "webManifestUrl": "https://task-app-faed4.web.app/manifest.webmanifest",
+  "fallbackType": "customtabs",
+  "features": {},
+  "alphaDependencies": {
+    "enabled": false
+  },
+  "enableSiteSettingsShortcut": true,
+  "isChromeOSOnly": false,
+  "isMetaQuest": false,
+  "fullScopeUrl": "https://task-app-faed4.web.app/",
+  "minSdkVersion": 19,
+  "orientation": "portrait",
+  "fingerprints": [],
+  "additionalTrustedOrigins": [],
+  "retainedBundles": [],
+  "appVersion": "1"
+}
