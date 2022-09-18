@@ -54,7 +54,7 @@ export default function Dashboard() {
     })();
 
     requestPermission();
-    startFirebaseMessaging();
+    startFirebaseMessaging(user.uid);
   }, [user, loading]);
 
   const [menuOpen, setMenuOpen] = useState(false);

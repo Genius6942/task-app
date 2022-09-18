@@ -3,7 +3,7 @@ import react from "@vitejs/plugin-react";
 import { VitePWA } from "vite-plugin-pwa";
 
 // https://vitejs.dev/config/
-export default defineConfig({
+export default defineConfig(({ command }) => ({
   build: {
     rollupOptions: {
       manualChunks: (id) => {
@@ -29,14 +29,18 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      includeAssets: ['/favicon.ico', "/*.png"],
+      includeAssets: ["/favicon.ico", "/*.png"],
       registerType: "autoUpdate",
       injectRegister: "auto",
+      devOptions: {
+        enabled: command === 'serve' ? true : false,
+      },
       manifest: {
         start_url: "/dashboard",
         name: "DoIt",
         short_name: "DoIt",
-        description: "The app for managing your work, tasks, and life. Join now for free to access a full organization tool.",
+        description:
+          "The app for managing your work, tasks, and life. Join now for free to access a full organization tool.",
         icons: [
           {
             src: "/android-chrome-36x36.png",
@@ -72,4 +76,4 @@ export default defineConfig({
       },
     }),
   ],
-});
+}));
