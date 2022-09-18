@@ -24,7 +24,7 @@ function Copyright(props) {
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
       {"Copyright © "}
       <RouterLink to="/">
-        <Link>doit</Link>
+        <Link>{app_name}</Link>
       </RouterLink>{" "}
       {new Date().getFullYear()}
       {"."}
@@ -136,9 +136,7 @@ export default function Register() {
             <Grid container>
               <Grid item xs></Grid>
               <Grid item>
-                <RouterLink to="/login">
-                  Already have an account? Log in.
-                </RouterLink>
+                <RouterLink to="/login">Already have an account? Log in.</RouterLink>
               </Grid>
             </Grid>
           </Box>

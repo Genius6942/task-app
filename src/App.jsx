@@ -7,6 +7,16 @@ import Register from "./pages/register";
 import Dashboard from "./pages/dashboard";
 import { useEffectOnce } from "react-use";
 
+import Card from "@mui/material/Card";
+import Button from "@mui/material/Button";
+import Box from "@mui/material/Box";
+import IconButton from "@mui/material/IconButton";
+
+import Close from "@mui/icons-material/Close";
+import Typography from "@mui/material/Typography";
+import CardActions from "@mui/material/CardActions";
+import { app_name } from './lib/constants';
+
 function App() {
   const [cards, setCards] = useState([
     {
@@ -18,16 +28,39 @@ function App() {
   const [defferedEvent, setDefferedEvent] = useState(null);
 
   useEffect(() => {
-    const listener = (e) => {
+    const listener = e => {
       e.preventDefault();
 
-      setDefferedEvent
+      console.log("preveting default install");
+
+      setDefferedEvent(e);
     };
+
+    console.log("adding listener");
 
     window.addEventListener("beforeinstallprompt", listener, true);
 
     return () => window.removeEventListener("beforeinstallprompt", listener);
-  });
+  }, []);
+
+  const onInstall = async () => {
+    if (!defferedEvent) {
+      console.error("no deffered event");
+      return;
+    }
+    // defferedEvent is a global variable we've been using in the sample to capture the `beforeinstallevent`
+    defferedEvent.prompt();
+    // Find out whether the user confirmed the installation or not
+    const { outcome } = await defferedEvent.userChoice;
+    // The defferedEvent can only be used once.
+    setDefferedEvent(null);
+    // Act on the user's choice
+    if (outcome === "accepted") {
+      console.log("User accepted the install prompt.");
+    } else if (outcome === "dismissed") {
+      console.log("User dismissed the install prompt");
+    }
+  };
 
   return (
     <div className="app">
@@ -42,6 +75,39 @@ function App() {
           <Route path="*" element={<div>404</div>} />
         </Routes>
       </Router>
+      {defferedEvent && (
+        <Card
+          sx={{
+            position: "fixed",
+            top: 20,
+            right: 20,
+            padding: 2,
+            gap: 2,
+            maxWidth: 200,
+            zIndex: 100,
+          }}
+        >
+          <CardActions>
+            <Box sx={{ display: "flex", flexGrow: 1 }}>
+              <Typography fontSize={20} sx={{ marginRight: 1 }}>
+                Intsall {app_name}
+              </Typography>
+              <img src="/favicon-32x32.png" alt="logo" />
+            </Box>
+            <IconButton onClick={() => setDefferedEvent(null)}>
+              <Close />
+            </IconButton>
+          </CardActions>
+          <Box>
+            <Typography marginBottom={1}>
+              Install this site as an app for a better experience.
+            </Typography>
+            <Button variant="contained" onClick={onInstall}>
+              Install
+            </Button>
+          </Box>
+        </Card>
+      )}
     </div>
   );
 }

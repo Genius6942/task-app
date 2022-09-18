@@ -104,6 +104,7 @@ export default function Dashboard() {
     if (user) {
       updateUserBoard(user.uid, cardState);
     }
+		localStorage.setItem("cardState", JSON.stringify(cardState));
   }, [cardState]);
 
   // Create ids

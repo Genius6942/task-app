@@ -22,6 +22,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 // custom
 import { hideSplash, setDocumentTitle } from "../lib/utils";
+import { app_name } from "../lib/constants";
 
 function Copyright(props) {
   return (
@@ -32,7 +33,7 @@ function Copyright(props) {
       {...props}
     >
       {"Copyright © "}
-      <RouterLink to="/">doit</RouterLink> {new Date().getFullYear()}
+      <RouterLink to="/">{app_name}</RouterLink> {new Date().getFullYear()}
       {"."}
     </Typography>
   );

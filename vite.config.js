@@ -1,6 +1,7 @@
 import { build, defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { VitePWA } from "vite-plugin-pwa";
+import { app_name } from "./src/lib/constants";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command }) => ({
@@ -33,12 +34,12 @@ export default defineConfig(({ command }) => ({
       registerType: "autoUpdate",
       injectRegister: "auto",
       devOptions: {
-        enabled: command === 'serve' ? true : false,
+        // enabled: command === 'serve' ? true : false,
       },
       manifest: {
         start_url: "/dashboard",
-        name: "DoIt",
-        short_name: "DoIt",
+        name: app_name,
+        short_name: app_name,
         description:
           "The app for managing your work, tasks, and life. Join now for free to access a full organization tool.",
         icons: [

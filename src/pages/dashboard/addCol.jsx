@@ -42,6 +42,7 @@ export default function AddColModal({
               onChange={({ target }) => {
                 setData({ ...data, title: target.value });
               }}
+							autoFocus={open}
             ></TextField>
 
             <Button

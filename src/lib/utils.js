@@ -1,11 +1,12 @@
 import { useWindowSize } from "react-use";
+import { app_name } from "./constants";
 
 /**
  * @param {string?} page
  */
 const setDocumentTitle = (page) => {
   const dev = import.meta.env.DEV;
-  const title = (dev ? "(DEV) " : "") + "doit" + (page ? " | " + page : "");
+  const title = (dev ? "(DEV) " : "") + app_name + (page ? " | " + page : "");
 
   document.title = title;
 

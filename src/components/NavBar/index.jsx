@@ -19,8 +19,10 @@ import {
 } from "@mui/material";
 
 import { Undo, Redo, Menu as MenuIcon, Add } from "@mui/icons-material";
+import CloudDone from "@mui/icons-material/CloudDone";
+import { app_name } from "../../lib/constants";
 
-export default function NavBar({ openMenu, onUndo, onRedo, onAddCol }) {
+export default function NavBar({ openMenu, onUndo, onRedo, onAddCol, savedOnline }) {
   const [user, loading, error] = useAuthState(auth);
   const navigate = useNavigate();
   useEffect(() => {
@@ -30,7 +32,7 @@ export default function NavBar({ openMenu, onUndo, onRedo, onAddCol }) {
 
   const [anchorElUser, setAnchorElUser] = useState(null);
 
-  const handleOpenUserMenu = (event) => {
+  const handleOpenUserMenu = event => {
     setAnchorElUser(event.currentTarget);
   };
 
@@ -62,7 +64,16 @@ export default function NavBar({ openMenu, onUndo, onRedo, onAddCol }) {
               justifyContent: { sm: "center", md: "flex-start" },
             }}
           >
-            <Typography fontSize={20} whiteSpace="nowrap">My Dashboard</Typography>
+            <img src="/favicon-32x32.png" alt="logo" style={{ marginRight: 10 }} />
+
+            <Typography fontSize={20} whiteSpace="nowrap">
+              {app_name}
+            </Typography>
+            <Tooltip title="save">
+              <IconButton>
+                <CloudDone color="white"/>
+              </IconButton>
+            </Tooltip>
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
