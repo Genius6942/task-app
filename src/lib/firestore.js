@@ -1,11 +1,19 @@
-import { query, getDocs, collection, where, addDoc, updateDoc } from "firebase/firestore";
+import {
+  query,
+  getDocs,
+  collection,
+  where,
+  addDoc,
+  updateDoc,
+} from "firebase/firestore";
 
 import { db } from "./firebase";
 
 // function to generate an id with numbers and letters of length 20
 const generateId = () => {
   let result = "";
-  const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   const charactersLength = characters.length;
   for (let i = 0; i < 20; i++) {
     result += characters.charAt(Math.floor(Math.random() * charactersLength));
@@ -27,7 +35,7 @@ const generateId = () => {
 const getDoc = async (
   colName,
   { field = "ownerId", operator = "==", value },
-  fallback = () => {},
+  fallback = () => ({}),
   getRef = false
 ) => {
   const col = collection(db, colName);
@@ -40,8 +48,8 @@ const getDoc = async (
   }
 };
 
-const getUserBoard = async uid => {
-  const result = await getDoc("boards", { value: uid }, async col => {
+const getUserBoard = async (uid) => {
+  const result = await getDoc("boards", { value: uid }, async (col) => {
     const newId = generateId();
     await addDoc(col, {
       ownerId: uid,
@@ -54,12 +62,12 @@ const getUserBoard = async uid => {
   return JSON.parse(result.subjects);
 };
 
-const getSubject = subjectId => {
+const getSubject = (subjectId) => {
   return new Promise(async (resolve, reject) => {
     const result = await getDoc(
       "subjects",
       { field: "id", value: subjectId },
-      async col => {
+      async (col) => {
         reject("Subject not found");
       }
     );
@@ -67,12 +75,12 @@ const getSubject = subjectId => {
   });
 };
 
-const updateSubject = async (subjectId, subject) => {
+const updateSubject = (subjectId, subject) => {
   return new Promise(async (resolve, reject) => {
     const result = await getDoc(
       "subjects",
       { field: "id", value: subjectId },
-      async col => {
+      async (col) => {
         reject("Subject not found");
       },
       true
@@ -82,6 +90,11 @@ const updateSubject = async (subjectId, subject) => {
   });
 };
 
+const createSubject = async (uid, subject) => {
+  const col = collection(db, "subjects");
+  addDoc(col, { ...subject, ownerId: uid, id: generateId() });
+  return true;
+};
 
 const updateUserBoard = async (uid, board) => {
   const col = collection(db, "boards");
