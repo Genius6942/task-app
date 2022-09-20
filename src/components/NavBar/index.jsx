@@ -1,7 +1,7 @@
 import { auth } from "../../lib/firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, NavLink } from "react-router-dom";
 
 import { useEffect, useState } from "react";
 
@@ -27,7 +27,7 @@ export default function NavBar({
   onUndo,
   onRedo,
   onAddCol,
-  savedOnline,
+  savedState,
 }) {
   const [user, loading, error] = useAuthState(auth);
   const navigate = useNavigate();
@@ -62,7 +62,6 @@ export default function NavBar({
               <MenuIcon />
             </IconButton>
           )}
-
           <Box
             sx={{
               flexGrow: 1,
@@ -71,11 +70,13 @@ export default function NavBar({
               alignItems: "center",
             }}
           >
-            <img src="/favicon-32x32.png" alt="logo" />
+            <NavLink to='/' style={{ display: "flex"}}>
+              <img src="/favicon-32x32.png" alt="logo" />
 
-            <Typography fontSize={20} whiteSpace="nowrap" sx={{ mx: 2 }}>
-              {app_name}
-            </Typography>
+              <Typography fontSize={20} whiteSpace="nowrap" sx={{ mx: 2 }}>
+                {app_name}
+              </Typography>
+            </NavLink>
             <Tooltip title="Undo">
               <IconButton
                 size="large"
