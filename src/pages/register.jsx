@@ -1,5 +1,9 @@
 // firebase
-import { auth, registerWithEmailAndPassword, signInWithGoogle } from "../lib/firebase";
+import {
+  auth,
+  registerWithEmailAndPassword,
+  signInWithGoogle,
+} from "../lib/firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 // react
 import { useEffect } from "react";
@@ -15,16 +19,22 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { app_name } from "../lib/constants";
 
 // custom
 import { hideSplash, setDocumentTitle } from "../lib/utils";
 
 function Copyright(props) {
   return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
+    <Typography
+      variant="body2"
+      color="text.secondary"
+      align="center"
+      {...props}
+    >
       {"Copyright © "}
       <RouterLink to="/">
-        <Link>{app_name}</Link>
+        {app_name}
       </RouterLink>{" "}
       {new Date().getFullYear()}
       {"."}
@@ -34,7 +44,7 @@ function Copyright(props) {
 
 const { palette } = createTheme();
 const { augmentColor } = palette;
-const createColor = mainColor => augmentColor({ color: { main: mainColor } });
+const createColor = (mainColor) => augmentColor({ color: { main: mainColor } });
 const theme = createTheme({
   palette: {
     white: createColor("#FFFFFF"),
@@ -45,7 +55,7 @@ export default function Register() {
   setDocumentTitle("Register");
   hideSplash();
 
-  const handleSubmit = e => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
     registerWithEmailAndPassword(
@@ -84,7 +94,12 @@ export default function Register() {
           <Typography component="h1" variant="h5">
             Register
           </Typography>
-          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+          <Box
+            component="form"
+            onSubmit={handleSubmit}
+            noValidate
+            sx={{ mt: 1 }}
+          >
             <TextField
               margin="normal"
               required
@@ -114,7 +129,12 @@ export default function Register() {
               id="password"
               autoComplete="current-password"
             />
-            <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+            >
               Register
             </Button>
             <Button
@@ -136,7 +156,15 @@ export default function Register() {
             <Grid container>
               <Grid item xs></Grid>
               <Grid item>
-                <RouterLink to="/login">Already have an account? Log in.</RouterLink>
+                <Link
+                  onClick={(e) => {
+                    e.preventDefault();
+                    navigate("/login");
+                  }}
+                  href="/login"
+                >
+                  Already have an account? Log in.
+                </Link>
               </Grid>
             </Grid>
           </Box>

@@ -87,7 +87,12 @@ export default function Login() {
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
-          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+          <Box
+            component="form"
+            onSubmit={handleSubmit}
+            noValidate
+            sx={{ mt: 1 }}
+          >
             <TextField
               margin="normal"
               required
@@ -107,7 +112,12 @@ export default function Login() {
               id="password"
               autoComplete="current-password"
             />
-            <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+            >
               Sign In
             </Button>
             <Button
@@ -129,9 +139,15 @@ export default function Login() {
             <Grid container>
               <Grid item xs></Grid>
               <Grid item>
-                <RouterLink to="/register">
-                  <Link>Don't have an account? Register</Link>
-                </RouterLink>
+                <Link
+                  href="/register"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    navigate("/register");
+                  }}
+                >
+                  Don't have an account? Register.
+                </Link>
               </Grid>
             </Grid>
           </Box>

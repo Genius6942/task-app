@@ -96,6 +96,40 @@ const createSubject = async (uid, subject) => {
   return true;
 };
 
+const getTask = (taskId) => {
+  return new Promise(async (resolve, reject) => {
+    const result = await getDoc(
+      "tasks",
+      { field: "id", value: taskId },
+      async (col) => {
+        reject("Task not found");
+      }
+    );
+    resolve(result);
+  });
+};
+
+const updateTask = (taskId, Task) => {
+  return new Promise(async (resolve, reject) => {
+    const result = await getDoc(
+      "tasks",
+      { field: "id", value: taskId },
+      async (col) => {
+        reject("task not found");
+      },
+      true
+    );
+    await updateDoc(result.ref, task);
+    resolve(true);
+  });
+};
+
+const createTask = async (uid, task) => {
+  const col = collection(db, "tasks");
+  addDoc(col, { ...task, ownerId: uid, id: generateId() });
+  return true;
+};
+
 const updateUserBoard = async (uid, board) => {
   const col = collection(db, "boards");
   const q = query(col, where("owner_id", "==", uid));
@@ -111,4 +145,4 @@ const updateUserBoard = async (uid, board) => {
   }
 };
 
-export { getUserBoard, updateUserBoard };
+export { getUserBoard, updateUserBoard, getSubject, updateSubject, createSubject, createTask, updateTask, getTask };

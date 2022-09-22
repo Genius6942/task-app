@@ -15,7 +15,12 @@ import IconButton from "@mui/material/IconButton";
 import Close from "@mui/icons-material/Close";
 import Typography from "@mui/material/Typography";
 import CardActions from "@mui/material/CardActions";
-import { app_name } from './lib/constants';
+import { ThemeProvider } from "@mui/material/styles";
+import { app_name } from "./lib/constants";
+import NewDashboard from "./pages/new_dashboard";
+import DashboardHome from "./pages/new_dashboard/pages/home.jsx";
+
+import theme from "./theme";
 
 function App() {
   const [cards, setCards] = useState([
@@ -28,7 +33,7 @@ function App() {
   const [defferedEvent, setDefferedEvent] = useState(null);
 
   useEffect(() => {
-    const listener = e => {
+    const listener = (e) => {
       e.preventDefault();
 
       console.log("preveting default install");
@@ -63,13 +68,19 @@ function App() {
   };
 
   return (
-    <div className="app">
+    <ThemeProvider theme={theme}>
       <Router>
         <Routes>
           <Route exact path="/" element={<Home />} />
           <Route exact path="/login" element={<Login />} />
           <Route exact path="/register" element={<Register />} />
-          <Route exact path="/dashboard" element={<Dashboard />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="new_dashboard" element={<NewDashboard />}>
+            <Route path="" element={<DashboardHome />} />
+            <Route path="subjects" element={<>subjects</>} />
+            <Route path="schedule" element={<>schedule</>} />
+            <Route path="account" element={<>account</>} />
+          </Route>
 
           {/* 404 page */}
           <Route path="*" element={<div>404</div>} />
@@ -108,7 +119,7 @@ function App() {
           </Box>
         </Card>
       )}
-    </div>
+    </ThemeProvider>
   );
 }
 
