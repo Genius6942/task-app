@@ -22,4 +22,9 @@ const hideSplash = () => {
   document.getElementById("splash").style.display = "none";
 };
 
-export { setDocumentTitle, useSmallScreen, hideSplash };
+const useForceUpdate = () => {
+  const [update, setUpdate] = useState(0);
+  return () => setUpdate(update + 1);
+};
+
+export { setDocumentTitle, useSmallScreen, hideSplash, useForceUpdate };

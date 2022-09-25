@@ -1,0 +1,4 @@
+ports:
+- port: 5173
+tasks:
+- command: npm run dev

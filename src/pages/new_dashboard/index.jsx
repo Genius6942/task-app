@@ -16,7 +16,9 @@ import {
   ListItemIcon,
   ListItemText,
   styled,
+  Switch,
 } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import {
   Home,
   CalendarMonth,
@@ -24,8 +26,12 @@ import {
   PersonOutline,
   ChevronLeft,
   ChevronRight,
+  DarkMode,
+  LightMode,
 } from "@mui/icons-material";
 import { requestPermission, startFirebaseMessaging } from "../../lib/firebase";
+import AddButton from "./components/add";
+import PageAnimateLayout from "../../Animate";
 
 const drawerWidth = 240;
 
@@ -69,7 +75,7 @@ const WrapperDrawer = styled(Drawer, {
   }),
 }));
 
-export default function NewDashboard() {
+export default function NewDashboard({ changeTheme }) {
   const [user, loading, error] = useAuthState(auth);
   useEffect(() => {
     if (loading) return;
@@ -105,6 +111,8 @@ export default function NewDashboard() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [temporaryDrawerOpen, setTemporaryDrawerOpen] = useState(false);
 
+  const theme = useTheme();
+
   const navItems = [
     {
       name: "Home",
@@ -124,12 +132,16 @@ export default function NewDashboard() {
     },
   ];
 
-  console.log(navState);
-
   return smallScreen ? (
     <Box sx={{ display: "flex", flexDirection: "column", height: "100vh" }}>
-      <Box sx={{ flexGrow: 1 }}>
+      <Box
+        sx={{
+          flexGrow: 1,
+          position: "relative",
+        }}
+      >
         <Outlet />
+        <AddButton />
       </Box>
 
       <BottomNavigation value={navState} onChange={handleNavChange} showLabels>
@@ -138,7 +150,7 @@ export default function NewDashboard() {
             key={idx}
             label={item.name}
             value={item.name.toLowerCase()}
-            icon={item.icon}
+            icon={<item.icon />}
           />
         ))}
       </BottomNavigation>
@@ -197,7 +209,15 @@ export default function NewDashboard() {
                 </ListItemIcon>
                 <ListItemText
                   primary={item.name}
-                  sx={{ opacity: drawerOpen || temporaryDrawerOpen ? 1 : 0 }}
+                  sx={{
+                    opacity: drawerOpen || temporaryDrawerOpen ? 1 : 0,
+                    transition:
+                      (drawerOpen || temporaryDrawerOpen) &&
+                      theme.transitions.create("opacity", {
+                        easing: theme.transitions.easing.sharp,
+                        duration: theme.transitions.duration.leavingScreen,
+                      }),
+                  }}
                   primaryTypographyProps={{
                     color:
                       navState === item.name.toLowerCase() ? "primary" : "",
@@ -206,11 +226,49 @@ export default function NewDashboard() {
               </ListItemButton>
             </ListItem>
           ))}
+          <Divider />
+          {/* <ListItem
+            sx={{
+              justifyContent:
+                drawerOpen || temporaryDrawerOpen ? "initial" : "center",
+              alignItems: "center",
+              height: "48px",
+            }}
+          >
+            <ListItemIcon
+              sx={{
+                minWidth: 0,
+                mr: drawerOpen || temporaryDrawerOpen ? 3 : "auto",
+                justifyContent: "center",
+              }}
+            >
+              {theme.palette.mode === "dark" ? <DarkMode /> : <LightMode />}
+            </ListItemIcon>
+            <ListItemText
+              primary="Dark Mode"
+              sx={{
+                opacity: drawerOpen || temporaryDrawerOpen ? 1 : 0,
+                transition: "opacity ease",
+                transitionDuration: theme.transitions.duration.shortest,
+              }}
+            />
+            {
+              <Switch
+                edge="end"
+                onChange={({ target }) => changeTheme({ dark: target.checked })}
+                checked={theme.palette.mode === "dark"}
+                sx={{
+                  display: drawerOpen || temporaryDrawerOpen ? null : "none",
+                }}
+              />
+            }
+          </ListItem> */}
         </List>
       </WrapperDrawer>
-      <Box sx={{ flexGrow: 1 }}>
+      <PageAnimateLayout>
         <Outlet />
-      </Box>
+      </PageAnimateLayout>
+      <AddButton />
     </Box>
   );
 }

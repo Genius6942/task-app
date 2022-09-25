@@ -65,7 +65,6 @@ const ExpandMore = styled((props) => {
 export default function Task({ data, index, onChange, placeholder = false }) {
   const [colorPickerOpen, setColorPickerOpen] = useState(false);
   const theme = useTheme();
-
   /**
    * @param {import('react-color').ColorResult} color
    */
@@ -347,26 +346,28 @@ export default function Task({ data, index, onChange, placeholder = false }) {
                   </IconButton>
                 </Tooltip>
               )}
-              <Tooltip title="Color">
-                <IconButton
-                  sx={{ position: "relative" }}
-                  onClick={() => setColorPickerOpen(!colorPickerOpen)}
-                >
-                  <ColorLens />
-                  {colorPickerOpen ? (
-                    <Box
-                      sx={{ position: "absolute", top: "110%", right: "0" }}
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <TwitterPicker
-                        color={data.color}
-                        triangle="top-right"
-                        onChange={onColorChange}
-                      />
-                    </Box>
-                  ) : null}
-                </IconButton>
-              </Tooltip>
+              {true && (
+                <Tooltip title="Color">
+                  <IconButton
+                    sx={{ position: "relative" }}
+                    onClick={() => setColorPickerOpen(!colorPickerOpen)}
+                  >
+                    <ColorLens />
+                    {colorPickerOpen ? (
+                      <Box
+                        sx={{ position: "absolute", top: "110%", right: "0" }}
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <TwitterPicker
+                          color={data.color}
+                          triangle="top-right"
+                          onChange={onColorChange}
+                        />
+                      </Box>
+                    ) : null}
+                  </IconButton>
+                </Tooltip>
+              )}
               {!editing ? (
                 <Tooltip title="Expand">
                   <ExpandMore

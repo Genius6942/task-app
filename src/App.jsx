@@ -1,5 +1,11 @@
 import { useEffect, useState } from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Outlet,
+  Route,
+  Routes,
+  useLocation,
+} from "react-router-dom";
 
 import Home from "./pages/home";
 import Login from "./pages/login";
@@ -20,7 +26,8 @@ import { app_name } from "./lib/constants";
 import NewDashboard from "./pages/new_dashboard";
 import DashboardHome from "./pages/new_dashboard/pages/home.jsx";
 
-import theme from "./theme";
+import createTheme from "./theme";
+import Account from "./pages/new_dashboard/pages/account";
 
 function App() {
   const [cards, setCards] = useState([
@@ -30,18 +37,17 @@ function App() {
     },
   ]);
 
+  const [darkMode, setDarkMode] = useState(false);
+  const theme = createTheme({ dark: darkMode });
+
   const [defferedEvent, setDefferedEvent] = useState(null);
 
   useEffect(() => {
     const listener = (e) => {
       e.preventDefault();
 
-      console.log("preveting default install");
-
       setDefferedEvent(e);
     };
-
-    console.log("adding listener");
 
     window.addEventListener("beforeinstallprompt", listener, true);
 
@@ -65,6 +71,8 @@ function App() {
     } else if (outcome === "dismissed") {
       console.log("User dismissed the install prompt");
     }
+
+    const location = useLocation();
   };
 
   return (
@@ -75,11 +83,18 @@ function App() {
           <Route exact path="/login" element={<Login />} />
           <Route exact path="/register" element={<Register />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="new_dashboard" element={<NewDashboard />}>
+          <Route
+            path="new_dashboard"
+            element={
+              <NewDashboard
+                changeTheme={({ dark = false }) => setDarkMode(dark)}
+              />
+            }
+          >
             <Route path="" element={<DashboardHome />} />
             <Route path="subjects" element={<>subjects</>} />
             <Route path="schedule" element={<>schedule</>} />
-            <Route path="account" element={<>account</>} />
+            <Route path="account" element={<Account />} />
           </Route>
 
           {/* 404 page */}

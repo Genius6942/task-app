@@ -105,7 +105,6 @@ const startFirebaseMessaging = (uid) => {
   })
     .then(async (currentToken) => {
       if (currentToken) {
-        console.log(currentToken);
         try {
           // Add the FCMToken property to the user's document in firestore
           const q = query(collection(db, "users"), where("uid", "==", uid));
@@ -130,7 +129,6 @@ const startFirebaseMessaging = (uid) => {
     })
     .catch((err) => {
       console.log("An error occurred while retrieving token. ", err);
-      // ...
     });
 };
 
