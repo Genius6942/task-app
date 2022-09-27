@@ -7,7 +7,7 @@ import {
   updateDoc,
 } from "firebase/firestore";
 
-import { db } from "./firebase";
+import { db } from "..";
 
 // function to generate an id with numbers and letters of length 20
 const generateId = () => {
@@ -30,7 +30,7 @@ const generateId = () => {
  * @param {string} query.value
  * @param {(col: import('firebase/firestore').CollectionReference<import('firebase/firestore').DocumentData) => object} fallback
  * @param {boolean} getRef
- * @returns {object}
+ * @returns {Promise<import('firebase/firestore').DocumentData>}
  */
 const getDoc = async (
   colName,
@@ -126,7 +126,7 @@ const updateTask = (taskId, Task) => {
 
 const createTask = async (uid, task) => {
   const col = collection(db, "tasks");
-  addDoc(col, { ...task, ownerId: uid, id: generateId() });
+  await addDoc(col, { ...task, ownerId: uid, id: generateId() });
   return true;
 };
 
@@ -145,4 +145,4 @@ const updateUserBoard = async (uid, board) => {
   }
 };
 
-export { getUserBoard, updateUserBoard, getSubject, updateSubject, createSubject, createTask, updateTask, getTask };
+export { getUserBoard, updateUserBoard, getSubject, updateSubject, createSubject, createTask, updateTask, getTask, getDoc };

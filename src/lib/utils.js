@@ -1,5 +1,6 @@
 import { useWindowSize } from "react-use";
 import { app_name } from "./constants";
+import { useState } from "react";
 
 /**
  * @param {string?} page
@@ -24,7 +25,7 @@ const hideSplash = () => {
 
 const useForceUpdate = () => {
   const [update, setUpdate] = useState(0);
-  return () => setUpdate(update + 1);
+  return [update, () => setUpdate(update + 1)];
 };
 
 export { setDocumentTitle, useSmallScreen, hideSplash, useForceUpdate };

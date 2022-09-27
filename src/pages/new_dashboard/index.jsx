@@ -32,6 +32,8 @@ import {
 import { requestPermission, startFirebaseMessaging } from "../../lib/firebase";
 import AddButton from "./components/add";
 import PageAnimateLayout from "../../Animate";
+import { getTasks } from "../../lib/firebase/firestore/task";
+import { TaskContextProvider } from "./components/task/context";
 
 const drawerWidth = 240;
 
@@ -132,102 +134,112 @@ export default function NewDashboard({ changeTheme }) {
     },
   ];
 
-  return smallScreen ? (
-    <Box sx={{ display: "flex", flexDirection: "column", height: "100vh" }}>
-      <Box
-        sx={{
-          flexGrow: 1,
-          position: "relative",
-        }}
-      >
-        <Outlet />
-        <AddButton />
-      </Box>
+  return (
+    <TaskContextProvider user={user}>
+      {smallScreen ? (
+        <Box sx={{ display: "flex", flexDirection: "column", height: "100vh" }}>
+          <Box
+            sx={{
+              flexGrow: 1,
+              position: "relative",
+            }}
+          >
+            <Outlet />
+            <AddButton />
+          </Box>
 
-      <BottomNavigation value={navState} onChange={handleNavChange} showLabels>
-        {navItems.map((item, idx) => (
-          <BottomNavigationAction
-            key={idx}
-            label={item.name}
-            value={item.name.toLowerCase()}
-            icon={<item.icon />}
-          />
-        ))}
-      </BottomNavigation>
-    </Box>
-  ) : (
-    <Box sx={{ display: "flex", height: "100vh" }}>
-      <WrapperDrawer
-        variant="permanent"
-        open={drawerOpen || temporaryDrawerOpen}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "flex-end",
-          }}
-        >
-          <IconButton onClick={() => setDrawerOpen(!drawerOpen)}>
-            {drawerOpen || temporaryDrawerOpen ? (
-              <ChevronLeft />
-            ) : (
-              <ChevronRight />
-            )}
-          </IconButton>
+          <BottomNavigation
+            value={navState}
+            onChange={handleNavChange}
+            showLabels
+          >
+            {navItems.map((item, idx) => (
+              <BottomNavigationAction
+                key={idx}
+                label={item.name}
+                value={item.name.toLowerCase()}
+                icon={<item.icon />}
+              />
+            ))}
+          </BottomNavigation>
         </Box>
-        <Divider />
-        <List
-          sx={{ flexGrow: 1 }}
-          onMouseEnter={() => setTemporaryDrawerOpen(true)}
-          onMouseLeave={() => setTemporaryDrawerOpen(false)}
-        >
-          {navItems.map((item, idx) => (
-            <ListItem key={idx} disablePadding>
-              <ListItemButton
-                sx={{
-                  justifyContent:
-                    drawerOpen || temporaryDrawerOpen ? "initial" : "center",
-                }}
-                color={navState === item.name.toLowerCase() ? "primary" : ""}
-                onClick={(e) => {
-                  handleNavChange(e, item.name.toLowerCase());
-                }}
-              >
-                <ListItemIcon
-                  sx={{
-                    minWidth: 0,
-                    mr: drawerOpen || temporaryDrawerOpen ? 3 : "auto",
-                    justifyContent: "center",
-                  }}
-                >
-                  <item.icon
+      ) : (
+        <Box sx={{ display: "flex", height: "100vh" }}>
+          <WrapperDrawer
+            variant="permanent"
+            open={drawerOpen || temporaryDrawerOpen}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "flex-end",
+              }}
+            >
+              <IconButton onClick={() => setDrawerOpen(!drawerOpen)}>
+                {drawerOpen || temporaryDrawerOpen ? (
+                  <ChevronLeft />
+                ) : (
+                  <ChevronRight />
+                )}
+              </IconButton>
+            </Box>
+            <Divider />
+            <List
+              sx={{ flexGrow: 1 }}
+              onMouseEnter={() => setTemporaryDrawerOpen(true)}
+              onMouseLeave={() => setTemporaryDrawerOpen(false)}
+            >
+              {navItems.map((item, idx) => (
+                <ListItem key={idx} disablePadding>
+                  <ListItemButton
+                    sx={{
+                      justifyContent:
+                        drawerOpen || temporaryDrawerOpen
+                          ? "initial"
+                          : "center",
+                    }}
                     color={
                       navState === item.name.toLowerCase() ? "primary" : ""
                     }
-                  />
-                </ListItemIcon>
-                <ListItemText
-                  primary={item.name}
-                  sx={{
-                    opacity: drawerOpen || temporaryDrawerOpen ? 1 : 0,
-                    transition:
-                      (drawerOpen || temporaryDrawerOpen) &&
-                      theme.transitions.create("opacity", {
-                        easing: theme.transitions.easing.sharp,
-                        duration: theme.transitions.duration.leavingScreen,
-                      }),
-                  }}
-                  primaryTypographyProps={{
-                    color:
-                      navState === item.name.toLowerCase() ? "primary" : "",
-                  }}
-                />
-              </ListItemButton>
-            </ListItem>
-          ))}
-          <Divider />
-          {/* <ListItem
+                    onClick={(e) => {
+                      handleNavChange(e, item.name.toLowerCase());
+                    }}
+                  >
+                    <ListItemIcon
+                      sx={{
+                        minWidth: 0,
+                        mr: drawerOpen || temporaryDrawerOpen ? 3 : "auto",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <item.icon
+                        color={
+                          navState === item.name.toLowerCase() ? "primary" : ""
+                        }
+                      />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={item.name}
+                      sx={{
+                        opacity: drawerOpen || temporaryDrawerOpen ? 1 : 0,
+                        transition:
+                          (drawerOpen || temporaryDrawerOpen) &&
+                          theme.transitions.create("opacity", {
+                            easing: theme.transitions.easing.sharp,
+                            duration: theme.transitions.duration.leavingScreen,
+                          }),
+                      }}
+                      primaryTypographyProps={{
+                        color:
+                          navState === item.name.toLowerCase() ? "primary" : "",
+                      }}
+                    />
+                  </ListItemButton>
+                </ListItem>
+              ))}
+              <Divider />
+              {/* <ListItem
             sx={{
               justifyContent:
                 drawerOpen || temporaryDrawerOpen ? "initial" : "center",
@@ -263,12 +275,14 @@ export default function NewDashboard({ changeTheme }) {
               />
             }
           </ListItem> */}
-        </List>
-      </WrapperDrawer>
-      <PageAnimateLayout>
-        <Outlet />
-      </PageAnimateLayout>
-      <AddButton />
-    </Box>
+            </List>
+          </WrapperDrawer>
+          <PageAnimateLayout>
+            <Outlet />
+          </PageAnimateLayout>
+          <AddButton />
+        </Box>
+      )}
+    </TaskContextProvider>
   );
 }

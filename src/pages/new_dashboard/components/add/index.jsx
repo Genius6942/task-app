@@ -3,9 +3,72 @@ import { Add } from "@mui/icons-material";
 import { useState } from "react";
 import AddTaskDialog from "./dialog";
 import { useForceUpdate } from "../../../../lib/utils";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "../../../../lib/firebase";
+import { useEffect } from "react";
+import { getUser } from "../../../../lib/firebase/firestore/user";
+import { useEffectOnce } from "react-use";
+import { createTask } from "../../../../lib/firebase/firestore";
+import { useTasks } from "../task/context";
 
 export default function AddButton() {
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [user, loading, error] = useAuthState(auth);
+  const [subjects, setSubjects] = useState(null);
+
+  const pullSubjectData = async () => {
+    const compareSubjects = (first, second) => {
+      if (!first || !second) {
+        return false;
+      }
+      if (first.length !== second.length) {
+        return false;
+      }
+      for (let i = 0; i < first.length; i++) {
+        const f = first[i];
+        const s = second[i];
+        for (let key of Object.keys(f)) {
+          if (!(typeof s === "object" && f[key] === s[key])) {
+            return false;
+          }
+        }
+      }
+      return true;
+    };
+    const userData = await getUser(user.uid);
+    if (!compareSubjects(subjects, userData.subjects)) {
+      setSubjects(userData.subjects || []);
+    }
+  };
+
+  useEffect(() => {
+    if (!user || loading) return;
+
+    pullSubjectData();
+  }, [user, loading]);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      user && pullSubjectData();
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [subjects]);
+
+  const { fetchTaskUpdate } = useTasks();
+
+  const onSubmit = async (data) => {
+    const clone = { ...data };
+    const days = clone.dueDate.diff(clone.startDate, "days");
+    const completes = Array(days).fill(false);
+    clone.completes = completes;
+    clone.startDate = clone.startDate.format("MM/DD/YYYY");
+    clone.dueDate = clone.dueDate.format("MM/DD/YYYY");
+    await createTask(user.uid, clone);
+    console.log("create task", clone);
+    fetchTaskUpdate();
+    return true;
+  };
+
   return (
     <>
       <Fab
@@ -18,7 +81,12 @@ export default function AddButton() {
       >
         <Add />
       </Fab>
-      <AddTaskDialog open={dialogOpen} onClose={() => setDialogOpen(false)} />
+      <AddTaskDialog
+        open={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        subjects={subjects}
+        onSubmit={onSubmit}
+      />
     </>
   );
 }

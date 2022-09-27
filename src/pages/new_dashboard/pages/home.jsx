@@ -1,23 +1,29 @@
-import { Box } from "@mui/material";
+import { Box, Stack } from "@mui/material";
 import { useState } from "react";
 import Task from "../components/task";
+import { useTasks } from "../components/task/context";
 
 export default function Home() {
-  const [taskState, setTaskState] = useState({
-    text: "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Delectus modi et, vitae sint perspiciatis qui hic, eius aperiam adipisci quos ex veniam officia odit accusamus cumque dicta eaque earum at!",
-    color: "#8ED1FC",
-  });
+
+  const { tasks } = useTasks();
   return (
     <Box
       sx={{
         width: "100%",
-        height: "100%",
+        maxHeight: "100%",
         display: "flex",
-        justifyContent: "center",
+        flexDirection: "column",
+        // justifyContent: "center",
         alignItems: "center",
+        overflow: "auto",
+        py: 3,
       }}
     >
-      <Task data={taskState} onChange={(data) => setTaskState(data)} />
+      <Stack gap={2}>
+        {tasks.map((task, idx) => (
+          <Task data={task} key={idx} onChange={(data) => console.log(data)} />
+        ))}
+      </Stack>
     </Box>
   );
 }

@@ -18,9 +18,8 @@ import CheckBox from "@mui/icons-material/CheckBox";
 import Close from "@mui/icons-material/Close";
 import Save from "@mui/icons-material/Save";
 
-import { Draggable } from "react-beautiful-dnd";
 import { TwitterPicker } from "react-color";
-import { Suspense, useState, lazy } from "react";
+import { Suspense, useState, lazy, forwardRef } from "react";
 import {
   Collapse,
   FormControl,
@@ -35,20 +34,18 @@ import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import moment from "moment";
 import { DesktopDatePicker, MobileDatePicker } from "@mui/x-date-pickers";
-import { useSmallScreen } from "../../../lib/utils";
+import { useSmallScreen } from "../../../../lib/utils";
 import { useTheme } from "@mui/material/styles";
 
-const DatePicker = (props) =>
-  props.mobile ? (
-    <MobileDatePicker {...props} />
-  ) : (
-    <DesktopDatePicker {...props} />
-  );
+const DatePicker = ({ mobile, ...props }) =>
+  mobile ? <MobileDatePicker {...props} /> : <DesktopDatePicker {...props} />;
 
-const ExpandMore = styled((props) => {
-  const { expand, ...other } = props;
-  return <IconButton {...other} />;
-})(({ theme, expand }) => ({
+const IconButtonForward = forwardRef((props, ref) => {
+  const { expand, ...otherProps } = props;
+  return <IconButton {...otherProps} ref={ref} />;
+});
+
+const ExpandMore = styled(IconButtonForward)(({ theme, expand }) => ({
   transform: !expand ? "rotate(0deg)" : "rotate(180deg)",
   transition: theme.transitions.create("transform", {
     duration: theme.transitions.duration.shortest,
@@ -80,8 +77,8 @@ export default function Task({ data, index, onChange, placeholder = false }) {
   const [expanded, setExpanded] = useState(false);
   const handleExpandClick = () => setExpanded(!expanded);
 
-  const [title, setTitle] = useState(data.title || "Task Title");
-  const [text, setText] = useState(data.text);
+  const [name, setName] = useState(data.name || "");
+  const [text, setText] = useState(data.details || "");
 
   const regexp = /(https?:\/\/[^\s]+)/g;
 
@@ -109,8 +106,12 @@ export default function Task({ data, index, onChange, placeholder = false }) {
 
   const [editing, setEditing] = useState(false);
 
-  const [startDateValue, setStartDateValue] = useState(moment());
-  const [dueDateValue, setDueDateValue] = useState(moment());
+  const [startDateValue, setStartDateValue] = useState(
+    moment(data.startDate, "MM/DD/YYYY")
+  );
+  const [dueDateValue, setDueDateValue] = useState(
+    moment(data.dueDate, "MM/DD/YYYY")
+  );
 
   const [taskMinutes, setTaskMinutes] = useState(3);
 
@@ -123,7 +124,6 @@ export default function Task({ data, index, onChange, placeholder = false }) {
           sx={{
             width: 450,
             backgroundColor: data.color || "#cccccc",
-            overflow: "visible",
           }}
         >
           <CardActions disableSpacing>
@@ -145,14 +145,14 @@ export default function Task({ data, index, onChange, placeholder = false }) {
               >
                 <Box
                   sx={{
-                    background: theme.palette.primary.main,
+                    background: `linear-gradient(315deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
                     paddingX: 1,
                     borderRadius: 5,
                     mr: 2,
                   }}
                 >
                   <Typography fontSize={20} whiteSpace="nowrap">
-                    Mathematics
+                    {data.subject}
                   </Typography>
                 </Box>
                 {editing ? (
@@ -212,8 +212,8 @@ export default function Task({ data, index, onChange, placeholder = false }) {
             >
               {editing ? (
                 <TextField
-                  defaultValue={title}
-                  onBlur={({ target }) => setTitle(target.value)}
+                  defaultValue={name}
+                  onBlur={({ target }) => setName(target.value)}
                   variant="standard"
                   inputProps={{ style: { textAlign: "center" } }}
                   fullWidth
@@ -225,7 +225,7 @@ export default function Task({ data, index, onChange, placeholder = false }) {
                   fontWeight="bold"
                   textAlign={"center"}
                 >
-                  {title}
+                  {name}
                 </Typography>
               )}
             </Box>

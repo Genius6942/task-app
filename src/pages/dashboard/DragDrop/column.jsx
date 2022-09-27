@@ -15,7 +15,7 @@ import ColorLens from "@mui/icons-material/ColorLens";
 import Add from "@mui/icons-material/Add";
 
 // custom
-import { shadeColor } from "./lightenColor";
+import { shadeColor } from "../../../lib/lightenColor";
 import { useSmallScreen } from "../../../lib/utils";
 import TaskCard from "./card";
 

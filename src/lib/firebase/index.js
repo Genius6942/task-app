@@ -133,6 +133,7 @@ const startFirebaseMessaging = (uid) => {
 };
 
 export {
+  app,
   auth,
   db,
   signInWithGoogle,

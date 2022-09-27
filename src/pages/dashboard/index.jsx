@@ -4,7 +4,7 @@ import {
   requestPermission,
   startFirebaseMessaging,
 } from "../../lib/firebase";
-import { getUserBoard, updateUserBoard } from "../../lib/firestore";
+import { getUserBoard, updateUserBoard } from "../../lib/firebase/firestore";
 import { useAuthState } from "react-firebase-hooks/auth";
 
 // react
