@@ -55,18 +55,25 @@ const ExpandMore = styled(IconButtonForward)(({ theme, expand }) => ({
 
 /**
  * @param {object} props
- * @param { import('../../../types').cardState } props.data
+ * @param { import('../../../types').cardState } props.taskData
  * @param {(newState: import('../../../types').cardState ) => void} props.onChange
  * @param {boolean} props.placeholder - makes the card invisible and not interactive
+ * @param {() => void} props.onRemove
  */
-export default function Task({ data, index, onChange, placeholder = false }) {
+export default function Task({
+  taskData,
+  index,
+  onChange,
+  placeholder = false,
+  onRemove,
+}) {
   const [colorPickerOpen, setColorPickerOpen] = useState(false);
   const theme = useTheme();
   /**
    * @param {import('react-color').ColorResult} color
    */
   const onColorChange = (color) => {
-    const shallowCopy = { ...data };
+    const shallowCopy = { ...taskData };
     shallowCopy.color = color.hex;
     onChange(shallowCopy);
   };
@@ -77,8 +84,21 @@ export default function Task({ data, index, onChange, placeholder = false }) {
   const [expanded, setExpanded] = useState(false);
   const handleExpandClick = () => setExpanded(!expanded);
 
-  const [name, setName] = useState(data.name || "");
-  const [text, setText] = useState(data.details || "");
+  const [name, setName] = useState(taskData.name || "");
+  const [text, setText] = useState(taskData.details || "");
+
+  const [data, setData] = useState({
+    ...taskData,
+    startDate: moment(taskData.startDate, "MM/DD/YYYY"),
+    dueDate: moment(taskData.dueDate, "MM/DD/YYYY"),
+  });
+  /**
+   * @param {Partial<data>} newData
+   */
+  const updateData = (newData) => {
+    const values = { ...newData };
+    return setData({ ...data, ...values });
+  };
 
   const regexp = /(https?:\/\/[^\s]+)/g;
 
@@ -106,293 +126,278 @@ export default function Task({ data, index, onChange, placeholder = false }) {
 
   const [editing, setEditing] = useState(false);
 
-  const [startDateValue, setStartDateValue] = useState(
-    moment(data.startDate, "MM/DD/YYYY")
-  );
-  const [dueDateValue, setDueDateValue] = useState(
-    moment(data.dueDate, "MM/DD/YYYY")
-  );
-
-  const [taskMinutes, setTaskMinutes] = useState(3);
-
   const smallScreen = useSmallScreen();
 
   return (
-    <Box sx={{ padding: 3 }}>
-      <FormControl variant="standard">
-        <Card
-          sx={{
-            width: 450,
-            backgroundColor: data.color || "#cccccc",
-          }}
-        >
-          <CardActions disableSpacing>
-            <Container
-              sx={{ display: "flex" }}
-              // override container padding
-              style={{ padding: 0 }}
-              maxWidth="lg"
+    <FormControl variant="standard">
+      <Card
+        sx={{
+          width: smallScreen ? 350 : 450,
+          backgroundColor: taskData.color || "#cccccc",
+        }}
+      >
+        <CardActions disableSpacing>
+          <Container
+            sx={{ display: "flex" }}
+            // override container padding
+            style={{ padding: 0 }}
+            maxWidth="lg"
+          >
+            <Box
+              sx={{
+                display: "flex",
+                flexGrow: 1,
+                justifyContent: "flex-start",
+                alignItems: "center",
+                overflow: "auto",
+              }}
+              className="nobar"
             >
               <Box
                 sx={{
-                  display: "flex",
-                  flexGrow: 1,
-                  justifyContent: "flex-start",
-                  alignItems: "center",
-                  overflow: "auto",
+                  background: `linear-gradient(315deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
+                  paddingX: 1,
+                  borderRadius: 5,
+                  mr: 2,
                 }}
-                className="nobar"
               >
-                <Box
-                  sx={{
-                    background: `linear-gradient(315deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
-                    paddingX: 1,
-                    borderRadius: 5,
-                    mr: 2,
-                  }}
-                >
-                  <Typography fontSize={20} whiteSpace="nowrap">
-                    {data.subject}
-                  </Typography>
-                </Box>
-                {editing ? (
-                  <>
-                    <Typography
-                      fontSize={18}
-                      textOverflow="ellipsis"
-                      whiteSpace="nowrap"
-                      sx={{ mt: 0.3 }}
-                      fontStyle="italic"
-                      fontWeight="bold"
-                    >
-                      Editing
-                    </Typography>
-                    <Tooltip title="Cancel">
-                      <IconButton onClick={() => setEditing(false)}>
-                        <Close />
-                      </IconButton>
-                    </Tooltip>
-                  </>
-                ) : (
+                <Typography fontSize={20} whiteSpace="nowrap">
+                  {taskData.subject}
+                </Typography>
+              </Box>
+              {editing ? (
+                <>
                   <Typography
                     fontSize={18}
-                    sx={{ flexGrow: 1 }}
                     textOverflow="ellipsis"
                     whiteSpace="nowrap"
+                    sx={{ mt: 0.3 }}
+                    fontStyle="italic"
+                    fontWeight="bold"
                   >
-                    Due {dueDateValue.format("ddd MM/DD")}
+                    Editing
                   </Typography>
-                )}
-              </Box>
-              <Box sx={{ display: "flex" }}>
-                <Tooltip title="Completed for today">
-                  <IconButton>
-                    <CheckBox />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title="Delete">
-                  <IconButton onClick={() => onChange(null)}>
-                    <Delete />
-                  </IconButton>
-                </Tooltip>
-              </Box>
-            </Container>
-          </CardActions>
-          <CardContent>
-            <Box
-              sx={{
-                p: 1,
-                pb: -2,
-                borderRadius: 5,
-                background: theme.palette.primary.main,
-                mt: -2,
-                display: "flex",
-                justifyContent: "center",
-              }}
-            >
-              {editing ? (
-                <TextField
-                  defaultValue={name}
-                  onBlur={({ target }) => setName(target.value)}
-                  variant="standard"
-                  inputProps={{ style: { textAlign: "center" } }}
-                  fullWidth
-                  sx={{ mx: 2 }}
-                />
+                  <Tooltip title="Cancel">
+                    <IconButton onClick={() => setEditing(false)}>
+                      <Close />
+                    </IconButton>
+                  </Tooltip>
+                </>
               ) : (
                 <Typography
-                  fontSize={20}
-                  fontWeight="bold"
-                  textAlign={"center"}
+                  fontSize={18}
+                  sx={{ flexGrow: 1 }}
+                  textOverflow="ellipsis"
+                  whiteSpace="nowrap"
                 >
-                  {name}
+                  Due {dueDateValue.format("ddd MM/DD")}
                 </Typography>
               )}
             </Box>
-            <Collapse in={editing || expanded} timeout="auto" unmountOnExit>
-              <Box sx={{ mt: 1 }} />
-              {editing ? (
-                <TextField
-                  defaultValue={text}
-                  onBlur={({ target }) => setText(target.value)}
-                  multiline
-                  variant="standard"
-                  fullWidth
-                />
-              ) : (
-                <Typography whiteSpace="pre-wrap" textOverflow="ellipsis">
-                  {finalText}
-                </Typography>
-              )}
-            </Collapse>
-            <Collapse in={editing} timeout="auto" unmountOnExit sx={{ mt: 2 }}>
-              <LocalizationProvider dateAdapter={AdapterMoment}>
-                <FormControl variant="standard">
-                  <Stack gap={2}>
-                    <DatePicker
-                      mobile={smallScreen}
-                      label="Start Date"
-                      inputFormat="MM/DD/YYYY"
-                      value={startDateValue}
-                      onChange={(newValue) => setStartDateValue(newValue)}
-                      renderInput={(params) => <TextField {...params} />}
-                    />
-                    <DatePicker
+            <Box sx={{ display: "flex" }}>
+              <Tooltip title="Completed for today">
+                <IconButton>
+                  <CheckBox />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Delete">
+                <IconButton onClick={() => onRemove()}>
+                  <Delete />
+                </IconButton>
+              </Tooltip>
+            </Box>
+          </Container>
+        </CardActions>
+        <CardContent>
+          <Box
+            sx={{
+              p: 1,
+              pb: -2,
+              borderRadius: 5,
+              background: theme.palette.primary.main,
+              mt: -2,
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
+            {editing ? (
+              <TextField
+                defaultValue={name}
+                onBlur={({ target }) => setName(target.value)}
+                variant="standard"
+                inputProps={{ style: { textAlign: "center" } }}
+                fullWidth
+                sx={{ mx: 2 }}
+              />
+            ) : (
+              <Typography fontSize={20} fontWeight="bold" textAlign={"center"}>
+                {name}
+              </Typography>
+            )}
+          </Box>
+          <Collapse in={editing || expanded} timeout="auto" unmountOnExit>
+            <Box sx={{ mt: 1 }} />
+            {editing ? (
+              <TextField
+                defaultValue={text}
+                onBlur={({ target }) => setText(target.value)}
+                multiline
+                variant="standard"
+                fullWidth
+              />
+            ) : (
+              <Typography whiteSpace="pre-wrap" textOverflow="ellipsis">
+                {finalText}
+              </Typography>
+            )}
+          </Collapse>
+          <Collapse in={editing} timeout="auto" unmountOnExit sx={{ mt: 2 }}>
+            <LocalizationProvider dateAdapter={AdapterMoment}>
+              <FormControl variant="standard">
+                <Stack gap={2}>
+                  <DatePicker
+                    mobile={smallScreen}
+                    label="Start Date"
+                    inputFormat="MM/DD/YYYY"
+                    value={startDateValue}
+                    onChange={(newValue) => setStartDateValue(newValue)}
+                    renderInput={(params) => <TextField {...params} />}
+                  />
+                  <DatePicker
+                    variant="standard"
+                    mobile={smallScreen}
+                    label="Due Date"
+                    inputFormat="MM/DD/YYYY"
+                    value={dueDateValue}
+                    onChange={(newValue) => setDueDateValue(newValue)}
+                    renderInput={(params) => <TextField {...params} />}
+                  />
+                  <Box sx={{ display: "flex", alignItems: "end", gap: 1 }}>
+                    <TextField
                       variant="standard"
-                      mobile={smallScreen}
-                      label="Due Date"
-                      inputFormat="MM/DD/YYYY"
-                      value={dueDateValue}
-                      onChange={(newValue) => setDueDateValue(newValue)}
-                      renderInput={(params) => <TextField {...params} />}
+                      value={Math.floor(taskMinutes / 60)}
+                      sx={{ width: 42 }}
+                      onChange={(e) => {
+                        let value = parseInt(e.target.value) || 0;
+                        if (value < 0) {
+                          value = 1;
+                        } else if (value > 100) {
+                          value = 100;
+                        }
+
+                        setTaskMinutes((taskMinutes % 60) + value * 60);
+                      }}
+                      onBlur={(e) => {
+                        let value = parseInt(e.target.value) || 0;
+                        if (value < 0) {
+                          value = 1;
+                        } else if (value > 100) {
+                          value = 100;
+                        }
+
+                        setTaskMinutes((taskMinutes % 60) + value * 60);
+                      }}
+                      type="number"
+                      InputProps={{ inputProps: { min: 0, max: 59 } }}
                     />
-                    <Box sx={{ display: "flex", alignItems: "end", gap: 1 }}>
-                      <TextField
-                        variant="standard"
-                        value={Math.floor(taskMinutes / 60)}
-                        sx={{ width: 42 }}
-                        onChange={(e) => {
-                          let value = parseInt(e.target.value) || 0;
-                          if (value < 0) {
-                            value = 1;
-                          } else if (value > 100) {
-                            value = 100;
-                          }
+                    <Typography>hours</Typography>
+                    <TextField
+                      variant="standard"
+                      value={taskMinutes % 60}
+                      sx={{ width: 42 }}
+                      onChange={(e) => {
+                        let value = parseInt(e.target.value) || 0;
+                        if (value < 0) {
+                          value = 1;
+                        } else if (value > 59) {
+                          value = 59;
+                        }
 
-                          setTaskMinutes((taskMinutes % 60) + value * 60);
-                        }}
-                        onBlur={(e) => {
-                          let value = parseInt(e.target.value) || 0;
-                          if (value < 0) {
-                            value = 1;
-                          } else if (value > 100) {
-                            value = 100;
-                          }
+                        setTaskMinutes(
+                          Math.floor(taskMinutes / 60) * 60 + value
+                        );
+                      }}
+                      onBlur={(e) => {
+                        let value = parseInt(e.target.value) || 0;
+                        if (value < 0) {
+                          value = 1;
+                        } else if (value > 59) {
+                          value = 59;
+                        }
 
-                          setTaskMinutes((taskMinutes % 60) + value * 60);
-                        }}
-                        type="number"
-                        InputProps={{ inputProps: { min: 0, max: 59 } }}
+                        setTaskMinutes(
+                          Math.floor(taskMinutes / 60) * 60 + value
+                        );
+                      }}
+                      type="number"
+                      InputProps={{ inputProps: { min: 0, max: 59 } }}
+                    />
+                    <Typography>minutes.</Typography>
+                  </Box>
+                </Stack>
+              </FormControl>
+            </LocalizationProvider>
+          </Collapse>
+          <Box sx={{ display: "flex", mb: -2 }}>
+            {editing ? (
+              <Tooltip title="Cancel">
+                <IconButton onClick={() => setEditing(false)}>
+                  <Close />
+                </IconButton>
+              </Tooltip>
+            ) : (
+              <Tooltip title="Edit">
+                <IconButton onClick={() => setEditing(true)}>
+                  <Edit />
+                </IconButton>
+              </Tooltip>
+            )}
+            {true && (
+              <Tooltip title="Color">
+                <IconButton
+                  sx={{ position: "relative" }}
+                  onClick={() => setColorPickerOpen(!colorPickerOpen)}
+                >
+                  <ColorLens />
+                  {colorPickerOpen ? (
+                    <Box
+                      sx={{ position: "absolute", top: "110%", right: "0" }}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <TwitterPicker
+                        color={taskData.color}
+                        triangle="top-right"
+                        onChange={onColorChange}
                       />
-                      <Typography>hours</Typography>
-                      <TextField
-                        variant="standard"
-                        value={taskMinutes % 60}
-                        sx={{ width: 42 }}
-                        onChange={(e) => {
-                          let value = parseInt(e.target.value) || 0;
-                          if (value < 0) {
-                            value = 1;
-                          } else if (value > 59) {
-                            value = 59;
-                          }
-
-                          setTaskMinutes(
-                            Math.floor(taskMinutes / 60) * 60 + value
-                          );
-                        }}
-                        onBlur={(e) => {
-                          let value = parseInt(e.target.value) || 0;
-                          if (value < 0) {
-                            value = 1;
-                          } else if (value > 59) {
-                            value = 59;
-                          }
-
-                          setTaskMinutes(
-                            Math.floor(taskMinutes / 60) * 60 + value
-                          );
-                        }}
-                        type="number"
-                        InputProps={{ inputProps: { min: 0, max: 59 } }}
-                      />
-                      <Typography>minutes.</Typography>
                     </Box>
-                  </Stack>
-                </FormControl>
-              </LocalizationProvider>
-            </Collapse>
-            <Box sx={{ display: "flex", mb: -2 }}>
-              {editing ? (
-                <Tooltip title="Cancel">
-                  <IconButton onClick={() => setEditing(false)}>
-                    <Close />
-                  </IconButton>
-                </Tooltip>
-              ) : (
-                <Tooltip title="Edit">
-                  <IconButton onClick={() => setEditing(true)}>
-                    <Edit />
-                  </IconButton>
-                </Tooltip>
-              )}
-              {true && (
-                <Tooltip title="Color">
-                  <IconButton
-                    sx={{ position: "relative" }}
-                    onClick={() => setColorPickerOpen(!colorPickerOpen)}
-                  >
-                    <ColorLens />
-                    {colorPickerOpen ? (
-                      <Box
-                        sx={{ position: "absolute", top: "110%", right: "0" }}
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <TwitterPicker
-                          color={data.color}
-                          triangle="top-right"
-                          onChange={onColorChange}
-                        />
-                      </Box>
-                    ) : null}
-                  </IconButton>
-                </Tooltip>
-              )}
-              {!editing ? (
-                <Tooltip title="Expand">
-                  <ExpandMore
-                    expand={expanded}
-                    aria-expanded={expanded}
-                    aria-label="show more"
-                    onClick={handleExpandClick}
-                  >
-                    <ExpandMoreIcon />
-                  </ExpandMore>
-                </Tooltip>
-              ) : (
-                <Tooltip title="Save">
-                  <IconButton
-                    onClick={() => setEditing(false)}
-                    sx={{ ml: "auto" }}
-                  >
-                    <Save />
-                  </IconButton>
-                </Tooltip>
-              )}
-            </Box>
-          </CardContent>
-        </Card>
-      </FormControl>
-    </Box>
+                  ) : null}
+                </IconButton>
+              </Tooltip>
+            )}
+            {!editing ? (
+              <Tooltip title="Expand">
+                <ExpandMore
+                  expand={expanded}
+                  aria-expanded={expanded}
+                  aria-label="show more"
+                  onClick={handleExpandClick}
+                >
+                  <ExpandMoreIcon />
+                </ExpandMore>
+              </Tooltip>
+            ) : (
+              <Tooltip title="Save">
+                <IconButton
+                  onClick={() => setEditing(false)}
+                  sx={{ ml: "auto" }}
+                >
+                  <Save />
+                </IconButton>
+              </Tooltip>
+            )}
+          </Box>
+        </CardContent>
+      </Card>
+    </FormControl>
   );
 }

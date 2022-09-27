@@ -141,6 +141,7 @@ export default function NewDashboard({ changeTheme }) {
           <Box
             sx={{
               flexGrow: 1,
+              overflow: "auto",
               position: "relative",
             }}
           >
@@ -151,7 +152,7 @@ export default function NewDashboard({ changeTheme }) {
           <BottomNavigation
             value={navState}
             onChange={handleNavChange}
-            showLabels
+            // showLabels
           >
             {navItems.map((item, idx) => (
               <BottomNavigationAction

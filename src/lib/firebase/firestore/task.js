@@ -1,4 +1,11 @@
-import { collection, getDocs, query, where } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  query,
+  where,
+  deleteDoc,
+  doc
+} from "firebase/firestore";
 import { getDoc } from ".";
 import { db } from "..";
 
@@ -17,6 +24,14 @@ const updateTask = (taskId, task) => {
   });
 };
 
+const removeTask = async (taskId) => {
+  const col = collection(db, "tasks");
+  const q = query(col, where("id", "==", taskId));
+  const ref = (await getDocs(q)).docs[0].ref;
+
+  deleteDoc(ref)
+};
+
 const createTask = async (uid, task) => {
   const col = collection(db, "tasks");
   await addDoc(col, { ...task, ownerId: uid, id: generateId() });
@@ -31,4 +46,4 @@ const getTasks = async (uid) => {
   return result.docs.map((doc) => doc.data());
 };
 
-export { createTask, getTasks, updateTask };
+export { createTask, getTasks, updateTask, removeTask };

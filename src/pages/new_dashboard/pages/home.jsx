@@ -1,11 +1,12 @@
-import { Box, Stack } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 import { useState } from "react";
+import { removeTask, updateTask } from "../../../lib/firebase/firestore/task";
 import Task from "../components/task";
 import { useTasks } from "../components/task/context";
+import moment from "moment";
 
 export default function Home() {
-
-  const { tasks } = useTasks();
+  const { tasks, fetchTaskUpdate } = useTasks();
   return (
     <Box
       sx={{
@@ -13,15 +14,27 @@ export default function Home() {
         maxHeight: "100%",
         display: "flex",
         flexDirection: "column",
-        // justifyContent: "center",
         alignItems: "center",
         overflow: "auto",
-        py: 3,
       }}
     >
-      <Stack gap={2}>
+      <Typography mt={3} fontWeight="bold" fontSize={50}>
+        {moment().format("dddd, MM/DD")}
+      </Typography>
+      <Stack gap={2} my={2}>
         {tasks.map((task, idx) => (
-          <Task data={task} key={idx} onChange={(data) => console.log(data)} />
+          <Task
+            taskData={task}
+            key={idx}
+            onChange={async (data) => {
+              await updateTask(task.id, data);
+              fetchTaskUpdate();
+            }}
+            onRemove={async () => {
+              await removeTask(task.id);
+              fetchTaskUpdate();
+            }}
+          />
         ))}
       </Stack>
     </Box>
