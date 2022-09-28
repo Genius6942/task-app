@@ -123,7 +123,7 @@ export default function Account() {
             flexDirection: "column",
             alignItems: "center",
             position: "relative",
-            overflow: "scroll",
+            overflow: "auto",
             py: 3,
           }}
         >

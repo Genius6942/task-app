@@ -20,22 +20,16 @@ import Save from "@mui/icons-material/Save";
 
 import { TwitterPicker } from "react-color";
 import { Suspense, useState, lazy, forwardRef } from "react";
-import {
-  Collapse,
-  FormControl,
-  Select,
-  Stack,
-  styled,
-  TextField,
-} from "@mui/material";
+import { Collapse, FormControl, Select, Stack, styled, TextField } from "@mui/material";
 import { ExpandMore as ExpandMoreIcon } from "@mui/icons-material";
 
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import moment from "moment";
 import { DesktopDatePicker, MobileDatePicker } from "@mui/x-date-pickers";
-import { useSmallScreen } from "../../../../lib/utils";
+import { useForceUpdate, useSmallScreen } from "../../../../lib/utils";
 import { useTheme } from "@mui/material/styles";
+import { useEffect } from "react";
 
 const DatePicker = ({ mobile, ...props }) =>
   mobile ? <MobileDatePicker {...props} /> : <DesktopDatePicker {...props} />;
@@ -72,7 +66,7 @@ export default function Task({
   /**
    * @param {import('react-color').ColorResult} color
    */
-  const onColorChange = (color) => {
+  const onColorChange = color => {
     const shallowCopy = { ...taskData };
     shallowCopy.color = color.hex;
     onChange(shallowCopy);
@@ -92,19 +86,28 @@ export default function Task({
     startDate: moment(taskData.startDate, "MM/DD/YYYY"),
     dueDate: moment(taskData.dueDate, "MM/DD/YYYY"),
   });
+	useEffect(() => {
+		setData({
+			...taskData,
+			startDate: moment(taskData.startDate, "MM/DD/YYYY"),
+			dueDate: moment(taskData.dueDate, "MM/DD/YYYY"),
+		});
+	}, [taskData]);
   /**
    * @param {Partial<data>} newData
    */
-  const updateData = (newData) => {
+  const updateData = newData => {
     const values = { ...newData };
     return setData({ ...data, ...values });
   };
 
+  const [timeForceUpdate, forceTimeUpdate] = useForceUpdate();
+
   const regexp = /(https?:\/\/[^\s]+)/g;
 
-  const result = Array.from(text.matchAll(regexp), (m) => m[0]);
+  const result = Array.from(text.matchAll(regexp), m => m[0]);
 
-  const output = text.split(regexp).filter((item) => !regexp.test(item));
+  const output = text.split(regexp).filter(item => !regexp.test(item));
 
   Array(result.length)
     .fill()
@@ -112,11 +115,7 @@ export default function Task({
       output.splice(
         result.length - idx,
         0,
-        <Link
-          href={result[result.length - idx - 1]}
-          target="_blank"
-          rel="noopener"
-        >
+        <Link href={result[result.length - idx - 1]} target="_blank" rel="noopener">
           {result[result.length - idx - 1]}
         </Link>
       );
@@ -134,6 +133,7 @@ export default function Task({
         sx={{
           width: smallScreen ? 350 : 450,
           backgroundColor: taskData.color || "#cccccc",
+          overflow: "visible",
         }}
       >
         <CardActions disableSpacing>
@@ -162,7 +162,7 @@ export default function Task({
                 }}
               >
                 <Typography fontSize={20} whiteSpace="nowrap">
-                  {taskData.subject}
+                  {data.subject}
                 </Typography>
               </Box>
               {editing ? (
@@ -190,7 +190,7 @@ export default function Task({
                   textOverflow="ellipsis"
                   whiteSpace="nowrap"
                 >
-                  Due {dueDateValue.format("ddd MM/DD")}
+                  Due {data.dueDate.format("ddd MM/DD")}
                 </Typography>
               )}
             </Box>
@@ -259,80 +259,58 @@ export default function Task({
                     mobile={smallScreen}
                     label="Start Date"
                     inputFormat="MM/DD/YYYY"
-                    value={startDateValue}
-                    onChange={(newValue) => setStartDateValue(newValue)}
-                    renderInput={(params) => <TextField {...params} />}
+                    value={data.startDate}
+                    onChange={newValue => updateData({ startDate: newValue })}
+                    renderInput={params => <TextField {...params} />}
                   />
                   <DatePicker
                     variant="standard"
                     mobile={smallScreen}
                     label="Due Date"
                     inputFormat="MM/DD/YYYY"
-                    value={dueDateValue}
-                    onChange={(newValue) => setDueDateValue(newValue)}
-                    renderInput={(params) => <TextField {...params} />}
+                    value={data.dueDate}
+                    onChange={newValue => updateData({ dueDate: newValue })}
+                    renderInput={params => <TextField {...params} />}
                   />
                   <Box sx={{ display: "flex", alignItems: "end", gap: 1 }}>
                     <TextField
+                      key={timeForceUpdate}
                       variant="standard"
-                      value={Math.floor(taskMinutes / 60)}
+                      defaultValue={Math.floor(data.time / 60)}
                       sx={{ width: 42 }}
-                      onChange={(e) => {
-                        let value = parseInt(e.target.value) || 0;
-                        if (value < 0) {
-                          value = 1;
-                        } else if (value > 100) {
-                          value = 100;
-                        }
-
-                        setTaskMinutes((taskMinutes % 60) + value * 60);
-                      }}
-                      onBlur={(e) => {
-                        let value = parseInt(e.target.value) || 0;
-                        if (value < 0) {
-                          value = 1;
-                        } else if (value > 100) {
-                          value = 100;
-                        }
-
-                        setTaskMinutes((taskMinutes % 60) + value * 60);
-                      }}
                       type="number"
+                      autoComplete="off"
                       InputProps={{ inputProps: { min: 0, max: 59 } }}
+                      onBlur={({ target }) => {
+                        const value =
+                          target.value.length === 0 ? 0 : parseInt(target.value);
+                        updateData({
+                          time: value * 60 + (data.time % 60),
+                        });
+
+                        forceTimeUpdate();
+                      }}
                     />
                     <Typography>hours</Typography>
                     <TextField
+                      key={timeForceUpdate + 10 ** 6}
                       variant="standard"
-                      value={taskMinutes % 60}
+                      defaultValue={data.time % 60}
                       sx={{ width: 42 }}
-                      onChange={(e) => {
-                        let value = parseInt(e.target.value) || 0;
-                        if (value < 0) {
-                          value = 1;
-                        } else if (value > 59) {
-                          value = 59;
-                        }
-
-                        setTaskMinutes(
-                          Math.floor(taskMinutes / 60) * 60 + value
-                        );
-                      }}
-                      onBlur={(e) => {
-                        let value = parseInt(e.target.value) || 0;
-                        if (value < 0) {
-                          value = 1;
-                        } else if (value > 59) {
-                          value = 59;
-                        }
-
-                        setTaskMinutes(
-                          Math.floor(taskMinutes / 60) * 60 + value
-                        );
-                      }}
                       type="number"
+                      autoComplete="off"
                       InputProps={{ inputProps: { min: 0, max: 59 } }}
+                      onBlur={({ target }) => {
+                        const value =
+                          target.value.length === 0 ? 0 : parseInt(target.value);
+                        updateData({
+                          time: value + Math.floor(data.time / 60) * 60,
+                        });
+
+                        forceTimeUpdate();
+                      }}
                     />
-                    <Typography>minutes.</Typography>
+                    <Typography>minutes</Typography>
                   </Box>
                 </Stack>
               </FormControl>
@@ -352,7 +330,7 @@ export default function Task({
                 </IconButton>
               </Tooltip>
             )}
-            {true && (
+            {false && (
               <Tooltip title="Color">
                 <IconButton
                   sx={{ position: "relative" }}
@@ -362,7 +340,7 @@ export default function Task({
                   {colorPickerOpen ? (
                     <Box
                       sx={{ position: "absolute", top: "110%", right: "0" }}
-                      onClick={(e) => e.stopPropagation()}
+                      onClick={e => e.stopPropagation()}
                     >
                       <TwitterPicker
                         color={taskData.color}
@@ -388,7 +366,11 @@ export default function Task({
             ) : (
               <Tooltip title="Save">
                 <IconButton
-                  onClick={() => setEditing(false)}
+                  onClick={() => {
+                    setEditing(false);
+										const formatedData = { ...data };
+										onChange(data);
+                  }}
                   sx={{ ml: "auto" }}
                 >
                   <Save />
