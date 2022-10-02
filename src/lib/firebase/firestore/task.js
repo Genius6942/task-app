@@ -20,7 +20,7 @@ const updateTask = (taskId, task) => {
   });
 };
 
-const removeTask = async taskId => {
+const removeTask = async (taskId) => {
   const col = collection(db, "tasks");
   const q = query(col, where("id", "==", taskId));
   const ref = (await getDocs(q)).docs[0].ref;
@@ -34,12 +34,12 @@ const createTask = async (uid, task) => {
   return true;
 };
 
-const getTasks = async uid => {
+const getTasks = async (uid) => {
   const col = collection(db, "tasks");
   const q = query(col, where("ownerId", "==", uid));
   const result = await getDocs(q);
 
-  return result.docs.map(doc => doc.data());
+  return result.docs.map((doc) => doc.data());
 };
 
 export { createTask, getTasks, updateTask, removeTask };

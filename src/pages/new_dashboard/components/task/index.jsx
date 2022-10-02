@@ -20,7 +20,15 @@ import Save from "@mui/icons-material/Save";
 
 import { TwitterPicker } from "react-color";
 import { Suspense, useState, lazy, forwardRef } from "react";
-import { Collapse, FormControl, Select, Stack, styled, TextField } from "@mui/material";
+import {
+  Collapse,
+  FormControl,
+  Select,
+  Stack,
+  styled,
+  TextField,
+  Checkbox,
+} from "@mui/material";
 import { ExpandMore as ExpandMoreIcon } from "@mui/icons-material";
 
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
@@ -66,7 +74,7 @@ export default function Task({
   /**
    * @param {import('react-color').ColorResult} color
    */
-  const onColorChange = color => {
+  const onColorChange = (color) => {
     const shallowCopy = { ...taskData };
     shallowCopy.color = color.hex;
     onChange(shallowCopy);
@@ -78,25 +86,22 @@ export default function Task({
   const [expanded, setExpanded] = useState(false);
   const handleExpandClick = () => setExpanded(!expanded);
 
-  const [name, setName] = useState(taskData.name || "");
-  const [text, setText] = useState(taskData.details || "");
-
   const [data, setData] = useState({
     ...taskData,
     startDate: moment(taskData.startDate, "MM/DD/YYYY"),
     dueDate: moment(taskData.dueDate, "MM/DD/YYYY"),
   });
-	useEffect(() => {
-		setData({
-			...taskData,
-			startDate: moment(taskData.startDate, "MM/DD/YYYY"),
-			dueDate: moment(taskData.dueDate, "MM/DD/YYYY"),
-		});
-	}, [taskData]);
+  useEffect(() => {
+    setData({
+      ...taskData,
+      startDate: moment(taskData.startDate, "MM/DD/YYYY"),
+      dueDate: moment(taskData.dueDate, "MM/DD/YYYY"),
+    });
+  }, [taskData]);
   /**
    * @param {Partial<data>} newData
    */
-  const updateData = newData => {
+  const updateData = (newData) => {
     const values = { ...newData };
     return setData({ ...data, ...values });
   };
@@ -105,9 +110,11 @@ export default function Task({
 
   const regexp = /(https?:\/\/[^\s]+)/g;
 
-  const result = Array.from(text.matchAll(regexp), m => m[0]);
+  const result = Array.from(data.details.matchAll(regexp), (m) => m[0]);
 
-  const output = text.split(regexp).filter(item => !regexp.test(item));
+  const output = data.details
+    .split(regexp)
+    .filter((item) => !regexp.test(item));
 
   Array(result.length)
     .fill()
@@ -115,7 +122,11 @@ export default function Task({
       output.splice(
         result.length - idx,
         0,
-        <Link href={result[result.length - idx - 1]} target="_blank" rel="noopener">
+        <Link
+          href={result[result.length - idx - 1]}
+          target="_blank"
+          rel="noopener"
+        >
           {result[result.length - idx - 1]}
         </Link>
       );
@@ -134,6 +145,10 @@ export default function Task({
           width: smallScreen ? 350 : 450,
           backgroundColor: taskData.color || "#cccccc",
           overflow: "visible",
+        }}
+        onDoubleClick={(e) => {
+          e.preventDefault();
+          setEditing(true);
         }}
       >
         <CardActions disableSpacing>
@@ -222,8 +237,8 @@ export default function Task({
           >
             {editing ? (
               <TextField
-                defaultValue={name}
-                onBlur={({ target }) => setName(target.value)}
+                defaultValue={data.name}
+                onBlur={({ target }) => updateData({ name: target.value })}
                 variant="standard"
                 inputProps={{ style: { textAlign: "center" } }}
                 fullWidth
@@ -231,7 +246,7 @@ export default function Task({
               />
             ) : (
               <Typography fontSize={20} fontWeight="bold" textAlign={"center"}>
-                {name}
+                {data.name}
               </Typography>
             )}
           </Box>
@@ -239,8 +254,8 @@ export default function Task({
             <Box sx={{ mt: 1 }} />
             {editing ? (
               <TextField
-                defaultValue={text}
-                onBlur={({ target }) => setText(target.value)}
+                defaultValue={data.details}
+                onBlur={({ target }) => updateData({ details: target.value })}
                 multiline
                 variant="standard"
                 fullWidth
@@ -250,6 +265,25 @@ export default function Task({
                 {finalText}
               </Typography>
             )}
+            <Stack direction="horizontal" gap={1}>
+              {data.completes.map((complete, idx) => (
+                <Checkbox
+                  key={idx}
+                  checked={complete}
+                  onChange={() => {
+                    const completesCopy = [...data.completes];
+                    completesCopy[idx] = !complete;
+                    const formatedData = {
+                      ...data,
+                      completes: completesCopy,
+                      startDate: data.startDate.format("MM/DD/YYYY"),
+                      dueDate: data.dueDate.format("MM/DD/YYYY"),
+                    };
+                    onChange(formatedData);
+                  }}
+                />
+              ))}
+            </Stack>
           </Collapse>
           <Collapse in={editing} timeout="auto" unmountOnExit sx={{ mt: 2 }}>
             <LocalizationProvider dateAdapter={AdapterMoment}>
@@ -260,8 +294,8 @@ export default function Task({
                     label="Start Date"
                     inputFormat="MM/DD/YYYY"
                     value={data.startDate}
-                    onChange={newValue => updateData({ startDate: newValue })}
-                    renderInput={params => <TextField {...params} />}
+                    onChange={(newValue) => updateData({ startDate: newValue })}
+                    renderInput={(params) => <TextField {...params} />}
                   />
                   <DatePicker
                     variant="standard"
@@ -269,8 +303,8 @@ export default function Task({
                     label="Due Date"
                     inputFormat="MM/DD/YYYY"
                     value={data.dueDate}
-                    onChange={newValue => updateData({ dueDate: newValue })}
-                    renderInput={params => <TextField {...params} />}
+                    onChange={(newValue) => updateData({ dueDate: newValue })}
+                    renderInput={(params) => <TextField {...params} />}
                   />
                   <Box sx={{ display: "flex", alignItems: "end", gap: 1 }}>
                     <TextField
@@ -283,7 +317,9 @@ export default function Task({
                       InputProps={{ inputProps: { min: 0, max: 59 } }}
                       onBlur={({ target }) => {
                         const value =
-                          target.value.length === 0 ? 0 : parseInt(target.value);
+                          target.value.length === 0
+                            ? 0
+                            : parseInt(target.value);
                         updateData({
                           time: value * 60 + (data.time % 60),
                         });
@@ -302,7 +338,9 @@ export default function Task({
                       InputProps={{ inputProps: { min: 0, max: 59 } }}
                       onBlur={({ target }) => {
                         const value =
-                          target.value.length === 0 ? 0 : parseInt(target.value);
+                          target.value.length === 0
+                            ? 0
+                            : parseInt(target.value);
                         updateData({
                           time: value + Math.floor(data.time / 60) * 60,
                         });
@@ -340,7 +378,7 @@ export default function Task({
                   {colorPickerOpen ? (
                     <Box
                       sx={{ position: "absolute", top: "110%", right: "0" }}
-                      onClick={e => e.stopPropagation()}
+                      onClick={(e) => e.stopPropagation()}
                     >
                       <TwitterPicker
                         color={taskData.color}
@@ -368,8 +406,12 @@ export default function Task({
                 <IconButton
                   onClick={() => {
                     setEditing(false);
-										const formatedData = { ...data };
-										onChange(data);
+                    const formatedData = {
+                      ...data,
+                      startDate: data.startDate.format("MM/DD/YYYY"),
+                      dueDate: data.dueDate.format("MM/DD/YYYY"),
+                    };
+                    onChange(formatedData);
                   }}
                   sx={{ ml: "auto" }}
                 >

@@ -35,7 +35,7 @@ const generateId = () => {
 const getDoc = async (
   colName,
   { field = "ownerId", operator = "==", value },
-  fallback = () => ({}),
+  fallback = (col) => ({}),
   getRef = false
 ) => {
   const col = collection(db, colName);
@@ -145,4 +145,4 @@ const updateUserBoard = async (uid, board) => {
   }
 };
 
-export { getUserBoard, updateUserBoard, getSubject, updateSubject, createSubject, createTask, updateTask, getTask, getDoc };
+export { getUserBoard, updateUserBoard, getSubject, updateSubject, createSubject, createTask, updateTask, getTask, getDoc, generateId };

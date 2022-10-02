@@ -240,7 +240,7 @@ export default function NewDashboard({ changeTheme }) {
                 </ListItem>
               ))}
               <Divider />
-              {/* <ListItem
+              { false && <ListItem
             sx={{
               justifyContent:
                 drawerOpen || temporaryDrawerOpen ? "initial" : "center",
@@ -275,7 +275,7 @@ export default function NewDashboard({ changeTheme }) {
                 }}
               />
             }
-          </ListItem> */}
+          </ListItem> }
             </List>
           </WrapperDrawer>
           <PageAnimateLayout>

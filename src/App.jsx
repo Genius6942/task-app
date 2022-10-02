@@ -28,6 +28,7 @@ import DashboardHome from "./pages/new_dashboard/pages/home.jsx";
 
 import createTheme from "./theme";
 import Account from "./pages/new_dashboard/pages/account";
+import Schedule from "./pages/new_dashboard/pages/schedule";
 
 function App() {
   const [cards, setCards] = useState([
@@ -82,9 +83,9 @@ function App() {
           <Route exact path="/" element={<Home />} />
           <Route exact path="/login" element={<Login />} />
           <Route exact path="/register" element={<Register />} />
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/old_dashboard" element={<Dashboard />} />
           <Route
-            path="new_dashboard"
+            path="dashboard"
             element={
               <NewDashboard
                 changeTheme={({ dark = false }) => setDarkMode(dark)}
@@ -93,7 +94,7 @@ function App() {
           >
             <Route path="" element={<DashboardHome />} />
             <Route path="subjects" element={<>subjects</>} />
-            <Route path="schedule" element={<>schedule</>} />
+            <Route path="schedule" element={<Schedule />} />
             <Route path="account" element={<Account />} />
           </Route>
 

@@ -5,6 +5,7 @@ import {
   Stack,
   Typography,
   useTheme,
+  Button,
 } from "@mui/material";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { app_name } from "../../../../lib/constants";
@@ -101,6 +102,21 @@ export default function Account() {
             setAccountData({ ...accountData, subjects: newValue })
           }
         />
+      ),
+    },
+    {
+      name: "Actions",
+      component: (
+        <Box>
+          <Button
+            onClick={() => auth.signOut()}
+            fullWidth
+            variant="outlined"
+            color="error"
+          >
+            Log Out
+          </Button>
+        </Box>
       ),
     },
   ];
