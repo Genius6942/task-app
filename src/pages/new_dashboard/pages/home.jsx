@@ -22,7 +22,7 @@ export default function Home() {
       <Typography mt={3} fontWeight="bold" fontSize={50}>
         {moment().format("dddd, MM/DD")}
       </Typography>
-      <Stack gap={2} my={2}>
+      <Stack gap={2} my={2} direction="column">
         <AnimatePresence>
           {tasks.map((task, idx) => (
             <motion.div

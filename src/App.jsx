@@ -29,6 +29,7 @@ import DashboardHome from "./pages/new_dashboard/pages/home.jsx";
 import createTheme from "./theme";
 import Account from "./pages/new_dashboard/pages/account";
 import Schedule from "./pages/new_dashboard/pages/schedule";
+import 'fuckadblock';
 
 function App() {
   const [cards, setCards] = useState([
@@ -55,6 +56,13 @@ function App() {
     return () => window.removeEventListener("beforeinstallprompt", listener);
   }, []);
 
+	// detect ad blocker
+	useEffectOnce(() => {
+    fuckAdBlock.onDetected(() => {
+			alert('add block in use');
+		})
+  });
+
   const onInstall = async () => {
     if (!defferedEvent) {
       console.error("no deffered event");
@@ -62,7 +70,7 @@ function App() {
     }
     // defferedEvent is a global variable we've been using in the sample to capture the `beforeinstallevent`
     defferedEvent.prompt();
-    // Find out whether the user confirmed the installation or not
+    // Find out whether the user confirmed the installation or notn
     const { outcome } = await defferedEvent.userChoice;
     // The defferedEvent can only be used once.
     setDefferedEvent(null);
