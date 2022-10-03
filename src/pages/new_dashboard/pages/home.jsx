@@ -1,16 +1,33 @@
 import { Box, Stack, Typography } from "@mui/material";
 
+
+
 import { useState } from "react";
+
+
 
 import { AnimatePresence, motion } from "framer-motion";
 import moment from "moment";
+
+
 
 import { removeTask, updateTask } from "../../../lib/firebase/firestore/task";
 import Task from "../components/task";
 import { useTasks } from "../components/task/context";
 
+
 export default function Home() {
   const { tasks, fetchTaskUpdate } = useTasks();
+  const dayTasks = tasks
+    .map((task) => ({
+      ...task,
+      startDate: moment(task.startDate, "MM/DD/YYYY"),
+      dueDate: moment(task.dueDate, "MM/DD/YYYY"),
+    }))
+    .filter((task) => {
+      if (!day.isBetween(task.startDate, task.dueDate, null, "[)")) return false;
+      dayTasks
+    });
   return (
     <Box
       sx={{
@@ -27,7 +44,7 @@ export default function Home() {
       </Typography>
       <Stack gap={2} my={2} direction="column">
         <AnimatePresence>
-          {tasks.map((task, idx) => (
+          {dayTasks.map((task, idx) => (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}

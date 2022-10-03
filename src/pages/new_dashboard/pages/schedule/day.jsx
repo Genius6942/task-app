@@ -3,7 +3,6 @@ import { Box, Stack, Typography } from "@mui/material";
 import {
   AnimatePresence,
   motion,
-  useIsPresent,
   usePresence,
 } from "framer-motion";
 import moment from "moment";
@@ -70,7 +69,6 @@ export default function Day({ day }) {
       dueDate: moment(task.dueDate, "MM/DD/YYYY"),
     }))
     .filter((task) => {
-      // console.log(task, day);
       return day.isBetween(task.startDate, task.dueDate, null, "[)");
     });
   return (
