@@ -1,15 +1,20 @@
-import { CssBaseline } from "@mui/material";
-
 import { ThemeProvider } from "@mui/material/styles";
 
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
+import {
+  Button,
+  Card,
+  CardActions,
+  CssBaseline,
+  IconButton,
+  Typography,
+} from "@mui/material";
 
-import Close from "@mui/icons-material/Close";
+// import Button from "@mui/material/Button";
+// import Card from "@mui/material/Card";
+// import CardActions from "@mui/material/CardActions";
+// import IconButton from "@mui/material/IconButton";
+// import Typography from "@mui/material/Typography";
+import { Close } from "@mui/icons-material";
 
 import { useEffect, useState } from "react";
 import {
@@ -63,14 +68,16 @@ function App() {
   // detect ad blocker
   const [adBlockModalOpen, setAdBlockModalOpen] = useState(false);
   useEffectOnce(() => {
-    console.log(fuckAdBlock);
+    if (localStorage.getItem("force-hide-adblock-msg") === "1") return;
     fuckAdBlock.onDetected(() => {
       console.log("ad block in use");
+      setAdBlockModalOpen(true);
     });
     fuckAdBlock.onNotDetected(async () => {
       const blocks = (await detectAdblock()).filter((item) => item);
       if (blocks.length > 0) {
         console.log("ad block in use");
+        setAdBlockModalOpen(true);
       } else {
         console.log("no ad block");
       }
@@ -160,7 +167,13 @@ function App() {
             </Box>
           </Card>
         )}
-        <AdBlockModal open={adBlockModalOpen} />s
+        <AdBlockModal
+          open={adBlockModalOpen}
+          onForceClose={() => {
+            localStorage.setItem("force-hide-adblock-msg", "1");
+            setAdBlockModalOpen(false);
+          }}
+        />
       </ThemeProvider>
     </>
   );

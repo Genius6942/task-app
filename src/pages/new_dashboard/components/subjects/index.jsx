@@ -1,3 +1,5 @@
+import { styled } from "@mui/material/styles";
+
 import {
   Box,
   Button,
@@ -8,17 +10,12 @@ import {
   useTheme,
 } from "@mui/material";
 
-// import { styled } from "@mui/material/styles";
-
 import { Add } from "@mui/icons-material";
 
 import { useState } from "react";
-import { useEffect } from "react";
-
-import { shadeColor } from "../../../../lib/lightenColor";
 import { useSmallScreen } from "../../../../lib/utils";
 
-const MobileDialog = styled(Dialog)(({ theme }) => ({
+const MobileDialog = styled(Dialog)(() => ({
   "& .MuiPaper-root": {
     position: "absolute",
     margin: 0,

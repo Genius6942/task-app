@@ -1,4 +1,6 @@
 // mui
+import { styled, useTheme } from "@mui/material/styles";
+
 import {
   Checkbox,
   Collapse,
@@ -7,8 +9,6 @@ import {
   Stack,
   TextField,
 } from "@mui/material";
-
-// import { styled, useTheme } from "@mui/material/styles";
 
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
@@ -270,7 +270,7 @@ export default function Task({
             )}
             {!editing && (
               <Stack direction="row" gap={1} sx={{ alignItems: "center" }}>
-                <Typography>Task progress:</Typography>
+                <Typography whiteSpace="nowrap">Task progress ({data.completes.filter(item=>item).length}/{data.completes.length}):</Typography>
                 <Box
                   sx={{
                     display: "flex",

@@ -123,7 +123,6 @@ export default function Register() {
             fullWidth
             sx={{ mt: 3, mb: 2 }}
             onClick={signInWithGoogle}
-            color="white"
           >
             <img
               src="/google_logo.png"

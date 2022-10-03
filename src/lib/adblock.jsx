@@ -1,4 +1,6 @@
-import { Box, Button, Stack, Typography, useTheme } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
+
+import { Box, Button, Stack, Typography } from "@mui/material";
 
 /**
  * Author: Nikolai Tschacher
@@ -68,7 +70,7 @@ export function detectAdblock() {
  */
 export function AdBlockModal({ open, onForceClose }) {
   const theme = useTheme();
-  return (
+  return open && (
     <Box
       sx={{
         display: "flex",

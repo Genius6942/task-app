@@ -1,3 +1,5 @@
+import { styled, useTheme } from "@mui/material/styles";
+
 import {
   BottomNavigation,
   BottomNavigationAction,
@@ -12,8 +14,6 @@ import {
   ListItemText,
   Switch,
 } from "@mui/material";
-
-// import { styled, useTheme } from "@mui/material/styles";
 
 import {
   CalendarMonth,
@@ -33,7 +33,6 @@ import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import PageAnimateLayout from "../../Animate";
 import { auth } from "../../lib/firebase";
 import { requestPermission, startFirebaseMessaging } from "../../lib/firebase";
-import { getTasks } from "../../lib/firebase/firestore/task";
 import { hideSplash, useSmallScreen } from "../../lib/utils";
 import AddButton from "./components/add";
 import { TaskContextProvider } from "./components/task/context";
