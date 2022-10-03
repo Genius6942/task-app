@@ -17,5 +17,7 @@
   ],
   "importOrderSeparation": true,
   "importOrderSortSpecifiers": true,
-	"endOfLine": "lf"
+  "endOfLine": "lf",
+  "tabWidth": 2,
+  "useTabs": false
 }

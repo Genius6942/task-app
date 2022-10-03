@@ -52,7 +52,7 @@ export default function Register() {
     );
   };
 
-  const [user, loading, error] = useAuthState(auth);
+  const [user, loading] = useAuthState(auth);
   const navigate = useNavigate();
   useEffect(() => {
     if (loading) {
@@ -115,6 +115,7 @@ export default function Register() {
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
+            color="white"
           >
             Register
           </Button>
@@ -130,6 +131,7 @@ export default function Register() {
               width={31}
               height={30}
               style={{ marginRight: 10 }}
+              color="white"
             />
             Register with Google
           </Button>

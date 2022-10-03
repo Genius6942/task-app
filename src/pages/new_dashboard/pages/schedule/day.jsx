@@ -15,8 +15,6 @@ import {
 import Task from "../../components/task";
 import { useTasks } from "../../components/task/context";
 
-// import Demo from "./motiondemo";
-
 /**
  * @param {object} props
  * @param {object} props.task

@@ -9,7 +9,7 @@ const theme = ({ dark = false }) => {
     palette: {
       type: dark ? "dark" : "light",
       mode: dark ? "dark" : "light",
-      primary: createColor("#FF6900"),
+      primary: createColor("#FF7B00"),
       secondary: createColor("#E4FF00"),
       white: createColor("#FFFFFF"),
     },

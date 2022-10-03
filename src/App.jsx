@@ -1,13 +1,13 @@
 import { ThemeProvider } from "@mui/material/styles";
 
 import {
+  Box,
   Button,
   Card,
   CardActions,
   CssBaseline,
   IconButton,
   Typography,
-  Box,
 } from "@mui/material";
 
 // import Button from "@mui/material/Button";
@@ -18,11 +18,7 @@ import {
 import { Close } from "@mui/icons-material";
 
 import { useEffect, useState } from "react";
-import {
-  Route,
-  BrowserRouter as Router,
-  Routes,
-} from "react-router-dom";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import { useEffectOnce } from "react-use";
 
 import "fuckadblock";
@@ -40,7 +36,6 @@ import Register from "./pages/register";
 import createTheme from "./theme";
 
 function App() {
-
   const [darkMode, setDarkMode] = useState(false);
   const theme = createTheme({ dark: darkMode });
 
