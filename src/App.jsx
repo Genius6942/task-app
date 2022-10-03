@@ -1,10 +1,13 @@
+import { CssBaseline } from "@mui/material";
+
+import { ThemeProvider } from "@mui/material/styles";
+
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
-import { ThemeProvider } from "@mui/material/styles";
 
 import Close from "@mui/icons-material/Close";
 
@@ -97,66 +100,69 @@ function App() {
   };
 
   return (
-    <ThemeProvider theme={theme}>
-      <Router>
-        <Routes>
-          <Route exact path="/" element={<Home />} />
-          <Route exact path="/login" element={<Login />} />
-          <Route exact path="/register" element={<Register />} />
-          <Route path="/old_dashboard" element={<Dashboard />} />
-          <Route
-            path="dashboard"
-            element={
-              <NewDashboard
-                changeTheme={({ dark = false }) => setDarkMode(dark)}
-              />
-            }
-          >
-            <Route path="" element={<DashboardHome />} />
-            <Route path="subjects" element={<>subjects</>} />
-            <Route path="schedule" element={<Schedule />} />
-            <Route path="account" element={<Account />} />
-          </Route>
+    <>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Router>
+          <Routes>
+            <Route exact path="/" element={<Home />} />
+            <Route exact path="/login" element={<Login />} />
+            <Route exact path="/register" element={<Register />} />
+            <Route path="/old_dashboard" element={<Dashboard />} />
+            <Route
+              path="dashboard"
+              element={
+                <NewDashboard
+                  changeTheme={({ dark = false }) => setDarkMode(dark)}
+                />
+              }
+            >
+              <Route path="" element={<DashboardHome />} />
+              <Route path="subjects" element={<>subjects</>} />
+              <Route path="schedule" element={<Schedule />} />
+              <Route path="account" element={<Account />} />
+            </Route>
 
-          {/* 404 page */}
-          <Route path="*" element={<div>404</div>} />
-        </Routes>
-      </Router>
-      {defferedEvent && (
-        <Card
-          sx={{
-            position: "fixed",
-            top: 20,
-            right: 20,
-            padding: 2,
-            gap: 2,
-            maxWidth: 200,
-            zIndex: 100,
-          }}
-        >
-          <CardActions>
-            <Box sx={{ display: "flex", flexGrow: 1 }}>
-              <Typography fontSize={20} sx={{ marginRight: 1 }}>
-                Intsall {app_name}
+            {/* 404 page */}
+            <Route path="*" element={<div>404</div>} />
+          </Routes>
+        </Router>
+        {defferedEvent && (
+          <Card
+            sx={{
+              position: "fixed",
+              top: 20,
+              right: 20,
+              padding: 2,
+              gap: 2,
+              maxWidth: 200,
+              zIndex: 100,
+            }}
+          >
+            <CardActions>
+              <Box sx={{ display: "flex", flexGrow: 1 }}>
+                <Typography fontSize={20} sx={{ marginRight: 1 }}>
+                  Intsall {app_name}
+                </Typography>
+                <img src="/favicon-32x32.png" alt="logo" />
+              </Box>
+              <IconButton onClick={() => setDefferedEvent(null)}>
+                <Close />
+              </IconButton>
+            </CardActions>
+            <Box>
+              <Typography marginBottom={1}>
+                Install this site as an app for a better experience.
               </Typography>
-              <img src="/favicon-32x32.png" alt="logo" />
+              <Button variant="contained" onClick={onInstall}>
+                Install
+              </Button>
             </Box>
-            <IconButton onClick={() => setDefferedEvent(null)}>
-              <Close />
-            </IconButton>
-          </CardActions>
-          <Box>
-            <Typography marginBottom={1}>
-              Install this site as an app for a better experience.
-            </Typography>
-            <Button variant="contained" onClick={onInstall}>
-              Install
-            </Button>
-          </Box>
-        </Card>
-      )}
-      <AdBlockModal open={adBlockModalOpen} />
-    </ThemeProvider>
+          </Card>
+        )}
+        <AdBlockModal open={adBlockModalOpen} />s
+      </ThemeProvider>
+    </>
   );
 }
 

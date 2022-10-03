@@ -1,10 +1,11 @@
 {
   "trailingComma": "es5",
   "importOrder": [
-    "^@mui/material/(.*)$",
     "^@mui/material$",
-    "^@mui/icons-material/(.*)",
+    "^@mui/material/styles(.*)$",
+    "^@mui/material/(.*)$",
     "^@mui/icons-material$",
+    "^@mui/icons-material/(.*)",
     "^@mui/(.*)$",
     "^react(.*)$",
     "^firebase/(.*)$",

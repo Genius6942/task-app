@@ -11,9 +11,9 @@ import {
   Typography,
 } from "@mui/material";
 
-import CloudDone from "@mui/icons-material/CloudDone";
-
 import { Add, Menu as MenuIcon, Redo, Undo } from "@mui/icons-material";
+
+import CloudDone from "@mui/icons-material/CloudDone";
 
 import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";

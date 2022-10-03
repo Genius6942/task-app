@@ -8,7 +8,6 @@ import Grid from "@mui/material/Grid";
 import Link from "@mui/material/Link";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import { ThemeProvider, createTheme } from "@mui/material/styles";
 
 // react
 import { useEffect } from "react";
@@ -39,15 +38,6 @@ function Copyright(props) {
   );
 }
 
-const { palette } = createTheme();
-const { augmentColor } = palette;
-const createColor = (mainColor) => augmentColor({ color: { main: mainColor } });
-const theme = createTheme({
-  palette: {
-    white: createColor("#FFFFFF"),
-  },
-});
-
 export default function Login() {
   setDocumentTitle("Login");
   hideSplash();
@@ -69,91 +59,84 @@ export default function Login() {
   }, [user, loading]);
 
   return (
-    <ThemeProvider theme={theme}>
-      <Container component="main" maxWidth="xs">
-        <CssBaseline />
-        <Box
-          sx={{
-            marginTop: 8,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            border: "1px solid #e0e0e0",
-            padding: "30px",
-            borderRadius: "10px",
-            boxShadow: "0 25px 50px -12px rgb(0 0 0 / 0.25)",
-          }}
-        >
-          <Typography component="h1" variant="h5">
-            Sign in
-          </Typography>
-          <Box
-            component="form"
-            onSubmit={handleSubmit}
-            noValidate
-            sx={{ mt: 1 }}
+    <Container component="main" maxWidth="xs">
+      <CssBaseline />
+      <Box
+        sx={{
+          marginTop: 8,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          border: "1px solid #e0e0e0",
+          padding: "30px",
+          borderRadius: "10px",
+          boxShadow: "0 25px 50px -12px rgb(0 0 0 / 0.25)",
+        }}
+      >
+        <Typography component="h1" variant="h5">
+          Sign in
+        </Typography>
+        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            id="email"
+            label="Email Address"
+            name="email"
+            autoComplete="email"
+          />
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            name="password"
+            label="Password"
+            type="password"
+            id="password"
+            autoComplete="current-password"
+          />
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            sx={{ mt: 3, mb: 2 }}
           >
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
+            Sign In
+          </Button>
+          <Button
+            variant="contained"
+            fullWidth
+            sx={{ mt: 3, mb: 2 }}
+            onClick={signInWithGoogle}
+            color="white"
+          >
+            <img
+              src="/google_logo.png"
+              alt="google logo"
+              width={31}
+              height={30}
+              style={{ marginRight: 10 }}
             />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-            />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
-              Sign In
-            </Button>
-            <Button
-              variant="contained"
-              fullWidth
-              sx={{ mt: 3, mb: 2 }}
-              onClick={signInWithGoogle}
-              color="white"
-            >
-              <img
-                src="/google_logo.png"
-                alt="google logo"
-                width={31}
-                height={30}
-                style={{ marginRight: 10 }}
-              />
-              Login with Google
-            </Button>
-            <Grid container>
-              <Grid item xs></Grid>
-              <Grid item>
-                <Link
-                  href="/register"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    navigate("/register");
-                  }}
-                >
-                  Don't have an account? Register.
-                </Link>
-              </Grid>
+            Login with Google
+          </Button>
+          <Grid container>
+            <Grid item xs></Grid>
+            <Grid item>
+              <Link
+                href="/register"
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate("/register");
+                }}
+              >
+                Don't have an account? Register.
+              </Link>
             </Grid>
-          </Box>
+          </Grid>
         </Box>
-        <Copyright sx={{ mt: 8, mb: 4 }} />
-      </Container>
-    </ThemeProvider>
+      </Box>
+      <Copyright sx={{ mt: 8, mb: 4 }} />
+    </Container>
   );
 }

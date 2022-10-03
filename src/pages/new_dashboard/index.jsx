@@ -1,5 +1,3 @@
-import { useTheme } from "@mui/material/styles";
-
 import {
   BottomNavigation,
   BottomNavigationAction,
@@ -13,8 +11,9 @@ import {
   ListItemIcon,
   ListItemText,
   Switch,
-  styled,
 } from "@mui/material";
+
+// import { styled, useTheme } from "@mui/material/styles";
 
 import {
   CalendarMonth,
