@@ -1,10 +1,13 @@
 import { Box, Stack, Typography } from "@mui/material";
+
 import { useState } from "react";
+
+import { AnimatePresence, motion } from "framer-motion";
+import moment from "moment";
+
 import { removeTask, updateTask } from "../../../lib/firebase/firestore/task";
 import Task from "../components/task";
 import { useTasks } from "../components/task/context";
-import moment from "moment";
-import { AnimatePresence, motion } from "framer-motion";
 
 export default function Home() {
   const { tasks, fetchTaskUpdate } = useTasks();

@@ -1,10 +1,10 @@
 import {
-  query,
-  getDocs,
-  collection,
-  where,
   addDoc,
+  collection,
+  getDocs,
+  query,
   updateDoc,
+  where,
 } from "firebase/firestore";
 
 import { db } from "..";
@@ -145,4 +145,15 @@ const updateUserBoard = async (uid, board) => {
   }
 };
 
-export { getUserBoard, updateUserBoard, getSubject, updateSubject, createSubject, createTask, updateTask, getTask, getDoc, generateId };
+export {
+  getUserBoard,
+  updateUserBoard,
+  getSubject,
+  updateSubject,
+  createSubject,
+  createTask,
+  updateTask,
+  getTask,
+  getDoc,
+  generateId,
+};

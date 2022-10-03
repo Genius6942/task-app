@@ -1,14 +1,19 @@
 // react dnd
+// mui components
+import Box from "@mui/material/Box";
+
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 
 // custom
 import { useSmallScreen } from "../../../lib/utils";
 import Column from "./column";
 
-// mui components
-import Box from '@mui/material/Box';
-
-export default function Board({ cardState, setCardState, startAddCard, openUndoBar }) {
+export default function Board({
+  cardState,
+  setCardState,
+  startAddCard,
+  openUndoBar,
+}) {
   const smallScreen = useSmallScreen();
 
   const onColChange = (data, idx) => {

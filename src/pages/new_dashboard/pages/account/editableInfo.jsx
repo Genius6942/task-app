@@ -1,4 +1,3 @@
-import { Close, Edit, Save } from "@mui/icons-material";
 import {
   Box,
   IconButton,
@@ -7,6 +6,9 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
+
+import { Close, Edit, Save } from "@mui/icons-material";
+
 import { useState } from "react";
 
 export default function EditableInfo({ data, fields, updateData }) {

@@ -1,13 +1,13 @@
 // mui
-import TextField from "@mui/material/TextField";
-import Box from '@mui/material/Box';
-import Dialog from '@mui/material/Dialog';
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
-import Button from '@mui/material/Button';
-import FormControl from '@mui/material/FormControl';
+import FormControl from "@mui/material/FormControl";
+import TextField from "@mui/material/TextField";
 
 // react
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 /**
  * @param {object} props
@@ -16,12 +16,7 @@ import { useState, useEffect } from "react";
  * @param {object} props.defaults
  * @param {(data: object) => void} props.onSubmit
  */
-export default function AddColModal({
-  open,
-  onClose,
-  defaults,
-  onSubmit,
-}) {
+export default function AddColModal({ open, onClose, defaults, onSubmit }) {
   const [data, setData] = useState(defaults);
 
   useEffect(() => {
@@ -31,31 +26,31 @@ export default function AddColModal({
     }
   }, [defaults]);
   return (
-      <Dialog open={open} onClose={() => onClose()}>
-        <Box sx={{ padding: 3 }}>
-          <DialogTitle>Create New Category</DialogTitle>
-          <FormControl variant="outlined">
-            <TextField
-              sx={{ marginY: 2 }}
-              label="Title"
-              value={data.title}
-              onChange={({ target }) => {
-                setData({ ...data, title: target.value });
-              }}
-							autoFocus={open}
-            ></TextField>
+    <Dialog open={open} onClose={() => onClose()}>
+      <Box sx={{ padding: 3 }}>
+        <DialogTitle>Create New Category</DialogTitle>
+        <FormControl variant="outlined">
+          <TextField
+            sx={{ marginY: 2 }}
+            label="Title"
+            value={data.title}
+            onChange={({ target }) => {
+              setData({ ...data, title: target.value });
+            }}
+            autoFocus={open}
+          ></TextField>
 
-            <Button
-              variant="contained"
-              onClick={() => {
-                onClose();
-                onSubmit(data);
-              }}
-            >
-              Create category
-            </Button>
-          </FormControl>
-        </Box>
-      </Dialog>
+          <Button
+            variant="contained"
+            onClick={() => {
+              onClose();
+              onSubmit(data);
+            }}
+          >
+            Create category
+          </Button>
+        </FormControl>
+      </Box>
+    </Dialog>
   );
 }

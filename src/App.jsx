@@ -1,35 +1,36 @@
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardActions from "@mui/material/CardActions";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import { ThemeProvider } from "@mui/material/styles";
+
+import Close from "@mui/icons-material/Close";
+
 import { useEffect, useState } from "react";
 import {
-  BrowserRouter as Router,
   Outlet,
   Route,
+  BrowserRouter as Router,
   Routes,
   useLocation,
 } from "react-router-dom";
-
-import Home from "./pages/home";
-import Login from "./pages/login";
-import Register from "./pages/register";
-import Dashboard from "./pages/dashboard";
 import { useEffectOnce } from "react-use";
 
-import Card from "@mui/material/Card";
-import Button from "@mui/material/Button";
-import Box from "@mui/material/Box";
-import IconButton from "@mui/material/IconButton";
+import "fuckadblock";
 
-import Close from "@mui/icons-material/Close";
-import Typography from "@mui/material/Typography";
-import CardActions from "@mui/material/CardActions";
-import { ThemeProvider } from "@mui/material/styles";
+import { AdBlockModal, detectAdblock } from "./lib/adblock";
 import { app_name } from "./lib/constants";
+import Dashboard from "./pages/dashboard";
+import Home from "./pages/home";
+import Login from "./pages/login";
 import NewDashboard from "./pages/new_dashboard";
-import DashboardHome from "./pages/new_dashboard/pages/home.jsx";
-
-import createTheme from "./theme";
 import Account from "./pages/new_dashboard/pages/account";
+import DashboardHome from "./pages/new_dashboard/pages/home.jsx";
 import Schedule from "./pages/new_dashboard/pages/schedule";
-import 'fuckadblock';
+import Register from "./pages/register";
+import createTheme from "./theme";
 
 function App() {
   const [cards, setCards] = useState([
@@ -56,11 +57,22 @@ function App() {
     return () => window.removeEventListener("beforeinstallprompt", listener);
   }, []);
 
-	// detect ad blocker
-	useEffectOnce(() => {
+  // detect ad blocker
+  const [adBlockModalOpen, setAdBlockModalOpen] = useState(false);
+  useEffectOnce(() => {
+    console.log(fuckAdBlock);
     fuckAdBlock.onDetected(() => {
-			alert('add block in use');
-		})
+      console.log("ad block in use");
+    });
+    fuckAdBlock.onNotDetected(async () => {
+      const blocks = (await detectAdblock()).filter((item) => item);
+      if (blocks.length > 0) {
+        console.log("ad block in use");
+      } else {
+        console.log("no ad block");
+      }
+    });
+    fuckAdBlock.check();
   });
 
   const onInstall = async () => {
@@ -143,6 +155,7 @@ function App() {
           </Box>
         </Card>
       )}
+      <AdBlockModal open={adBlockModalOpen} />
     </ThemeProvider>
   );
 }

@@ -1,37 +1,42 @@
 import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  DialogActions,
-  TextField,
+  Box,
   Button,
   Chip,
-  Box,
-  useTheme,
-  Stack,
-  IconButton,
-  Typography,
   CircularProgress,
-  Select,
-  MenuItem,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  IconButton,
   InputLabel,
+  MenuItem,
+  Select,
+  Stack,
+  TextField,
+  Typography,
+  useTheme,
 } from "@mui/material";
-
-import { useState } from "react";
 
 import { Add, Delete } from "@mui/icons-material";
 
+import { DesktopDatePicker, MobileDatePicker } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import moment from "moment";
-import { DesktopDatePicker, MobileDatePicker } from "@mui/x-date-pickers";
 
-import { useForceUpdate, useSmallScreen } from "../../../../lib/utils";
+import { useState } from "react";
 import { useEffect } from "react";
 
-const DatePicker = props =>
-  props.mobile ? <MobileDatePicker {...props} /> : <DesktopDatePicker {...props} />;
+import moment from "moment";
+
+import { useForceUpdate, useSmallScreen } from "../../../../lib/utils";
+
+const DatePicker = (props) =>
+  props.mobile ? (
+    <MobileDatePicker {...props} />
+  ) : (
+    <DesktopDatePicker {...props} />
+  );
 
 /**
  *
@@ -50,7 +55,7 @@ export default function AddTaskDialog({ onClose, open, subjects, onSubmit }) {
   };
 
   const [fields, setFields] = useState([]);
-  const removeField = id => {
+  const removeField = (id) => {
     const copy = [...fields];
     copy.splice(
       copy.findIndex(({ id: fieldId }) => fieldId === id),
@@ -145,8 +150,8 @@ export default function AddTaskDialog({ onClose, open, subjects, onSubmit }) {
                     label="Due Date"
                     inputFormat="MM/DD/YYYY"
                     value={data.dueDate}
-                    onChange={newValue => updateData({ dueDate: newValue })}
-                    renderInput={params => <TextField {...params} />}
+                    onChange={(newValue) => updateData({ dueDate: newValue })}
+                    renderInput={(params) => <TextField {...params} />}
                   />
                   <Box sx={{ display: "flex", alignItems: "end", gap: 1 }}>
                     <TextField
@@ -159,7 +164,9 @@ export default function AddTaskDialog({ onClose, open, subjects, onSubmit }) {
                       InputProps={{ inputProps: { min: 0, max: 59 } }}
                       onBlur={({ target }) => {
                         const value =
-                          target.value.length === 0 ? 0 : parseInt(target.value);
+                          target.value.length === 0
+                            ? 0
+                            : parseInt(target.value);
                         updateData({
                           time: value * 60 + (data.time % 60),
                         });
@@ -178,7 +185,9 @@ export default function AddTaskDialog({ onClose, open, subjects, onSubmit }) {
                       InputProps={{ inputProps: { min: 0, max: 59 } }}
                       onBlur={({ target }) => {
                         const value =
-                          target.value.length === 0 ? 0 : parseInt(target.value);
+                          target.value.length === 0
+                            ? 0
+                            : parseInt(target.value);
                         updateData({
                           time: value + Math.floor(data.time / 60) * 60,
                         });
@@ -192,7 +201,8 @@ export default function AddTaskDialog({ onClose, open, subjects, onSubmit }) {
                 <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
                   {chips.map(
                     (chip, idx) =>
-                      fields.findIndex(fieldId => fieldId === chip.id) === -1 && (
+                      fields.findIndex((fieldId) => fieldId === chip.id) ===
+                        -1 && (
                         <Chip
                           sx={{
                             background: `linear-gradient(315deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
@@ -225,9 +235,18 @@ export default function AddTaskDialog({ onClose, open, subjects, onSubmit }) {
 											@param {number} id
 										*/
                     (id, idx) => {
-                      const field = chips.find(({ id: fieldId }) => id === fieldId);
+                      const field = chips.find(
+                        ({ id: fieldId }) => id === fieldId
+                      );
                       return (
-                        <Box sx={{ display: "flex", alignItems: "flex-end", gap: 2 }} key={idx}>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            alignItems: "flex-end",
+                            gap: 2,
+                          }}
+                          key={idx}
+                        >
                           {field.field}
                           <IconButton onClick={() => removeField(field.id)}>
                             <Delete />
@@ -258,8 +277,13 @@ export default function AddTaskDialog({ onClose, open, subjects, onSubmit }) {
         ) : (
           <CircularProgress />
         )}
-        <Dialog open={errorDialogOpen} onClose={() => setErrorDialogOpen(false)}>
-          <DialogTitle>Name, Subject, Date, and time length required</DialogTitle>
+        <Dialog
+          open={errorDialogOpen}
+          onClose={() => setErrorDialogOpen(false)}
+        >
+          <DialogTitle>
+            Name, Subject, Date, and time length required
+          </DialogTitle>
           <DialogActions>
             <Button variant="text" onClick={() => setErrorDialogOpen(false)}>
               Ok

@@ -1,11 +1,12 @@
 import {
   collection,
+  deleteDoc,
   getDocs,
   query,
-  where,
-  deleteDoc,
   updateDoc,
+  where,
 } from "firebase/firestore";
+
 import { getDoc } from ".";
 import { db } from "..";
 

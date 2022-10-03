@@ -1,0 +1,19 @@
+{
+  "trailingComma": "es5",
+  "importOrder": [
+    "^@mui/material/(.*)$",
+    "^@mui/material$",
+    "^@mui/icons-material/(.*)",
+    "^@mui/icons-material$",
+    "^@mui/(.*)$",
+    "^react(.*)$",
+    "^firebase/(.*)$",
+    "<THIRD_PARTY_MODULES>",
+    "^pages/(.*)$",
+    "^components/(.*)$",
+    "^lib/(.*)$",
+    "^[./]"
+  ],
+  "importOrderSeparation": true,
+  "importOrderSortSpecifiers": true
+}

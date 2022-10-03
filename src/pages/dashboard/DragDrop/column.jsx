@@ -1,28 +1,27 @@
-import { Draggable, Droppable } from "react-beautiful-dnd";
-
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import CardActions from "@mui/material/CardActions";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
+import Card from "@mui/material/Card";
+import CardActions from "@mui/material/CardActions";
+import CardContent from "@mui/material/CardContent";
+import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
+import Typography from "@mui/material/Typography";
 
+import Add from "@mui/icons-material/Add";
+import ColorLens from "@mui/icons-material/ColorLens";
 // material icons
 import Delete from "@mui/icons-material/Delete";
 import Edit from "@mui/icons-material/Edit";
-import ColorLens from "@mui/icons-material/ColorLens";
-import Add from "@mui/icons-material/Add";
+
+// react
+import { useState } from "react";
+import { Draggable, Droppable } from "react-beautiful-dnd";
+import { TwitterPicker } from "react-color";
+import { useWindowSize } from "react-use";
 
 // custom
 import { shadeColor } from "../../../lib/lightenColor";
 import { useSmallScreen } from "../../../lib/utils";
 import TaskCard from "./card";
-
-// react
-import { useState } from "react";
-import { TwitterPicker } from "react-color";
-import { useWindowSize } from "react-use";
 
 /**
  *
@@ -103,7 +102,7 @@ export default function Column({
               {/* icons */}
               <Box sx={{ display: "flex", gap: 1 }}>
                 <IconButton onClick={() => onAdd(data.title)}>
-                  <Add /> 
+                  <Add />
                 </IconButton>
                 <IconButton>
                   <Edit />

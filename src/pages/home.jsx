@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+
 import { hideSplash, setDocumentTitle } from "../lib/utils";
 
 export default function Home() {

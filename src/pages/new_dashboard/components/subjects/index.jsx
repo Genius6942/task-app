@@ -1,18 +1,21 @@
 import {
-  styled,
-  Dialog,
-  Chip,
   Box,
-  TextField,
-  IconButton,
-  useTheme,
   Button,
+  Chip,
+  Dialog,
+  IconButton,
+  TextField,
+  styled,
+  useTheme,
 } from "@mui/material";
+
 import { Add } from "@mui/icons-material";
-import { useSmallScreen } from "../../../../lib/utils";
-import { shadeColor } from "../../../../lib/lightenColor";
+
 import { useState } from "react";
 import { useEffect } from "react";
+
+import { shadeColor } from "../../../../lib/lightenColor";
+import { useSmallScreen } from "../../../../lib/utils";
 
 const MobileDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiPaper-root": {
@@ -63,8 +66,10 @@ export default function Subjects({ subjects, updateSubjects }) {
   const submitDialog = (value) => {
     if ((value || dialogValue).length < 1) {
       setDialogError("Name Required");
-    } else if (subjects.map(subject => subject.name).includes(value || dialogValue)) {
-      setDialogError("Subject already exists")
+    } else if (
+      subjects.map((subject) => subject.name).includes(value || dialogValue)
+    ) {
+      setDialogError("Subject already exists");
     } else {
       addSubject(value || dialogValue);
       setDialogError(false);

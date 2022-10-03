@@ -1,26 +1,26 @@
-import { auth } from "../../lib/firebase";
-import { useAuthState } from "react-firebase-hooks/auth";
-
-import { useNavigate, Link, NavLink } from "react-router-dom";
-
-import { useEffect, useState } from "react";
-
 import {
   AppBar,
-  Toolbar,
-  IconButton,
-  Typography,
-  Tooltip,
   Avatar,
-  Container,
   Box,
+  Container,
+  IconButton,
   Menu,
   MenuItem,
+  Toolbar,
+  Tooltip,
+  Typography,
 } from "@mui/material";
 
-import { Undo, Redo, Menu as MenuIcon, Add } from "@mui/icons-material";
 import CloudDone from "@mui/icons-material/CloudDone";
+
+import { Add, Menu as MenuIcon, Redo, Undo } from "@mui/icons-material";
+
+import { useEffect, useState } from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { Link, NavLink, useNavigate } from "react-router-dom";
+
 import { app_name } from "../../lib/constants";
+import { auth } from "../../lib/firebase";
 
 export default function NavBar({
   openMenu,
@@ -70,7 +70,7 @@ export default function NavBar({
               alignItems: "center",
             }}
           >
-            <NavLink to='/' style={{ display: "flex"}}>
+            <NavLink to="/" style={{ display: "flex" }}>
               <img src="/favicon-32x32.png" alt="logo" />
 
               <Typography fontSize={20} whiteSpace="nowrap" sx={{ mx: 2 }}>

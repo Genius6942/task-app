@@ -1,8 +1,5 @@
-import { Outlet, useNavigate, useLocation } from "react-router-dom";
-import { hideSplash, useSmallScreen } from "../../lib/utils";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "../../lib/firebase";
-import { useState, useEffect } from "react";
+import { useTheme } from "@mui/material/styles";
+
 import {
   BottomNavigation,
   BottomNavigationAction,
@@ -15,24 +12,31 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  styled,
   Switch,
+  styled,
 } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
+
 import {
-  Home,
   CalendarMonth,
-  List as ListIcon,
-  PersonOutline,
   ChevronLeft,
   ChevronRight,
   DarkMode,
+  Home,
   LightMode,
+  List as ListIcon,
+  PersonOutline,
 } from "@mui/icons-material";
-import { requestPermission, startFirebaseMessaging } from "../../lib/firebase";
-import AddButton from "./components/add";
+
+import { useEffect, useState } from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
+
 import PageAnimateLayout from "../../Animate";
+import { auth } from "../../lib/firebase";
+import { requestPermission, startFirebaseMessaging } from "../../lib/firebase";
 import { getTasks } from "../../lib/firebase/firestore/task";
+import { hideSplash, useSmallScreen } from "../../lib/utils";
+import AddButton from "./components/add";
 import { TaskContextProvider } from "./components/task/context";
 
 const drawerWidth = 240;
@@ -215,7 +219,12 @@ export default function NewDashboard({ changeTheme }) {
                       }}
                     >
                       <item.icon
-											sx={{transform: temporaryDrawerOpen ? "rotateY(180deg)" : "rotateY(0deg)", transition: "transform 0.3s ease-in-out"}}
+                        sx={{
+                          transform: temporaryDrawerOpen
+                            ? "rotateY(180deg)"
+                            : "rotateY(0deg)",
+                          transition: "transform 0.3s ease-in-out",
+                        }}
                         color={
                           navState === item.name.toLowerCase() ? "primary" : ""
                         }
@@ -241,42 +250,51 @@ export default function NewDashboard({ changeTheme }) {
                 </ListItem>
               ))}
               <Divider />
-              { false && <ListItem
-            sx={{
-              justifyContent:
-                drawerOpen || temporaryDrawerOpen ? "initial" : "center",
-              alignItems: "center",
-              height: "48px",
-            }}
-          >
-            <ListItemIcon
-              sx={{
-                minWidth: 0,
-                mr: drawerOpen || temporaryDrawerOpen ? 3 : "auto",
-                justifyContent: "center",
-              }}
-            >
-              {theme.palette.mode === "dark" ? <DarkMode /> : <LightMode />}
-            </ListItemIcon>
-            <ListItemText
-              primary="Dark Mode"
-              sx={{
-                opacity: drawerOpen || temporaryDrawerOpen ? 1 : 0,
-                transition: "opacity ease",
-                transitionDuration: theme.transitions.duration.shortest,
-              }}
-            />
-            {
-              <Switch
-                edge="end"
-                onChange={({ target }) => changeTheme({ dark: target.checked })}
-                checked={theme.palette.mode === "dark"}
-                sx={{
-                  display: drawerOpen || temporaryDrawerOpen ? null : "none",
-                }}
-              />
-            }
-          </ListItem> }
+              {false && (
+                <ListItem
+                  sx={{
+                    justifyContent:
+                      drawerOpen || temporaryDrawerOpen ? "initial" : "center",
+                    alignItems: "center",
+                    height: "48px",
+                  }}
+                >
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 0,
+                      mr: drawerOpen || temporaryDrawerOpen ? 3 : "auto",
+                      justifyContent: "center",
+                    }}
+                  >
+                    {theme.palette.mode === "dark" ? (
+                      <DarkMode />
+                    ) : (
+                      <LightMode />
+                    )}
+                  </ListItemIcon>
+                  <ListItemText
+                    primary="Dark Mode"
+                    sx={{
+                      opacity: drawerOpen || temporaryDrawerOpen ? 1 : 0,
+                      transition: "opacity ease",
+                      transitionDuration: theme.transitions.duration.shortest,
+                    }}
+                  />
+                  {
+                    <Switch
+                      edge="end"
+                      onChange={({ target }) =>
+                        changeTheme({ dark: target.checked })
+                      }
+                      checked={theme.palette.mode === "dark"}
+                      sx={{
+                        display:
+                          drawerOpen || temporaryDrawerOpen ? null : "none",
+                      }}
+                    />
+                  }
+                </ListItem>
+              )}
             </List>
           </WrapperDrawer>
           <PageAnimateLayout>

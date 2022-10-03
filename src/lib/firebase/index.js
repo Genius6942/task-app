@@ -1,23 +1,22 @@
 import { initializeApp } from "firebase/app";
 import {
   GoogleAuthProvider,
-  getAuth,
-  signInWithPopup,
-  signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
+  getAuth,
   sendPasswordResetEmail,
+  signInWithEmailAndPassword,
+  signInWithPopup,
   signOut,
 } from "firebase/auth";
 import {
+  addDoc,
+  collection,
+  getDocs,
   getFirestore,
   query,
-  getDocs,
-  collection,
-  where,
-  addDoc,
   updateDoc,
+  where,
 } from "firebase/firestore";
-
 import { getMessaging, getToken } from "firebase/messaging";
 
 const firebaseConfig = {

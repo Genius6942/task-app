@@ -1,6 +1,7 @@
-import { useWindowSize } from "react-use";
-import { app_name } from "./constants";
 import { useState } from "react";
+import { useWindowSize } from "react-use";
+
+import { app_name } from "./constants";
 
 /**
  * @param {string?} page

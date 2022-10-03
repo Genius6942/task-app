@@ -1,24 +1,18 @@
 // firebase
-import {
-  auth,
-  requestPermission,
-  startFirebaseMessaging,
-} from "../../lib/firebase";
-import { getUserBoard, updateUserBoard } from "../../lib/firebase/firestore";
-import { useAuthState } from "react-firebase-hooks/auth";
-
-// react
-import { Link, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-
 // material icons
-import CloseIcon from "@mui/icons-material/Close";
 // material ui
 import Box from "@mui/material/Box";
-import Snackbar from "@mui/material/Snackbar";
-import IconButton from "@mui/material/IconButton";
 import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
+import Snackbar from "@mui/material/Snackbar";
 import Typography from "@mui/material/Typography";
+
+import CloseIcon from "@mui/icons-material/Close";
+
+import { useEffect, useState } from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
+// react
+import { Link, useNavigate } from "react-router-dom";
 
 // moment for time stuff
 import moment from "moment";
@@ -26,14 +20,19 @@ import moment from "moment";
 // custom
 import Menu from "../../components/Menu";
 import NavBar from "../../components/NavBar";
-import AddCardModal from "./addCard";
-import useUndoableState from "./undoableState";
+import {
+  auth,
+  requestPermission,
+  startFirebaseMessaging,
+} from "../../lib/firebase";
+import { getUserBoard, updateUserBoard } from "../../lib/firebase/firestore";
 import { hideSplash, setDocumentTitle, useSmallScreen } from "../../lib/utils";
-import AddColModal from "./addCol";
 import Board from "./DragDrop/board";
-
+import AddCardModal from "./addCard";
+import AddColModal from "./addCol";
 // css
 import "./dashboard.css";
+import useUndoableState from "./undoableState";
 
 export default function Dashboard() {
   setDocumentTitle("Dashboard");
@@ -58,7 +57,7 @@ export default function Dashboard() {
   }, [user, loading]);
 
   const [menuOpen, setMenuOpen] = useState(false);
-  
+
   const {
     state: cardState,
     setState: setCardState,
@@ -104,7 +103,7 @@ export default function Dashboard() {
     if (user) {
       updateUserBoard(user.uid, cardState);
     }
-		localStorage.setItem("cardState", JSON.stringify(cardState));
+    localStorage.setItem("cardState", JSON.stringify(cardState));
   }, [cardState]);
 
   // Create ids

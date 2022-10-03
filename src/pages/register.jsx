@@ -1,26 +1,26 @@
 // firebase
+import Box from "@mui/material/Box";
+// mui
+import Button from "@mui/material/Button";
+import Container from "@mui/material/Container";
+import CssBaseline from "@mui/material/CssBaseline";
+import Grid from "@mui/material/Grid";
+import Link from "@mui/material/Link";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+
+// react
+import { useEffect } from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
+
+import { app_name } from "../lib/constants";
 import {
   auth,
   registerWithEmailAndPassword,
   signInWithGoogle,
 } from "../lib/firebase";
-import { useAuthState } from "react-firebase-hooks/auth";
-// react
-import { useEffect } from "react";
-import { Link as RouterLink, useNavigate } from "react-router-dom";
-
-// mui
-import Button from "@mui/material/Button";
-import CssBaseline from "@mui/material/CssBaseline";
-import TextField from "@mui/material/TextField";
-import Link from "@mui/material/Link";
-import Grid from "@mui/material/Grid";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import Container from "@mui/material/Container";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { app_name } from "../lib/constants";
-
 // custom
 import { hideSplash, setDocumentTitle } from "../lib/utils";
 
@@ -33,10 +33,7 @@ function Copyright(props) {
       {...props}
     >
       {"Copyright © "}
-      <RouterLink to="/">
-        {app_name}
-      </RouterLink>{" "}
-      {new Date().getFullYear()}
+      <RouterLink to="/">{app_name}</RouterLink> {new Date().getFullYear()}
       {"."}
     </Typography>
   );

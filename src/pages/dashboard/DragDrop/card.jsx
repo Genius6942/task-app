@@ -1,23 +1,24 @@
 // mui
+import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
 import CardActions from "@mui/material/CardActions";
+import CardContent from "@mui/material/CardContent";
 import IconButton from "@mui/material/IconButton";
+import Link from "@mui/material/Link";
+import Tooltip from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import Box from '@mui/material/Box';
-import Tooltip from '@mui/material/Toolbar'
-import Link from '@mui/material/Link';
 
+import ColorLens from "@mui/icons-material/ColorLens";
 // material icons
-import Delete from '@mui/icons-material/Delete';
-import Edit from '@mui/icons-material/Edit';
-import ColorLens from '@mui/icons-material/ColorLens';
-import DragIndicator from '@mui/icons-material/DragIndicator';
+import Delete from "@mui/icons-material/Delete";
+import DragIndicator from "@mui/icons-material/DragIndicator";
+import Edit from "@mui/icons-material/Edit";
 
-import { color, Container } from "@mui/system/";
+import { Container, color } from "@mui/system/";
+
+import { useState } from "react";
 import { Draggable } from "react-beautiful-dnd";
 import { TwitterPicker } from "react-color";
-import { useState } from "react";
 
 /**
  * @param {Object} props
@@ -93,8 +94,16 @@ export default function TaskCard({
                 maxWidth="lg"
               >
                 {data.title && (
-                  <Box sx={{ display: "flex", marginLeft: 1, alignItems: "center" }}>
-                    <Typography fontSize={20} fontWeight="bold">{data.title}</Typography>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      marginLeft: 1,
+                      alignItems: "center",
+                    }}
+                  >
+                    <Typography fontSize={20} fontWeight="bold">
+                      {data.title}
+                    </Typography>
                   </Box>
                 )}
                 <Box

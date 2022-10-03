@@ -1,43 +1,46 @@
 // mui
-import Card from "@mui/material/Card";
-import Container from "@mui/material/Container";
-import CardContent from "@mui/material/CardContent";
-import CardActions from "@mui/material/CardActions";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import Tooltip from "@mui/material/Tooltip";
+import Card from "@mui/material/Card";
+import CardActions from "@mui/material/CardActions";
+import CardContent from "@mui/material/CardContent";
+import Container from "@mui/material/Container";
+import IconButton from "@mui/material/IconButton";
 import Link from "@mui/material/Link";
+import Tooltip from "@mui/material/Tooltip";
+import Typography from "@mui/material/Typography";
+import { useTheme } from "@mui/material/styles";
 
-// material icons
-import Delete from "@mui/icons-material/Delete";
-import Edit from "@mui/icons-material/Edit";
-import ColorLens from "@mui/icons-material/ColorLens";
-import DragIndicator from "@mui/icons-material/DragIndicator";
-import CheckBox from "@mui/icons-material/CheckBox";
-import Close from "@mui/icons-material/Close";
-import Save from "@mui/icons-material/Save";
-
-import { TwitterPicker } from "react-color";
-import { Suspense, useState, lazy, forwardRef } from "react";
 import {
+  Checkbox,
   Collapse,
   FormControl,
   Select,
   Stack,
-  styled,
   TextField,
-  Checkbox,
+  styled,
 } from "@mui/material";
+
+import CheckBox from "@mui/icons-material/CheckBox";
+import Close from "@mui/icons-material/Close";
+import ColorLens from "@mui/icons-material/ColorLens";
+import Delete from "@mui/icons-material/Delete";
+import DragIndicator from "@mui/icons-material/DragIndicator";
+import Edit from "@mui/icons-material/Edit";
+import Save from "@mui/icons-material/Save";
+
 import { ExpandMore as ExpandMoreIcon } from "@mui/icons-material";
 
+import { DesktopDatePicker, MobileDatePicker } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import moment from "moment";
-import { DesktopDatePicker, MobileDatePicker } from "@mui/x-date-pickers";
-import { useForceUpdate, useSmallScreen } from "../../../../lib/utils";
-import { useTheme } from "@mui/material/styles";
+
+import { Suspense, forwardRef, lazy, useState } from "react";
 import { useEffect } from "react";
+import { TwitterPicker } from "react-color";
+
+import moment from "moment";
+
+import { useForceUpdate, useSmallScreen } from "../../../../lib/utils";
 
 const DatePicker = ({ mobile, ...props }) =>
   mobile ? <MobileDatePicker {...props} /> : <DesktopDatePicker {...props} />;
@@ -74,7 +77,7 @@ export default function Task({
   /**
    * @param {import('react-color').ColorResult} color
    */
-  const onColorChange = color => {
+  const onColorChange = (color) => {
     const shallowCopy = { ...taskData };
     shallowCopy.color = color.hex;
     onChange(shallowCopy);
@@ -101,7 +104,7 @@ export default function Task({
   /**
    * @param {Partial<data>} newData
    */
-  const updateData = newData => {
+  const updateData = (newData) => {
     const values = { ...newData };
     return setData({ ...data, ...values });
   };
@@ -110,9 +113,11 @@ export default function Task({
 
   const regexp = /(https?:\/\/[^\s]+)/g;
 
-  const result = Array.from(data.details.matchAll(regexp), m => m[0]);
+  const result = Array.from(data.details.matchAll(regexp), (m) => m[0]);
 
-  const output = data.details.split(regexp).filter(item => !regexp.test(item));
+  const output = data.details
+    .split(regexp)
+    .filter((item) => !regexp.test(item));
 
   Array(result.length)
     .fill()
@@ -120,7 +125,11 @@ export default function Task({
       output.splice(
         result.length - idx,
         0,
-        <Link href={result[result.length - idx - 1]} target="_blank" rel="noopener">
+        <Link
+          href={result[result.length - idx - 1]}
+          target="_blank"
+          rel="noopener"
+        >
           {result[result.length - idx - 1]}
         </Link>
       );
@@ -140,7 +149,7 @@ export default function Task({
           backgroundColor: taskData.color || "#cccccc",
           overflow: "visible",
         }}
-        onDoubleClick={e => {
+        onDoubleClick={(e) => {
           e.preventDefault();
           setEditing(true);
         }}
@@ -158,7 +167,7 @@ export default function Task({
                 flexGrow: 1,
                 justifyContent: "flex-start",
                 alignItems: "center",
-                overflow: "auto",
+                overflowX: "auto",
               }}
               className="nobar"
             >
@@ -259,40 +268,49 @@ export default function Task({
                 {finalText}
               </Typography>
             )}
-            <Stack direction="horizontal" gap={1} sx={{ alignItems: "center" }}>
-              <Typography>Completions:</Typography>
-              <Box
-                sx={{ display: "flex", overflow: "auto", flexWrap: "none" }}
-                className="nobar"
-              >
-                {data.completes.map((complete, idx) => (
-                  <Checkbox
-                    sx={{ my: -1 }}
-                    key={idx}
-                    checked={complete}
-                    onChange={() => {
-                      const completesCopy = [...data.completes];
-                      const currentCompletes = completesCopy.filter(item => item).length;
-                      if (complete) {
-                        // remove complete
-                        completesCopy[currentCompletes - 1] = false;
-                      } else {
-                        // add complete
-                        completesCopy[currentCompletes] = true;
-                      }
+            {!editing && (
+              <Stack direction="row" gap={1} sx={{ alignItems: "center" }}>
+                <Typography>Task progress:</Typography>
+                <Box
+                  sx={{
+                    display: "flex",
+                    overflowX: "auto",
+                    overflowY: "hidden",
+                    flexWrap: "none",
+                  }}
+                  className="nobar"
+                >
+                  {data.completes.map((complete, idx) => (
+                    <Checkbox
+                      sx={{ my: -1 }}
+                      key={idx}
+                      checked={complete}
+                      onChange={() => {
+                        const completesCopy = [...data.completes];
+                        const currentCompletes = completesCopy.filter(
+                          (item) => item
+                        ).length;
+                        if (complete) {
+                          // remove complete
+                          completesCopy[currentCompletes - 1] = false;
+                        } else {
+                          // add complete
+                          completesCopy[currentCompletes] = true;
+                        }
 
-                      const formatedData = {
-                        ...data,
-                        completes: completesCopy,
-                        startDate: data.startDate.format("MM/DD/YYYY"),
-                        dueDate: data.dueDate.format("MM/DD/YYYY"),
-                      };
-                      onChange(formatedData);
-                    }}
-                  />
-                ))}
-              </Box>
-            </Stack>
+                        const formatedData = {
+                          ...data,
+                          completes: completesCopy,
+                          startDate: data.startDate.format("MM/DD/YYYY"),
+                          dueDate: data.dueDate.format("MM/DD/YYYY"),
+                        };
+                        onChange(formatedData);
+                      }}
+                    />
+                  ))}
+                </Box>
+              </Stack>
+            )}
           </Collapse>
           <Collapse in={editing} timeout="auto" unmountOnExit sx={{ mt: 2 }}>
             <LocalizationProvider dateAdapter={AdapterMoment}>
@@ -303,8 +321,8 @@ export default function Task({
                     label="Start Date"
                     inputFormat="MM/DD/YYYY"
                     value={data.startDate}
-                    onChange={newValue => updateData({ startDate: newValue })}
-                    renderInput={params => <TextField {...params} />}
+                    onChange={(newValue) => updateData({ startDate: newValue })}
+                    renderInput={(params) => <TextField {...params} />}
                   />
                   <DatePicker
                     variant="standard"
@@ -312,8 +330,8 @@ export default function Task({
                     label="Due Date"
                     inputFormat="MM/DD/YYYY"
                     value={data.dueDate}
-                    onChange={newValue => updateData({ dueDate: newValue })}
-                    renderInput={params => <TextField {...params} />}
+                    onChange={(newValue) => updateData({ dueDate: newValue })}
+                    renderInput={(params) => <TextField {...params} />}
                   />
                   <Box sx={{ display: "flex", alignItems: "end", gap: 1 }}>
                     <TextField
@@ -326,7 +344,9 @@ export default function Task({
                       InputProps={{ inputProps: { min: 0, max: 59 } }}
                       onBlur={({ target }) => {
                         const value =
-                          target.value.length === 0 ? 0 : parseInt(target.value);
+                          target.value.length === 0
+                            ? 0
+                            : parseInt(target.value);
                         updateData({
                           time: value * 60 + (data.time % 60),
                         });
@@ -345,7 +365,9 @@ export default function Task({
                       InputProps={{ inputProps: { min: 0, max: 59 } }}
                       onBlur={({ target }) => {
                         const value =
-                          target.value.length === 0 ? 0 : parseInt(target.value);
+                          target.value.length === 0
+                            ? 0
+                            : parseInt(target.value);
                         updateData({
                           time: value + Math.floor(data.time / 60) * 60,
                         });
@@ -383,7 +405,7 @@ export default function Task({
                   {colorPickerOpen ? (
                     <Box
                       sx={{ position: "absolute", top: "110%", right: "0" }}
-                      onClick={e => e.stopPropagation()}
+                      onClick={(e) => e.stopPropagation()}
                     >
                       <TwitterPicker
                         color={taskData.color}

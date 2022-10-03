@@ -1,8 +1,9 @@
 // from https://medium.com/geekculture/react-hook-to-allow-undo-redo-d9d791c5cd94
-
-import { useEffect, useMemo, useState } from "react";
 // If you're only working with primitives, this is not required
+import { useEffect, useMemo, useState } from "react";
+
 import isEqual from "lodash/isEqual";
+
 export default function useUndoableState(init) {
   const [states, setStates] = useState([init]); // Used to store history of all states
   const [index, setIndex] = useState(0); // Index of current state within `states`

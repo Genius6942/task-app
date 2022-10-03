@@ -1,5 +1,7 @@
 import { useState } from "react";
-import { motion, usePresence, AnimatePresence } from "framer-motion";
+
+import { AnimatePresence, motion, usePresence } from "framer-motion";
+
 import { generateId } from "../../../../lib/firebase/firestore";
 
 const name = () => `${generateId()}`;

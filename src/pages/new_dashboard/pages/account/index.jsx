@@ -1,27 +1,32 @@
 import {
   Avatar,
   Box,
+  Button,
   CircularProgress,
   Stack,
   Typography,
   useTheme,
-  Button,
 } from "@mui/material";
+
+import { Add, FileUploadOutlined } from "@mui/icons-material";
+
+import { useEffect } from "react";
+import { useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
+
+import { updateProfile } from "firebase/auth";
+
+import { motion } from "framer-motion";
+
 import { app_name } from "../../../../lib/constants";
 import { auth } from "../../../../lib/firebase";
-import { useEffect } from "react";
-import { motion } from "framer-motion";
-import { useState } from "react";
-import { Add, FileUploadOutlined } from "@mui/icons-material";
-import Subjects from "../../components/subjects";
 import {
   getUser,
   updateProfilePicture,
   updateUser,
 } from "../../../../lib/firebase/firestore/user";
+import Subjects from "../../components/subjects";
 import EditableInfo from "./editableInfo";
-import { updateProfile } from "firebase/auth";
 
 export default function Account() {
   const [user, loading, error] = useAuthState(auth);

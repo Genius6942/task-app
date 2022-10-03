@@ -1,15 +1,18 @@
 import { Fab } from "@mui/material";
+
 import { Add } from "@mui/icons-material";
+
 import { useState } from "react";
-import AddTaskDialog from "./dialog";
-import { useForceUpdate } from "../../../../lib/utils";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "../../../../lib/firebase";
 import { useEffect } from "react";
-import { getUser } from "../../../../lib/firebase/firestore/user";
+import { useAuthState } from "react-firebase-hooks/auth";
 import { useEffectOnce } from "react-use";
+
+import { auth } from "../../../../lib/firebase";
 import { createTask } from "../../../../lib/firebase/firestore";
+import { getUser } from "../../../../lib/firebase/firestore/user";
+import { useForceUpdate } from "../../../../lib/utils";
 import { useTasks } from "../task/context";
+import AddTaskDialog from "./dialog";
 
 export default function AddButton() {
   const [dialogOpen, setDialogOpen] = useState(false);

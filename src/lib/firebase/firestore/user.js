@@ -1,14 +1,15 @@
-import { getDoc } from ".";
+import { updateProfile } from "firebase/auth";
 import {
-  getDocs,
-  updateDoc,
   collection,
+  getDocs,
   query,
+  updateDoc,
   where,
 } from "firebase/firestore";
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
+
+import { getDoc } from ".";
 import { app, db } from "..";
-import { updateProfile } from "firebase/auth";
 
 const updateUser = async (uid, data) => {
   const col = collection(db, "users");
