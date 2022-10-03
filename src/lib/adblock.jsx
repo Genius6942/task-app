@@ -70,53 +70,55 @@ export function detectAdblock() {
  */
 export function AdBlockModal({ open, onForceClose }) {
   const theme = useTheme();
-  return open && (
-    <Box
-      sx={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        position: "fixed",
-        top: "0",
-        left: 0,
-        right: 0,
-        bottom: 0,
-        background: "rgba(0,0,0,.3)",
-        backdropFilter: "blur(8px)",
-        zIndex: 9999,
-      }}
-    >
+  return (
+    open && (
       <Box
         sx={{
-          p: 3,
-          background: "white",
-          borderRadius: 10,
-          maxWidth: 400,
           display: "flex",
-          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          position: "fixed",
+          top: "0",
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: "rgba(0,0,0,.3)",
+          backdropFilter: "blur(8px)",
+          zIndex: 9999,
         }}
       >
-        <Typography fontSize={theme.typography.h3}>
-          Looks like you have an adblocker.
-        </Typography>
-        <Typography>
-          Ad blockers can interfere with the database transfers in this site and
-          prevent proper functionality.
-          <br />
-          We don't <strong>ever</strong> track you or display ads, as we want
-          this service to be free for everyone.
-          <br />
-          Please disable your ad blocker, then reload the page.
-        </Typography>
-        <Stack gap={1} direction="row " sx={{ mx: "auto" }}>
-          <Button variant="text" onClick={onForceClose}>
-            I don't have an ad blocker
-          </Button>
-          <Button variant="text" onClick={() => history.go(0)}>
-            Reload
-          </Button>
-        </Stack>
+        <Box
+          sx={{
+            p: 3,
+            background: "white",
+            borderRadius: 10,
+            maxWidth: 400,
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          <Typography fontSize={theme.typography.h3}>
+            Looks like you have an adblocker.
+          </Typography>
+          <Typography>
+            Ad blockers can interfere with the database transfers in this site
+            and prevent proper functionality.
+            <br />
+            We don't <strong>ever</strong> track you or display ads, as we want
+            this service to be free for everyone.
+            <br />
+            Please disable your ad blocker, then reload the page.
+          </Typography>
+          <Stack gap={1} direction="row " sx={{ mx: "auto" }}>
+            <Button variant="text" onClick={onForceClose}>
+              I don't have an ad blocker
+            </Button>
+            <Button variant="text" onClick={() => history.go(0)}>
+              Reload
+            </Button>
+          </Stack>
+        </Box>
       </Box>
-    </Box>
+    )
   );
 }

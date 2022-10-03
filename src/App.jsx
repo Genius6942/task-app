@@ -7,6 +7,7 @@ import {
   CssBaseline,
   IconButton,
   Typography,
+  Box,
 } from "@mui/material";
 
 // import Button from "@mui/material/Button";
@@ -18,11 +19,9 @@ import { Close } from "@mui/icons-material";
 
 import { useEffect, useState } from "react";
 import {
-  Outlet,
   Route,
   BrowserRouter as Router,
   Routes,
-  useLocation,
 } from "react-router-dom";
 import { useEffectOnce } from "react-use";
 
@@ -41,12 +40,6 @@ import Register from "./pages/register";
 import createTheme from "./theme";
 
 function App() {
-  const [cards, setCards] = useState([
-    {
-      id: 0,
-      value: 1,
-    },
-  ]);
 
   const [darkMode, setDarkMode] = useState(false);
   const theme = createTheme({ dark: darkMode });
@@ -68,6 +61,7 @@ function App() {
   // detect ad blocker
   const [adBlockModalOpen, setAdBlockModalOpen] = useState(false);
   useEffectOnce(() => {
+    /* global fuckAdBlock */
     if (localStorage.getItem("force-hide-adblock-msg") === "1") return;
     fuckAdBlock.onDetected(() => {
       console.log("ad block in use");
@@ -102,8 +96,6 @@ function App() {
     } else if (outcome === "dismissed") {
       console.log("User dismissed the install prompt");
     }
-
-    const location = useLocation();
   };
 
   return (

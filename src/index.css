@@ -13,3 +13,7 @@ a:active {
 .nobar::-webkit-scrollbar {
   display: none;
 }
+
+.nobar {
+  scrollbar-width: none;
+}

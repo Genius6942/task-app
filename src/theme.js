@@ -9,12 +9,9 @@ const theme = ({ dark = false }) => {
     palette: {
       type: dark ? "dark" : "light",
       mode: dark ? "dark" : "light",
-      primary: {
-        main: "#FF6900",
-      },
-      secondary: {
-        main: "#E4FF00",
-      },
+      primary: createColor("#FF6900"),
+      secondary: createColor("#E4FF00"),
+      white: createColor("#FFFFFF"),
     },
   });
 };

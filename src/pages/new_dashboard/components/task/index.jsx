@@ -270,7 +270,10 @@ export default function Task({
             )}
             {!editing && (
               <Stack direction="row" gap={1} sx={{ alignItems: "center" }}>
-                <Typography whiteSpace="nowrap">Task progress ({data.completes.filter(item=>item).length}/{data.completes.length}):</Typography>
+                <Typography whiteSpace="nowrap">
+                  Task progress ({data.completes.filter((item) => item).length}/
+                  {data.completes.length}):
+                </Typography>
                 <Box
                   sx={{
                     display: "flex",

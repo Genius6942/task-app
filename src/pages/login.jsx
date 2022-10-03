@@ -48,7 +48,7 @@ export default function Login() {
     logInWithEmailAndPassword(data.get("email"), data.get("password"));
   };
 
-  const [user, loading, error] = useAuthState(auth);
+  const [user, loading] = useAuthState(auth);
   const navigate = useNavigate();
   useEffect(() => {
     if (loading) {
@@ -101,6 +101,7 @@ export default function Login() {
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
+            color="white"
           >
             Sign In
           </Button>
@@ -109,6 +110,7 @@ export default function Login() {
             fullWidth
             sx={{ mt: 3, mb: 2 }}
             onClick={signInWithGoogle}
+            color="white"
           >
             <img
               src="/google_logo.png"
@@ -129,7 +131,7 @@ export default function Login() {
                   navigate("/register");
                 }}
               >
-                Don't have an account? Register.
+                Don&apos;t have an account? Register.
               </Link>
             </Grid>
           </Grid>
