@@ -20,6 +20,7 @@ import {
   ChevronLeft,
   ChevronRight,
   DarkMode,
+  History,
   Home,
   LightMode,
   List as ListIcon,
@@ -129,6 +130,10 @@ export default function NewDashboard({ changeTheme }) {
     {
       name: "Subjects",
       icon: ListIcon,
+    },
+    {
+      name: "History",
+      icon: History,
     },
     {
       name: "Account",

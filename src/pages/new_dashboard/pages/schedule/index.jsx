@@ -23,6 +23,9 @@ export default function Schedule() {
     if (!user || loading) return;
   });
 
+  const days = [];
+  
+
   return (
     <Box
       sx={{

@@ -114,6 +114,7 @@ function App() {
               <Route path="" element={<DashboardHome />} />
               <Route path="subjects" element={<>subjects</>} />
               <Route path="schedule" element={<Schedule />} />
+              <Route path="history" element={<>history</>} />
               <Route path="account" element={<Account />} />
             </Route>
 
