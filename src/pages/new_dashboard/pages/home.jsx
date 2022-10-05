@@ -34,7 +34,7 @@ export default function Home() {
         overflow: "auto",
       }}
     >
-      <Typography mt={3} fontWeight="bold" fontSize={50}>
+      <Typography mt={3} fontWeight="bold" whiteSpace="nowrap" fontSize={40}>
         {moment().format("dddd, MM/DD")}
       </Typography>
       <Stack gap={2} my={2} direction="column">
@@ -44,7 +44,7 @@ export default function Home() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               // exit={{ opacity: 0 }}
-              transition={{ delay: idx * 0.2, duration: 0.5 }}
+              transition={{ delay: idx * 0.2 , duration: 0.5 }}
               key={idx}
             >
               <Task

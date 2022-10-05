@@ -54,7 +54,7 @@ export default function Subjects() {
         sx={{
           maxHeight: "100%",
           width: "100%",
-          overflow: "scroll",
+          overflow: "auto",
           p: 6,
           display: "flex",
           flexDirection: smallScreen && "column",
@@ -64,7 +64,6 @@ export default function Subjects() {
         <AnimatePresence>
           {subjects.map((subject, idx) => {
             taskAnimationCount += taskCounts[subject] || taskAnimation.delay;
-            console.log(taskAnimationCount);
             return (
               <motion.div
                 key={idx}

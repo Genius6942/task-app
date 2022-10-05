@@ -7,6 +7,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import moment from "moment";
 
 import { auth } from "../../../../lib/firebase";
+import { useSmallScreen } from "../../../../lib/utils";
 import { useTasks } from "../../components/task/context";
 import Day from "./day";
 
@@ -41,7 +42,6 @@ export default function Schedule() {
     days.push(moment(day.format("MM/DD/YYYY"), "MM/DD/YYYY"));
     day = day.add(1, "day");
   }
-  console.log(days);
 
   const tasksOverdue = tasks
     .map((task) => ({
@@ -50,16 +50,13 @@ export default function Schedule() {
       dueDate: moment(task.dueDate, "MM/DD/YYYY"),
     }))
     .filter((task) => {
-      console.log(
-        task.dueDate.format("MM/DD/YYYY"),
-        moment().startOf("day").format("MM/DD/YYYY"),
-        task.dueDate.isBefore(moment().startOf("day").format("MM/DD/YYYY"))
-      );
       return (
         task.dueDate.isBefore(moment().startOf("day").format("MM/DD/YYYY")) &&
         task.completes.length === task.completes.filter((item) => item).length
       );
     });
+
+  const smallScreen = useSmallScreen();
   return (
     <Box
       sx={{
@@ -71,7 +68,7 @@ export default function Schedule() {
         overflow: "auto",
       }}
     >
-      <Stack gap={2} my={2}>
+      <Stack gap={2} my={2} mx={!smallScreen && 2} direction={smallScreen ? "column" : "row"}>
         <Day title="Overdue" presetTasks={tasksOverdue} />
         {days.map((day, idx) => (
           <Day day={day} key={idx} index={idx} />
