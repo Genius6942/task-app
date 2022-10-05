@@ -8,9 +8,9 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { useEffectOnce } from "react-use";
 
 import { auth } from "../../../../lib/firebase";
-import { createTask } from "../../../../lib/firebase/firestore";
+import { createTask } from "../../../../lib/firebase/firestore/task";
 import { getUser } from "../../../../lib/firebase/firestore/user";
-import { useForceUpdate } from "../../../../lib/utils";
+import { useSmallScreen } from "../../../../lib/utils";
 import { useTasks } from "../task/context";
 import AddTaskDialog from "./dialog";
 
@@ -72,12 +72,18 @@ export default function AddButton() {
     return true;
   };
 
+  const smallScreen = useSmallScreen();
+
   return (
     <>
       <Fab
         color="primary"
         aria-label="add"
-        sx={{ position: "absolute", bottom: 16, right: 16 }}
+        sx={{
+          position: smallScreen ? "absolute" : "fixed",
+          bottom: 16,
+          right: 16,
+        }}
         onClick={() => {
           setDialogOpen(true);
         }}

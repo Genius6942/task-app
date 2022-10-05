@@ -62,8 +62,9 @@ const ExpandMore = styled(IconButtonForward)(({ theme, expand }) => ({
  * @param {object} props
  * @param { import('../../../types').cardState } props.taskData
  * @param {(newState: import('../../../types').cardState ) => void} props.onChange
- * @param {boolean} props.placeholder - makes the card invisible and not interactive
+ * @param {boolean?} props.placeholder - makes the card invisible and not interactive
  * @param {() => void} props.onRemove
+ * @param {number?} props.customWidth
  */
 export default function Task({
   taskData,
@@ -71,6 +72,7 @@ export default function Task({
   onChange,
   placeholder = false,
   onRemove,
+  customWidth = null,
 }) {
   const [colorPickerOpen, setColorPickerOpen] = useState(false);
   const theme = useTheme();
@@ -83,7 +85,7 @@ export default function Task({
     onChange(shallowCopy);
   };
   if (placeholder) {
-    return <div style={{ width: 398, height: 161 }}></div>;
+    return <div style={{ width: customWidth || 398, height: 161 }}></div>;
   }
 
   const [expanded, setExpanded] = useState(false);
@@ -145,7 +147,7 @@ export default function Task({
     <FormControl variant="standard">
       <Card
         sx={{
-          width: smallScreen ? 350 : 450,
+          width: customWidth || (smallScreen ? 350 : 450),
           backgroundColor: taskData.color || "#cccccc",
           overflow: "visible",
         }}
@@ -202,14 +204,16 @@ export default function Task({
                   </Tooltip>
                 </>
               ) : (
-                <Typography
-                  fontSize={18}
-                  sx={{ flexGrow: 1 }}
-                  textOverflow="ellipsis"
-                  whiteSpace="nowrap"
-                >
-                  Due {data.dueDate.format("ddd MM/DD")}
-                </Typography>
+                <Tooltip title={data.dueDate.format("ddd MM/DD")}>
+                  <Typography
+                    fontSize={18}
+                    sx={{ flexGrow: 1 }}
+                    textOverflow="ellipsis"
+                    whiteSpace="nowrap"
+                  >
+                    Due {data.dueDate.format("ddd MM/DD")}
+                  </Typography>
+                </Tooltip>
               )}
             </Box>
             <Box sx={{ display: "flex" }}>

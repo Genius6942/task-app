@@ -62,74 +62,6 @@ const getUserBoard = async (uid) => {
   return JSON.parse(result.subjects);
 };
 
-const getSubject = (subjectId) => {
-  return new Promise(async (resolve, reject) => {
-    const result = await getDoc(
-      "subjects",
-      { field: "id", value: subjectId },
-      async (col) => {
-        reject("Subject not found");
-      }
-    );
-    resolve(result);
-  });
-};
-
-const updateSubject = (subjectId, subject) => {
-  return new Promise(async (resolve, reject) => {
-    const result = await getDoc(
-      "subjects",
-      { field: "id", value: subjectId },
-      async (col) => {
-        reject("Subject not found");
-      },
-      true
-    );
-    await updateDoc(result.ref, subject);
-    resolve(true);
-  });
-};
-
-const createSubject = async (uid, subject) => {
-  const col = collection(db, "subjects");
-  addDoc(col, { ...subject, ownerId: uid, id: generateId() });
-  return true;
-};
-
-const getTask = (taskId) => {
-  return new Promise(async (resolve, reject) => {
-    const result = await getDoc(
-      "tasks",
-      { field: "id", value: taskId },
-      async (col) => {
-        reject("Task not found");
-      }
-    );
-    resolve(result);
-  });
-};
-
-const updateTask = (taskId, Task) => {
-  return new Promise(async (resolve, reject) => {
-    const result = await getDoc(
-      "tasks",
-      { field: "id", value: taskId },
-      async (col) => {
-        reject("task not found");
-      },
-      true
-    );
-    await updateDoc(result.ref, task);
-    resolve(true);
-  });
-};
-
-const createTask = async (uid, task) => {
-  const col = collection(db, "tasks");
-  await addDoc(col, { ...task, ownerId: uid, id: generateId() });
-  return true;
-};
-
 const updateUserBoard = async (uid, board) => {
   const col = collection(db, "boards");
   const q = query(col, where("owner_id", "==", uid));
@@ -145,15 +77,4 @@ const updateUserBoard = async (uid, board) => {
   }
 };
 
-export {
-  getUserBoard,
-  updateUserBoard,
-  getSubject,
-  updateSubject,
-  createSubject,
-  createTask,
-  updateTask,
-  getTask,
-  getDoc,
-  generateId,
-};
+export { getUserBoard, updateUserBoard, getDoc, generateId };

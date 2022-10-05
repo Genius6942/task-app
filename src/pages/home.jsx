@@ -44,8 +44,15 @@ export default function Home() {
           pb: smallScreen ? 20 : 10,
         }}
       >
+        <Typography
+          fontWeight="bold"
+          fontSize={50}
+          sx={{ textDecoration: "underline" }}
+        >
+          {app_name}:
+        </Typography>
         <Typography fontWeight="bold" fontSize={50}>
-          <Typography fontWeight="inherit" fontSize="inherit" sx={{textDecoration: "underline"}}>{app_name}:</Typography> the app to help you manage
+          the app to help you manage
         </Typography>
         <Box sx={{ overflow: "hidden", width: 300 }}>
           <TypeWriter

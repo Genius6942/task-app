@@ -1,10 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material";
 
-import {
-  AnimatePresence,
-  motion,
-  usePresence,
-} from "framer-motion";
+import { AnimatePresence, motion, usePresence } from "framer-motion";
 import moment from "moment";
 
 import {
@@ -28,7 +24,7 @@ const MotionContainer = ({ task }) => {
       onAnimationComplete={() => !isPresent && safeToRemove()}
       variants={{
         in: { scaleY: 1, opacity: 1 },
-        out: { scaleY: 0, opacity: 0 },
+        out: { scaleY: 1, opacity: 0 },
       }}
       style={{ position: isPresent ? "static" : "absolute" }}
       transtition={{
@@ -59,30 +55,42 @@ const MotionContainer = ({ task }) => {
  * @param {object} props
  * @param {moment.Moment} props.day
  */
-export default function Day({ day }) {
+export default function Day({
+  day = moment().startOf("day"),
+  presetTasks = null,
+  title = null,
+}) {
   const { tasks } = useTasks();
 
-  const dayTasks = tasks
-    .map((task) => ({
-      ...task,
-      startDate: moment(task.startDate, "MM/DD/YYYY"),
-      dueDate: moment(task.dueDate, "MM/DD/YYYY"),
-    }))
-    .filter((task) => {
-      return day.isBetween(task.startDate, task.dueDate, null, "[)");
-    });
+  const dayTasks =
+    presetTasks ||
+    tasks
+      .map((task) => ({
+        ...task,
+        startDate: moment(task.startDate, "MM/DD/YYYY"),
+        dueDate: moment(task.dueDate, "MM/DD/YYYY"),
+      }))
+      .filter((task) => {
+        return day.isBetween(task.startDate, task.dueDate, null, "[)");
+      });
   return (
     <Box
       sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}
     >
-      <Typography mt={3} fontWeight="bold" fontSize={50}>
-        {day.format("dddd, MM/DD")}
+      <Typography mt={3} fontWeight="bold" fontSize={35} whiteSpace="nowrap">
+        {title || day.format("dddd, MM/DD")}
       </Typography>
       <Stack gap={2} my={2}>
         <AnimatePresence>
-          {dayTasks.map((task, idx) => (
-            <MotionContainer key={idx} task={task} />
-          ))}
+          {dayTasks.length > 0 ? (
+            dayTasks.map((task, idx) => (
+              <MotionContainer key={idx} task={task} />
+            ))
+          ) : (
+            <Box sx={{ mb: -4 }}>
+              <Typography fontSize={25}>Nothing overdue!</Typography>
+            </Box>
+          )}
         </AnimatePresence>
       </Stack>
     </Box>

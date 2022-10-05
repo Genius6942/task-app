@@ -1,4 +1,5 @@
 import {
+  addDoc,
   collection,
   deleteDoc,
   getDocs,
@@ -7,7 +8,7 @@ import {
   where,
 } from "firebase/firestore";
 
-import { getDoc } from ".";
+import { generateId, getDoc } from ".";
 import { db } from "..";
 
 const updateTask = (taskId, task) => {

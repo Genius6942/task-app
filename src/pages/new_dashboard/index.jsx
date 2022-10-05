@@ -223,9 +223,9 @@ export default function NewDashboard({ changeTheme }) {
                     >
                       <item.icon
                         sx={{
-                          transform: temporaryDrawerOpen
-                            ? "rotateY(180deg)"
-                            : "rotateY(0deg)",
+                          // transform: temporaryDrawerOpen
+                          //   ? "rotateY(180deg)"
+                          //   : "rotateY(0deg)",
                           transition: "transform 0.3s ease-in-out",
                         }}
                         color={
