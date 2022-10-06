@@ -56,6 +56,7 @@ export default function Subjects() {
           width: "100%",
           overflow: "auto",
           p: 6,
+          pt: smallScreen ? 2 : 0,
           display: "flex",
           flexDirection: smallScreen && "column",
           gap: !smallScreen && 3,

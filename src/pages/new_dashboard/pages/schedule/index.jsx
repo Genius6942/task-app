@@ -9,6 +9,7 @@ import moment from "moment";
 import { auth } from "../../../../lib/firebase";
 import { useSmallScreen } from "../../../../lib/utils";
 import { useTasks } from "../../components/task/context";
+import { transformTask } from "../../components/task/transform";
 import Day from "./day";
 
 export default function Schedule() {
@@ -24,15 +25,9 @@ export default function Schedule() {
    */
   const dayInTasks = (day) => {
     return (
-      tasks
-        .map((task) => ({
-          ...task,
-          startDate: moment(task.startDate, "MM/DD/YYYY"),
-          dueDate: moment(task.dueDate, "MM/DD/YYYY"),
-        }))
-        .filter((task) => {
-          return day.isBetween(task.startDate, task.dueDate, null, "[)");
-        }).length > 0
+      tasks.map(transformTask).filter((task) => {
+        return day.isBetween(task.startDate, task.dueDate, null, "[)");
+      }).length > 0
     );
   };
 
@@ -43,18 +38,12 @@ export default function Schedule() {
     day = day.add(1, "day");
   }
 
-  const tasksOverdue = tasks
-    .map((task) => ({
-      ...task,
-      startDate: moment(task.startDate, "MM/DD/YYYY"),
-      dueDate: moment(task.dueDate, "MM/DD/YYYY"),
-    }))
-    .filter((task) => {
-      return (
-        task.dueDate.isBefore(moment().startOf("day").format("MM/DD/YYYY")) &&
-        task.completes.length === task.completes.filter((item) => item).length
-      );
-    });
+  const tasksOverdue = tasks.map(transformTask).filter((task) => {
+    return (
+      task.dueDate.isBefore(moment().startOf("day").add(1, "second")) &&
+      task.completes.length === task.completes.filter((item) => item).length
+    );
+  });
 
   const smallScreen = useSmallScreen();
   return (
@@ -68,7 +57,12 @@ export default function Schedule() {
         overflow: "auto",
       }}
     >
-      <Stack gap={2} my={2} mx={!smallScreen && 2} direction={smallScreen ? "column" : "row"}>
+      <Stack
+        gap={2}
+        my={2}
+        mx={!smallScreen && 2}
+        direction={smallScreen ? "column" : "row"}
+      >
         <Day title="Overdue" presetTasks={tasksOverdue} />
         {days.map((day, idx) => (
           <Day day={day} key={idx} index={idx} />

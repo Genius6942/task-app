@@ -40,6 +40,7 @@ import { TwitterPicker } from "react-color";
 
 import moment from "moment";
 
+import { useConfetti } from "../../../../components/confetti";
 import { useForceUpdate, useSmallScreen } from "../../../../lib/utils";
 
 const DatePicker = ({ mobile, ...props }) =>
@@ -143,12 +144,14 @@ export default function Task({
 
   const smallScreen = useSmallScreen();
 
+  const { createConfetti } = useConfetti();
+
   return (
     <FormControl variant="standard">
       <Card
         sx={{
           width: customWidth || (smallScreen ? 350 : 450),
-          backgroundColor: taskData.color || "#cccccc",
+          backgroundColor: taskData.color || theme.palette.bgGrey,
           overflow: "visible",
         }}
         onDoubleClick={(e) => {
@@ -218,7 +221,29 @@ export default function Task({
             </Box>
             <Box sx={{ display: "flex" }}>
               <Tooltip title="Completed for today">
-                <IconButton>
+                <IconButton
+                  onClick={({ target }) => {
+                    const rect = target.getBoundingClientRect();
+                    createConfetti(rect.x, rect.y);
+                    const completesCopy = [...data.completes];
+                    if (
+                      completesCopy.filter((item) => item).length ===
+                      completesCopy.length
+                    )
+                      return;
+                    else
+                      completesCopy[
+                        completesCopy.filter((item) => item).length
+                      ] = true;
+                    const formatedData = {
+                      ...data,
+                      startDate: data.startDate.format("MM/DD/YYYY"),
+                      dueDate: data.dueDate.format("MM/DD/YYYY"),
+                      completes: completesCopy,
+                    };
+                    onChange(formatedData);
+                  }}
+                >
                   <CheckBox />
                 </IconButton>
               </Tooltip>

@@ -253,7 +253,7 @@ export default function NewDashboard({ changeTheme }) {
                 </ListItem>
               ))}
               <Divider />
-              {false && (
+              {true && (
                 <ListItem
                   sx={{
                     justifyContent:
@@ -276,26 +276,24 @@ export default function NewDashboard({ changeTheme }) {
                     )}
                   </ListItemIcon>
                   <ListItemText
-                    primary="Dark Mode"
+                    primary="Theme (beta)"
                     sx={{
                       opacity: drawerOpen || temporaryDrawerOpen ? 1 : 0,
                       transition: "opacity ease",
                       transitionDuration: theme.transitions.duration.shortest,
                     }}
                   />
-                  {
-                    <Switch
-                      edge="end"
-                      onChange={({ target }) =>
-                        changeTheme({ dark: target.checked })
-                      }
-                      checked={theme.palette.mode === "dark"}
-                      sx={{
-                        display:
-                          drawerOpen || temporaryDrawerOpen ? null : "none",
-                      }}
-                    />
-                  }
+                  <Switch
+                    edge="end"
+                    onChange={({ target }) =>
+                      changeTheme({ dark: target.checked })
+                    }
+                    checked={theme.palette.mode === "dark"}
+                    sx={{
+                      display:
+                        drawerOpen || temporaryDrawerOpen ? null : "none",
+                    }}
+                  />
                 </ListItem>
               )}
             </List>

@@ -4,17 +4,16 @@ import {
   Button,
   CircularProgress,
   Stack,
+  Switch,
   Typography,
   useTheme,
 } from "@mui/material";
 
-import { Add, FileUploadOutlined } from "@mui/icons-material";
+import { DarkMode, LightMode } from "@mui/icons-material";
 
 import { useEffect } from "react";
 import { useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
-
-import { updateProfile } from "firebase/auth";
 
 import { motion } from "framer-motion";
 
@@ -28,7 +27,7 @@ import {
 import Subjects from "../../components/subjects";
 import EditableInfo from "./editableInfo";
 
-export default function Account() {
+export default function Account({ changeTheme }) {
   const [user, loading, error] = useAuthState(auth);
 
   const [accountData, setAccountData] = useState(null);
@@ -110,6 +109,20 @@ export default function Account() {
       ),
     },
     {
+      name: "Site settings",
+      component: (
+        <Box sx={{ display: "flex", alignItems: "center" }}>
+          {theme.palette.mode === "dark" ? <DarkMode /> : <LightMode />}
+          <Typography sx={{ mx: 1 }}>Theme (beta)</Typography>
+          <Switch
+            edge="end"
+            onChange={({ target }) => changeTheme({ dark: target.checked })}
+            checked={theme.palette.mode === "dark"}
+          />
+        </Box>
+      ),
+    },
+    {
       name: "Actions",
       component: (
         <Box>
@@ -145,6 +158,7 @@ export default function Account() {
             alignItems: "center",
             position: "relative",
             overflow: "auto",
+            width: "100%",
             py: 3,
           }}
         >
@@ -152,10 +166,12 @@ export default function Account() {
             sx={{
               display: "flex",
               alignItems: "flex-end",
-              borderBottom: "3px solid black",
+              borderBottom: `3px solid ${
+                theme.palette.mode === "dark" ? "white" : "black"
+              }`,
             }}
           >
-            <Typography fontSize={30} mr={3}>
+          <Typography fontSize={30} mr={3}>
               <motion.span
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -201,7 +217,10 @@ export default function Account() {
                       p: 2,
                       width: 350,
                       borderRadius: 5,
-                      background: theme.palette.grey[300],
+                      background:
+                        theme.palette.mode !== "dark"
+                          ? theme.palette.grey[300]
+                          : theme.palette.grey[900],
                     }}
                   >
                     <Typography fontWeight="bold">{setting.name}</Typography>

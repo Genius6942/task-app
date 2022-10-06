@@ -53,12 +53,16 @@ const MotionContainer = ({ task }) => {
 
 /**
  * @param {object} props
- * @param {moment.Moment} props.day
+ * @param {moment.Moment?} props.day
+ * @param {array[object]?} props.presetTasks
+ * @param {string?} props.title
+ * @param {string?} props.presetMessage
  */
 export default function Day({
   day = moment().startOf("day"),
   presetTasks = null,
   title = null,
+  defaultMessage = "Nothing overdue!",
 }) {
   const { tasks } = useTasks();
 
@@ -87,8 +91,13 @@ export default function Day({
               <MotionContainer key={idx} task={task} />
             ))
           ) : (
-            <Box sx={{ mb: -4 }}>
-              <Typography fontSize={25}>Nothing overdue!</Typography>
+            <Box
+              sx={{ mb: -4, display: "block", width: "100%" }}
+              textAlign="center"
+            >
+              <Typography textAlign="center" fontSize={25}>
+                {defaultMessage}
+              </Typography>
             </Box>
           )}
         </AnimatePresence>

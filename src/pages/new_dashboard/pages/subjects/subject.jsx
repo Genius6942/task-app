@@ -65,6 +65,7 @@ export default function Subject({ subject, animateDelay }) {
               duration: taskAnimation.duration,
               delay: animateDelay * taskAnimation.delay,
             }}
+            style={{ textAlign: "center" }}
           >
             No tasks for this subject!
             {!smallScreen && <Task customWidth={250} placeholder />}

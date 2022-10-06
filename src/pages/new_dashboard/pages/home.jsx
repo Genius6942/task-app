@@ -8,21 +8,16 @@ import moment from "moment";
 import { removeTask, updateTask } from "../../../lib/firebase/firestore/task";
 import Task from "../components/task";
 import { useTasks } from "../components/task/context";
+import { transformTask } from "../components/task/transform";
 
 export default function Home() {
   const today = moment().startOf("day");
   const { tasks, fetchTaskUpdate } = useTasks();
-  const dayTasks = tasks
-    .map((task) => ({
-      ...task,
-      startDate: moment(task.startDate, "MM/DD/YYYY"),
-      dueDate: moment(task.dueDate, "MM/DD/YYYY"),
-    }))
-    .filter((task) => {
-      if (!today.isBetween(task.startDate, task.dueDate, null, "[)"))
-        return false;
-      return true;
-    });
+  const dayTasks = tasks.map(transformTask).filter((task) => {
+    if (!today.isBetween(task.startDate, task.dueDate, null, "[)"))
+      return false;
+    return true;
+  });
   return (
     <Box
       sx={{
@@ -44,7 +39,7 @@ export default function Home() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               // exit={{ opacity: 0 }}
-              transition={{ delay: idx * 0.2 , duration: 0.5 }}
+              transition={{ delay: idx * 0.2, duration: 0.5 }}
               key={idx}
             >
               <Task
