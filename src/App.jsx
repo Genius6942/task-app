@@ -35,6 +35,7 @@ import Schedule from "./pages/new_dashboard/pages/schedule";
 import Register from "./pages/register";
 import createTheme from "./theme";
 import Subjects from './pages/new_dashboard/pages/subjects';
+import History from "./pages/new_dashboard/pages/history";
 
 function App() {
   const [darkMode, setDarkMode] = useState(false);
@@ -115,7 +116,7 @@ function App() {
               <Route path="" element={<DashboardHome />} />
               <Route path="subjects" element={<Subjects/>} />
               <Route path="schedule" element={<Schedule />} />
-              <Route path="history" element={<>history</>} />
+              <Route path="history" element={<History/>} />
               <Route path="account" element={<Account />} />
             </Route>
 
