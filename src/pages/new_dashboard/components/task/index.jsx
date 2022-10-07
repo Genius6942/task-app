@@ -267,11 +267,12 @@ export default function Task({
                   </Tooltip>
                   <Tooltip
                     title={
-                      "Status:" + taskStatus === 1
+                      "Status: " +
+                      (taskStatus === 1
                         ? "On track"
                         : taskStatus === 2
                         ? "Not on track"
-                        : "Over due"
+                        : "Over due")
                     }
                   >
                     <span>
