@@ -41,7 +41,7 @@ export default function Schedule() {
   const tasksOverdue = tasks.map(transformTask).filter((task) => {
     return (
       task.dueDate.isBefore(moment().startOf("day").add(1, "second")) &&
-      task.completes.length === task.completes.filter((item) => item).length
+      task.completes.length !== task.completes.filter((item) => item).length
     );
   });
 

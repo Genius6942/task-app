@@ -14,8 +14,11 @@ export default function Home() {
   const today = moment().startOf("day");
   const { tasks, fetchTaskUpdate } = useTasks();
   const dayTasks = tasks.map(transformTask).filter((task) => {
-    if (!today.isBetween(task.startDate, task.dueDate, null, "[)"))
+    if (today.isBefore(task.startDate)) return false;
+    if (task.completes.length === task.completes.filter((item) => item).length)
       return false;
+    if (task.completes.length > task.completes.filter((item) => item).length)
+      return true;
     return true;
   });
   return (
@@ -34,27 +37,31 @@ export default function Home() {
       </Typography>
       <Stack gap={2} my={2} direction="column">
         <AnimatePresence>
-          {dayTasks.map((task, idx) => (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              // exit={{ opacity: 0 }}
-              transition={{ delay: idx * 0.2, duration: 0.5 }}
-              key={idx}
-            >
-              <Task
-                taskData={task}
-                onChange={async (data) => {
-                  await updateTask(task.id, data);
-                  fetchTaskUpdate();
-                }}
-                onRemove={async () => {
-                  await removeTask(task.id);
-                  fetchTaskUpdate();
-                }}
-              />
-            </motion.div>
-          ))}
+          {dayTasks.length > 0 ? (
+            dayTasks.map((task, idx) => (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                // exit={{ opacity: 0 }}
+                transition={{ delay: idx * 0.2, duration: 0.5 }}
+                key={idx}
+              >
+                <Task
+                  taskData={task}
+                  onChange={async (data) => {
+                    await updateTask(task.id, data);
+                    fetchTaskUpdate();
+                  }}
+                  onRemove={async () => {
+                    await removeTask(task.id);
+                    fetchTaskUpdate();
+                  }}
+                />
+              </motion.div>
+            ))
+          ) : (
+            <Typography>Nothing left for today!</Typography>
+          )}
         </AnimatePresence>
       </Stack>
     </Box>

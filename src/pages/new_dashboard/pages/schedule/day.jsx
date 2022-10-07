@@ -3,6 +3,7 @@ import { Box, Stack, Typography } from "@mui/material";
 import { AnimatePresence, motion, usePresence } from "framer-motion";
 import moment from "moment";
 
+import { taskAnimation } from "../../../../lib/constants";
 import {
   removeTask,
   updateTask,
@@ -14,7 +15,7 @@ import { useTasks } from "../../components/task/context";
  * @param {object} props
  * @param {object} props.task
  */
-const MotionContainer = ({ task }) => {
+const MotionContainer = ({ task, delay }) => {
   const [isPresent, safeToRemove] = usePresence();
   const { fetchTaskUpdate } = useTasks();
   return (
@@ -28,10 +29,8 @@ const MotionContainer = ({ task }) => {
       }}
       style={{ position: isPresent ? "static" : "absolute" }}
       transtition={{
-        type: "spring",
-        stiffness: 500,
-        damping: 50,
-        mass: 1,
+        delay: delay * taskAnimation.delay,
+        duration: taskAnimation.duration,
       }}
       layout
     >
@@ -88,7 +87,7 @@ export default function Day({
         <AnimatePresence>
           {dayTasks.length > 0 ? (
             dayTasks.map((task, idx) => (
-              <MotionContainer key={idx} task={task} />
+              <MotionContainer key={idx} task={task} delay={idx} />
             ))
           ) : (
             <Box

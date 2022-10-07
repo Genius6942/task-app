@@ -64,6 +64,9 @@ function App() {
     (async () => {
       const userData = await getUser(user.uid);
       const dark = userData.darkMode;
+      // user.darkMode === "undefined"
+      //   ? window.matchMedia("(prefers-color-scheme: dark)").matches
+      //   : userData.darkMode;
       setDarkMode(!!dark);
     })();
   }, [user, loading]);

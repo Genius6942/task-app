@@ -67,7 +67,6 @@ export default function AddButton() {
     clone.startDate = clone.startDate.format("MM/DD/YYYY");
     clone.dueDate = clone.dueDate.format("MM/DD/YYYY");
     await createTask(user.uid, clone);
-    console.log("create task", clone);
     fetchTaskUpdate();
     return true;
   };

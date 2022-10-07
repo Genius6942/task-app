@@ -1,5 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 
+import isEqual from "lodash/isEqual";
+
 import { getTasks } from "../../../../lib/firebase/firestore/task";
 
 const TaskContext = createContext({ fetchTaskUpdate: () => {}, tasks: [] });
@@ -12,15 +14,18 @@ const TaskContextProvider = ({ user, ...props }) => {
   const [tasks, setTasks] = useState([]);
   const fetchTaskUpdate = async () => {
     if (user) {
-      const tasks = await getTasks(user.uid);
-      setTasks(tasks);
-      return tasks;
+      const fetchedTasks = await getTasks(user.uid);
+      if (isEqual(tasks, fetchedTasks)) return false;
+      setTasks(fetchedTasks);
+      return fetchedTasks;
     }
 
     return false;
   };
   useEffect(() => {
     fetchTaskUpdate();
+    const interval = setInterval(() => fetchTaskUpdate(), 5000);
+    return () => clearInterval(interval);
   }, [user]);
 
   return <TaskContext.Provider {...props} value={{ fetchTaskUpdate, tasks }} />;

@@ -5,7 +5,6 @@ const { augmentColor } = palette;
 const createColor = (mainColor) => augmentColor({ color: { main: mainColor } });
 
 const theme = ({ dark = false }) => {
-  console.log(dark ? palette.grey[900] : palette.grey[300]);
   return createTheme({
     palette: {
       type: dark ? "dark" : "light",

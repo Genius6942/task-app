@@ -14,6 +14,7 @@ import { getUser } from "../../../../lib/firebase/firestore/user";
 import { useSmallScreen } from "../../../../lib/utils";
 import { useTasks } from "../../components/task/context";
 import Subject from "./subject";
+import { filterTask, transformTask } from "../../components/task/transform";
 
 export default function Subjects() {
   const smallScreen = useSmallScreen();
@@ -32,7 +33,7 @@ export default function Subjects() {
   const [subjects, setSubjects] = useState([]);
   const { tasks } = useTasks();
   const taskCounts = {};
-  tasks.forEach(
+  tasks.map(transformTask).filter(filterTask({})).forEach(
     (task) =>
       (taskCounts[task.subject] = taskCounts[task.subject]
         ? taskCounts[task.subject] + 1
@@ -44,7 +45,6 @@ export default function Subjects() {
       sx={{
         display: "flex",
         justifyContent: "center",
-        alignItems: "center",
         height: "100%",
         overflow: "hidden",
         gap: 2,
@@ -56,7 +56,7 @@ export default function Subjects() {
           width: "100%",
           overflow: "auto",
           p: 6,
-          pt: smallScreen ? 2 : 0,
+          pt: 2,
           display: "flex",
           flexDirection: smallScreen && "column",
           gap: !smallScreen && 3,

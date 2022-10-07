@@ -20,7 +20,7 @@ import Link from "@mui/material/Link";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 
-import { ExpandMore as ExpandMoreIcon } from "@mui/icons-material";
+import { Circle, ExpandMore as ExpandMoreIcon } from "@mui/icons-material";
 
 import CheckBox from "@mui/icons-material/CheckBox";
 import Close from "@mui/icons-material/Close";
@@ -146,6 +146,21 @@ export default function Task({
 
   const { createConfetti } = useConfetti();
 
+  // task status:
+  // 1: good / green
+  // 2: warn / orange
+  // 3: bad / red
+  const generateTaskStatus = () => {
+    if (data.dueDate.isBefore(moment().startOf("day"))) return 3;
+    else if (
+      data.completes.filter((item) => item).length <
+      moment.duration(moment().startOf("day").diff(data.startDate)).asDays()
+    )
+      return 2;
+    else return 1;
+  };
+  const taskStatus = generateTaskStatus();
+
   return (
     <FormControl variant="standard">
       <Card
@@ -220,33 +235,61 @@ export default function Task({
               )}
             </Box>
             <Box sx={{ display: "flex" }}>
-              <Tooltip title="Completed for today">
-                <IconButton
-                  onClick={({ target }) => {
-                    const rect = target.getBoundingClientRect();
-                    createConfetti(rect.x, rect.y);
-                    const completesCopy = [...data.completes];
-                    if (
-                      completesCopy.filter((item) => item).length ===
-                      completesCopy.length
-                    )
-                      return;
-                    else
-                      completesCopy[
-                        completesCopy.filter((item) => item).length
-                      ] = true;
-                    const formatedData = {
-                      ...data,
-                      startDate: data.startDate.format("MM/DD/YYYY"),
-                      dueDate: data.dueDate.format("MM/DD/YYYY"),
-                      completes: completesCopy,
-                    };
-                    onChange(formatedData);
-                  }}
-                >
-                  <CheckBox />
-                </IconButton>
-              </Tooltip>
+              {data.completes.length >
+                data.completes.filter((item) => item).length && (
+                <>
+                  <Tooltip title="Completed for today">
+                    <IconButton
+                      onClick={({ target }) => {
+                        const rect = target.getBoundingClientRect();
+                        createConfetti(rect.x, rect.y);
+                        const completesCopy = [...data.completes];
+                        if (
+                          completesCopy.filter((item) => item).length ===
+                          completesCopy.length
+                        )
+                          return;
+                        else
+                          completesCopy[
+                            completesCopy.filter((item) => item).length
+                          ] = true;
+                        const formatedData = {
+                          ...data,
+                          startDate: data.startDate.format("MM/DD/YYYY"),
+                          dueDate: data.dueDate.format("MM/DD/YYYY"),
+                          completes: completesCopy,
+                        };
+                        onChange(formatedData);
+                      }}
+                    >
+                      <CheckBox />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip
+                    title={
+                      "Status:" + taskStatus === 1
+                        ? "On track"
+                        : taskStatus === 2
+                        ? "Not on track"
+                        : "Over due"
+                    }
+                  >
+                    <span>
+                      <IconButton disabled>
+                        <Circle
+                          color={
+                            taskStatus === 1
+                              ? "success"
+                              : taskStatus === 2
+                              ? "warning"
+                              : "error"
+                          }
+                        />
+                      </IconButton>
+                    </span>
+                  </Tooltip>
+                </>
+              )}
               <Tooltip title="Delete">
                 <IconButton onClick={() => onRemove()}>
                   <Delete />
