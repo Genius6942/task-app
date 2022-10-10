@@ -33,6 +33,7 @@ export default function Subject({ subject, animateDelay }) {
         {subjectTasks.length > 0 ? (
           subjectTasks.map((task, idx) => (
             <motion.div
+              key={idx}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{

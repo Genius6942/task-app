@@ -68,14 +68,19 @@ export default function Day({
   const dayTasks =
     presetTasks ||
     tasks
-      .map((task) => ({
-        ...task,
-        startDate: moment(task.startDate, "MM/DD/YYYY"),
-        dueDate: moment(task.dueDate, "MM/DD/YYYY"),
-      }))
       .filter((task) => {
-        return day.isBetween(task.startDate, task.dueDate, null, "[)");
+        return (
+          day.isBetween(task.startDate, task.dueDate, null, "[)") &&
+          task.completes.length != task.completes.filter((item) => item).length
+        );
+      }).sort((a, b) => {
+        console.log(a.name + ":", a.status, b.name + ":", b.status);
+        if (a.status - b.status !== 0) {
+          return b.status - a.status;
+        }
+        return a.dueDate.diff(b.dueDate, 'days');
       });
+
   return (
     <Box
       sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}

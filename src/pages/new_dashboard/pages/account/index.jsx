@@ -171,7 +171,7 @@ export default function Account({ changeTheme }) {
               }`,
             }}
           >
-          <Typography fontSize={30} mr={3}>
+            <Typography fontSize={30} mr={3}>
               <motion.span
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}

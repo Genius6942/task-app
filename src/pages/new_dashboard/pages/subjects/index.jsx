@@ -13,8 +13,8 @@ import { auth } from "../../../../lib/firebase";
 import { getUser } from "../../../../lib/firebase/firestore/user";
 import { useSmallScreen } from "../../../../lib/utils";
 import { useTasks } from "../../components/task/context";
-import Subject from "./subject";
 import { filterTask, transformTask } from "../../components/task/transform";
+import Subject from "./subject";
 
 export default function Subjects() {
   const smallScreen = useSmallScreen();
@@ -33,12 +33,15 @@ export default function Subjects() {
   const [subjects, setSubjects] = useState([]);
   const { tasks } = useTasks();
   const taskCounts = {};
-  tasks.map(transformTask).filter(filterTask({})).forEach(
-    (task) =>
-      (taskCounts[task.subject] = taskCounts[task.subject]
-        ? taskCounts[task.subject] + 1
-        : 1)
-  );
+  tasks
+    .map(transformTask)
+    .filter(filterTask())
+    .forEach(
+      (task) =>
+        (taskCounts[task.subject] = taskCounts[task.subject]
+          ? taskCounts[task.subject] + 1
+          : 1)
+    );
   let taskAnimationCount = 0;
   return (
     <Box
@@ -49,6 +52,7 @@ export default function Subjects() {
         overflow: "hidden",
         gap: 2,
       }}
+      className="nobar"
     >
       <Box
         sx={{

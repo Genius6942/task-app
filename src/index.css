@@ -20,3 +20,8 @@ a:active {
 .Typewriter__cursor {
   font-size: 50px;
 }
+@media (min-width: 600px) {
+  html::-webkit-scrollbar {
+    display: none;
+  }
+}

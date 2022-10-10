@@ -1,10 +1,22 @@
 import { createContext, useContext, useEffect, useState } from "react";
 
 import isEqual from "lodash/isEqual";
+import moment from "moment";
 
 import { getTasks } from "../../../../lib/firebase/firestore/task";
 
 const TaskContext = createContext({ fetchTaskUpdate: () => {}, tasks: [] });
+
+const generateTaskStatus = (data) => {
+  console.log(data.dueDate.format('MM/DD/YYYY'), moment().format('MM/DD/YYYY'));
+  if (data.dueDate.isBefore(moment().startOf("day"))) return 3;
+  else if (
+    data.completes.filter((item) => item).length <
+    moment.duration(moment().startOf("day").diff(data.startDate)).asDays()
+  )
+    return 2;
+  else return 1;
+};
 
 /**
  * @param {object} props
@@ -12,12 +24,28 @@ const TaskContext = createContext({ fetchTaskUpdate: () => {}, tasks: [] });
  */
 const TaskContextProvider = ({ user, ...props }) => {
   const [tasks, setTasks] = useState([]);
+  useEffect(() => {
+    if (import.meta.env.DEV) {
+      window.windowTasks = tasks.map((task) => task.name).join(", ");
+    }
+  }, [tasks]);
+
   const fetchTaskUpdate = async () => {
     if (user) {
       const fetchedTasks = await getTasks(user.uid);
       if (isEqual(tasks, fetchedTasks)) return false;
-      setTasks(fetchedTasks);
-      return fetchedTasks;
+      const formattedFetchedTasks = fetchedTasks.map((task) => ({
+        ...task,
+        startDate: moment(task.startDate, "MM/DD/YYYY"),
+        dueDate: moment(task.dueDate, "MM/DD/YYYY"),
+      }));
+      const fetchedTasksWithStatus = formattedFetchedTasks.map((task) => ({
+        ...task,
+        status: generateTaskStatus(task),
+      }));
+
+      setTasks(fetchedTasksWithStatus);
+      return fetchedTasksWithStatus;
     }
 
     return false;

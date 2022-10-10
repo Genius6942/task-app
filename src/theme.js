@@ -12,6 +12,7 @@ const theme = ({ dark = false }) => {
       primary: createColor("#FF7B00"),
       secondary: createColor(dark ? "#FF0000" : "#E4FF00"),
       white: createColor("#FFFFFF"),
+      black: createColor("#000000"),
       bgGrey: dark ? palette.grey[900] : palette.grey[300],
     },
   });

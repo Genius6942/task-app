@@ -13,7 +13,7 @@ import { transformTask } from "../../components/task/transform";
 import Day from "./day";
 
 export default function Schedule() {
-  const { tasks, fetchTaskUpdate } = useTasks();
+  const { tasks } = useTasks();
 
   const [user, loading, error] = useAuthState(auth);
   useEffect(() => {
@@ -26,7 +26,10 @@ export default function Schedule() {
   const dayInTasks = (day) => {
     return (
       tasks.map(transformTask).filter((task) => {
-        return day.isBetween(task.startDate, task.dueDate, null, "[)");
+        return (
+          day.isBetween(task.startDate, task.dueDate, null, "[)") &&
+          task.completes.length != task.completes.filter((item) => item).length
+        );
       }).length > 0
     );
   };

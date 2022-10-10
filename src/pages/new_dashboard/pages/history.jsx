@@ -14,7 +14,6 @@ export default function History() {
     .map(transformTask)
     .filter(
       (task) =>
-        task.dueDate.isBefore(moment().startOf("day")) &&
         task.completes.length === task.completes.filter((item) => item).length
     );
   return (

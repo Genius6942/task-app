@@ -10,11 +10,6 @@ import {
   Typography,
 } from "@mui/material";
 
-// import Button from "@mui/material/Button";
-// import Card from "@mui/material/Card";
-// import CardActions from "@mui/material/CardActions";
-// import IconButton from "@mui/material/IconButton";
-// import Typography from "@mui/material/Typography";
 import { Close } from "@mui/icons-material";
 
 import { useEffect, useState } from "react";
@@ -25,6 +20,7 @@ import { useEffectOnce, useWindowSize } from "react-use";
 import "fuckadblock";
 
 import { ConfettiProvider } from "./components/confetti";
+import { SnackbarProvider } from "./components/snackbar";
 import { AdBlockModal, detectAdblock } from "./lib/adblock";
 import { app_name } from "./lib/constants";
 import { auth } from "./lib/firebase";
@@ -128,83 +124,85 @@ function App() {
     <>
       <ThemeProvider theme={theme}>
         <ConfettiProvider>
-          <CssBaseline />
-          <Router>
-            <Routes>
-              <Route exact path="/" element={<Home />} />
-              <Route exact path="/login" element={<Login />} />
-              <Route exact path="/register" element={<Register />} />
-              <Route path="/old_dashboard" element={<Dashboard />} />
-              <Route
-                path="dashboard"
-                element={
-                  <NewDashboard
-                    changeTheme={({ dark = false }) => {
-                      setDarkMode(dark);
-                    }}
-                  />
-                }
-              >
-                <Route path="" element={<DashboardHome />} />
-                <Route path="subjects" element={<Subjects />} />
-                <Route path="schedule" element={<Schedule />} />
-                <Route path="history" element={<History />} />
+          <SnackbarProvider>
+            <CssBaseline />
+            <Router>
+              <Routes>
+                <Route exact path="/" element={<Home />} />
+                <Route exact path="/login" element={<Login />} />
+                <Route exact path="/register" element={<Register />} />
+                <Route path="/old_dashboard" element={<Dashboard />} />
                 <Route
-                  path="account"
+                  path="dashboard"
                   element={
-                    <Account
+                    <NewDashboard
                       changeTheme={({ dark = false }) => {
                         setDarkMode(dark);
                       }}
                     />
                   }
-                />
-              </Route>
+                >
+                  <Route path="" element={<DashboardHome />} />
+                  <Route path="subjects" element={<Subjects />} />
+                  <Route path="schedule" element={<Schedule />} />
+                  <Route path="history" element={<History />} />
+                  <Route
+                    path="account"
+                    element={
+                      <Account
+                        changeTheme={({ dark = false }) => {
+                          setDarkMode(dark);
+                        }}
+                      />
+                    }
+                  />
+                </Route>
 
-              {/* 404 page */}
-              <Route path="*" element={<div>404</div>} />
-            </Routes>
-          </Router>
-          {defferedEvent && (
-            <Card
-              sx={{
-                position: "fixed",
-                top: 20,
-                right: 20,
-                padding: 2,
-                gap: 2,
-                maxWidth: 200,
-                zIndex: 100,
-              }}
-            >
-              <CardActions>
-                <Box sx={{ display: "flex", flexGrow: 1 }}>
-                  <Typography fontSize={20} sx={{ marginRight: 1 }}>
-                    Intsall {app_name}
+                {/* 404 page */}
+                <Route path="*" element={<div>404</div>} />
+              </Routes>
+            </Router>
+            {defferedEvent && (
+              <Card
+                sx={{
+                  position: "fixed",
+                  top: 20,
+                  right: 20,
+                  padding: 2,
+                  gap: 2,
+                  maxWidth: 200,
+                  zIndex: 100,
+                }}
+              >
+                <CardActions>
+                  <Box sx={{ display: "flex", flexGrow: 1 }}>
+                    <Typography fontSize={20} sx={{ marginRight: 1 }}>
+                      Intsall {app_name}
+                    </Typography>
+                    <img src="/favicon-32x32.png" alt="logo" />
+                  </Box>
+                  <IconButton onClick={() => setDefferedEvent(null)}>
+                    <Close />
+                  </IconButton>
+                </CardActions>
+                <Box>
+                  <Typography marginBottom={1}>
+                    Install this site as an app for a better experience.
                   </Typography>
-                  <img src="/favicon-32x32.png" alt="logo" />
+                  <Button variant="contained" onClick={onInstall}>
+                    Install
+                  </Button>
                 </Box>
-                <IconButton onClick={() => setDefferedEvent(null)}>
-                  <Close />
-                </IconButton>
-              </CardActions>
-              <Box>
-                <Typography marginBottom={1}>
-                  Install this site as an app for a better experience.
-                </Typography>
-                <Button variant="contained" onClick={onInstall}>
-                  Install
-                </Button>
-              </Box>
-            </Card>
-          )}
-          <AdBlockModal
-            open={adBlockModalOpen}
-            onForceClose={() => {
-              localStorage.setItem("force-hide-adblock-msg", "1");
-              setAdBlockModalOpen(false);
-            }}
-          />
+              </Card>
+            )}
+            <AdBlockModal
+              open={adBlockModalOpen}
+              onForceClose={() => {
+                localStorage.setItem("force-hide-adblock-msg", "1");
+                setAdBlockModalOpen(false);
+              }}
+            />
+          </SnackbarProvider>
         </ConfettiProvider>
       </ThemeProvider>
     </>

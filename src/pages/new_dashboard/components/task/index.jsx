@@ -37,11 +37,16 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { Suspense, forwardRef, lazy, useState } from "react";
 import { useEffect } from "react";
 import { TwitterPicker } from "react-color";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 import moment from "moment";
 
 import { useConfetti } from "../../../../components/confetti";
+import { useSnackbar } from "../../../../components/snackbar";
+import { auth } from "../../../../lib/firebase";
+import { createTask } from "../../../../lib/firebase/firestore/task";
 import { useForceUpdate, useSmallScreen } from "../../../../lib/utils";
+import { useTasks } from "./context";
 
 const DatePicker = ({ mobile, ...props }) =>
   mobile ? <MobileDatePicker {...props} /> : <DesktopDatePicker {...props} />;
@@ -88,6 +93,9 @@ export default function Task({
   if (placeholder) {
     return <div style={{ width: customWidth || 398, height: 161 }}></div>;
   }
+
+  const [user, loading] = useAuthState(auth);
+  const { fetchTaskUpdate } = useTasks();
 
   const [expanded, setExpanded] = useState(false);
   const handleExpandClick = () => setExpanded(!expanded);
@@ -150,16 +158,8 @@ export default function Task({
   // 1: good / green
   // 2: warn / orange
   // 3: bad / red
-  const generateTaskStatus = () => {
-    if (data.dueDate.isBefore(moment().startOf("day"))) return 3;
-    else if (
-      data.completes.filter((item) => item).length <
-      moment.duration(moment().startOf("day").diff(data.startDate)).asDays()
-    )
-      return 2;
-    else return 1;
-  };
-  const taskStatus = generateTaskStatus();
+
+  const snackbar = useSnackbar();
 
   return (
     <FormControl variant="standard">
@@ -268,9 +268,9 @@ export default function Task({
                   <Tooltip
                     title={
                       "Status: " +
-                      (taskStatus === 1
+                      (data.status === 1
                         ? "On track"
-                        : taskStatus === 2
+                        : data.status === 2
                         ? "Not on track"
                         : "Over due")
                     }
@@ -279,9 +279,9 @@ export default function Task({
                       <IconButton disabled>
                         <Circle
                           color={
-                            taskStatus === 1
+                            data.status === 1
                               ? "success"
-                              : taskStatus === 2
+                              : data.status === 2
                               ? "warning"
                               : "error"
                           }
@@ -292,7 +292,22 @@ export default function Task({
                 </>
               )}
               <Tooltip title="Delete">
-                <IconButton onClick={() => onRemove()}>
+                <IconButton
+                  onClick={() => {
+                    const formatedData = {
+                      ...data,
+                      startDate: data.startDate.format("MM/DD/YYYY"),
+                      dueDate: data.dueDate.format("MM/DD/YYYY"),
+                    };
+
+                    const deepCopy = JSON.parse(JSON.stringify(formatedData));
+                    snackbar.openUndoSnackbar("Task deleted", async () => {
+                      await createTask(user.uid, deepCopy);
+                      fetchTaskUpdate();
+                    });
+                    onRemove();
+                  }}
+                >
                   <Delete />
                 </IconButton>
               </Tooltip>
