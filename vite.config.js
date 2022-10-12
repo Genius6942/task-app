@@ -88,6 +88,7 @@ export default defineConfig(({ command }) => ({
             src: "/icons/android-chrome-512x512.png?v=1",
             sizes: "512x512",
             type: "image/png",
+            purpose: "maskable",
           },
         ],
         theme_color: "#2074d4",
