@@ -176,10 +176,18 @@ function App() {
               >
                 <CardActions>
                   <Box sx={{ display: "flex", flexGrow: 1 }}>
-                    <Typography fontSize={20} sx={{ marginRight: 1 }}>
-                      Intsall {app_name}
+                    <Typography
+                      fontSize={20}
+                      sx={{ marginRight: 1 }}
+                      whiteSpace="nowrap"
+                    >
+                      Install {app_name}
                     </Typography>
-                    <img src="/favicon-32x32.png" alt="logo" />
+                    <img
+                      src="/icons/favicon-32x32.png"
+                      alt="logo"
+                      style={{ width: 32, height: 32 }}
+                    />
                   </Box>
                   <IconButton onClick={() => setDefferedEvent(null)}>
                     <Close />
