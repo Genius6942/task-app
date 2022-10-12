@@ -10,15 +10,20 @@ import Day from "./schedule/day";
 
 export default function History() {
   const { tasks } = useTasks();
-  const oldTasks = tasks
-    .map(transformTask)
-    .filter(
-      (task) =>
-        task.completes.length === task.completes.filter((item) => item).length
-    );
+  const oldTasks = tasks.filter(
+    (task) =>
+      task.completes.length === task.completes.filter((item) => item).length
+  );
   return (
     <Box
-      sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        overflow: "auto",
+        maxHeight: "100%",
+        minHeight: "100%",
+      }}
     >
       <Typography sx={{ display: "flex", alignItems: "center", mt: 2, mx: 2 }}>
         <Info sx={{ mr: 1 }} />

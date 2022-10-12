@@ -73,12 +73,12 @@ export default function Day({
           day.isBetween(task.startDate, task.dueDate, null, "[)") &&
           task.completes.length != task.completes.filter((item) => item).length
         );
-      }).sort((a, b) => {
-        console.log(a.name + ":", a.status, b.name + ":", b.status);
+      })
+      .sort((a, b) => {
         if (a.status - b.status !== 0) {
           return b.status - a.status;
         }
-        return a.dueDate.diff(b.dueDate, 'days');
+        return a.dueDate.diff(b.dueDate, "days");
       });
 
   return (

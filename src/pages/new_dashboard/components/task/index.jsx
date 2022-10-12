@@ -106,11 +106,12 @@ export default function Task({
     dueDate: moment(taskData.dueDate, "MM/DD/YYYY"),
   });
   useEffect(() => {
-    setData({
-      ...taskData,
-      startDate: moment(taskData.startDate, "MM/DD/YYYY"),
-      dueDate: moment(taskData.dueDate, "MM/DD/YYYY"),
-    });
+    !editing &&
+      setData({
+        ...taskData,
+        startDate: moment(taskData.startDate, "MM/DD/YYYY"),
+        dueDate: moment(taskData.dueDate, "MM/DD/YYYY"),
+      });
   }, [taskData]);
   /**
    * @param {Partial<data>} newData
@@ -161,17 +162,28 @@ export default function Task({
 
   const snackbar = useSnackbar();
 
+  const timeToday =
+    data.timeConf === "once"
+      ? data.time
+      : ((data.time / data.completes.length) *
+          (data.completes.length -
+            data.completes.filter((item) => item).length)) /
+        Math.max(1, data.dueDate.diff(moment().startOf("day"), "day"));
+
+  const taskHours = Math.floor(timeToday / 60);
+  const taskMinutes = timeToday % 60;
+
   return (
     <FormControl variant="standard">
       <Card
         sx={{
-          width: customWidth || (smallScreen ? 350 : 450),
+          width: customWidth || (smallScreen ? 375 : 450),
           backgroundColor: taskData.color || theme.palette.bgGrey,
           overflow: "visible",
         }}
         onDoubleClick={(e) => {
           e.preventDefault();
-          setEditing(true);
+          // setEditing(true);
         }}
       >
         <CardActions disableSpacing>
@@ -341,6 +353,15 @@ export default function Task({
               </Typography>
             )}
           </Box>
+          <Collapse in={!editing} timeout="auto" unmountOnExit>
+            <Typography my={1}>
+              Time today:{" "}
+              {taskHours &&
+                taskHours.toString() +
+                  ` hour${taskHours != 1 ? "s" : ""}${taskMinutes ? "," : ""} `}
+              {taskMinutes ? taskMinutes.toString() + " minutes" : null}
+            </Typography>
+          </Collapse>
           <Collapse in={editing || expanded} timeout="auto" unmountOnExit>
             <Box sx={{ mt: 1 }} />
             {editing ? (
@@ -357,50 +378,64 @@ export default function Task({
               </Typography>
             )}
             {!editing && (
-              <Stack direction="row" gap={1} sx={{ alignItems: "center" }}>
-                <Typography whiteSpace="nowrap">
-                  Task progress ({data.completes.filter((item) => item).length}/
-                  {data.completes.length}):
-                </Typography>
-                <Box
-                  sx={{
-                    display: "flex",
-                    overflowX: "auto",
-                    overflowY: "hidden",
-                    flexWrap: "none",
-                  }}
-                  className="nobar"
-                >
-                  {data.completes.map((complete, idx) => (
-                    <Checkbox
-                      sx={{ my: -1 }}
-                      key={idx}
-                      checked={complete}
-                      onChange={() => {
-                        const completesCopy = [...data.completes];
-                        const currentCompletes = completesCopy.filter(
-                          (item) => item
-                        ).length;
-                        if (complete) {
-                          // remove complete
-                          completesCopy[currentCompletes - 1] = false;
-                        } else {
-                          // add complete
-                          completesCopy[currentCompletes] = true;
-                        }
+              <>
+                <Stack direction="row" gap={1} sx={{ alignItems: "center" }}>
+                  <Typography whiteSpace="nowrap">
+                    Task progress (
+                    {data.completes.filter((item) => item).length}/
+                    {data.completes.length}):
+                  </Typography>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      overflowX: "auto",
+                      overflowY: "hidden",
+                      flexWrap: "none",
+                    }}
+                    className="nobar"
+                  >
+                    {data.completes.map((complete, idx) => (
+                      <Checkbox
+                        sx={{ my: -1 }}
+                        key={idx}
+                        checked={complete}
+                        onChange={() => {
+                          const completesCopy = [...data.completes];
+                          const currentCompletes = completesCopy.filter(
+                            (item) => item
+                          ).length;
+                          if (complete) {
+                            // remove complete
+                            completesCopy[currentCompletes - 1] = false;
+                          } else {
+                            // add complete
+                            completesCopy[currentCompletes] = true;
+                          }
 
-                        const formatedData = {
-                          ...data,
-                          completes: completesCopy,
-                          startDate: data.startDate.format("MM/DD/YYYY"),
-                          dueDate: data.dueDate.format("MM/DD/YYYY"),
-                        };
-                        onChange(formatedData);
-                      }}
-                    />
-                  ))}
-                </Box>
-              </Stack>
+                          const formatedData = {
+                            ...data,
+                            completes: completesCopy,
+                            startDate: data.startDate.format("MM/DD/YYYY"),
+                            dueDate: data.dueDate.format("MM/DD/YYYY"),
+                          };
+                          onChange(formatedData);
+                        }}
+                      />
+                    ))}
+                  </Box>
+                </Stack>
+                {data.subTasks && data.subTasks.length > 0 && (
+                  <Stack>
+                    <Typography>Sub Tasks:</Typography>
+                    {data.subTasks.map((subTask) => (
+                      <Box sx={{ display: "flex", alignItems: "center" }}>
+                        <Checkbox checked={subTask.completed} />
+                        {subTask.text}
+                      </Box>
+                    ))}
+                  </Stack>
+                )}
+              </>
             )}
           </Collapse>
           <Collapse in={editing} timeout="auto" unmountOnExit sx={{ mt: 2 }}>

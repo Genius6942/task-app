@@ -6,30 +6,34 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
+  FormControl,
+  FormControlLabel,
+  FormLabel,
   IconButton,
-  InputLabel,
   MenuItem,
+  Radio,
+  RadioGroup,
   Select,
   Stack,
   TextField,
   Typography,
+  styled,
   useTheme,
 } from "@mui/material";
 
-import { Add, Delete } from "@mui/icons-material";
+import { Add, Delete, Remove } from "@mui/icons-material";
 
 import { DesktopDatePicker, MobileDatePicker } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 
-import { useState } from "react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import moment from "moment";
 
 import { useForceUpdate, useSmallScreen } from "../../../../lib/utils";
+import SubTaskEditor from "./subTask";
 
 const DatePicker = (props) =>
   props.mobile ? (
@@ -37,6 +41,13 @@ const DatePicker = (props) =>
   ) : (
     <DesktopDatePicker {...props} />
   );
+
+const CustomDialog = styled(Dialog)(() => ({
+  "& .MuiPaper-root": {
+    minWidth:
+      typeof window !== undefined ? (window.width > 600 ? 400 : 350) : 400,
+  },
+}));
 
 /**
  *
@@ -46,7 +57,13 @@ const DatePicker = (props) =>
  * @param {object} onSubmit
  * @returns
  */
-export default function AddTaskDialog({ onClose, open, subjects, onSubmit }) {
+export default function AddTaskDialog({
+  onClose,
+  open,
+  subjects,
+  onSubmit,
+  resetKey,
+}) {
   const theme = useTheme();
   const addField = ({ id }) => {
     return () => {
@@ -70,6 +87,27 @@ export default function AddTaskDialog({ onClose, open, subjects, onSubmit }) {
 
   const smallScreen = useSmallScreen();
 
+  const defaultData = {
+    subject: subjects && subjects[0] ? subjects[0].name : "",
+    name: "",
+    startDate: moment().startOf("day"),
+    dueDate: moment().add(1, "days"),
+    time: 60,
+    details: "",
+    timeConf: "same",
+    subTasks: [],
+  };
+  /**
+   * @param {Partial<data>} data
+   */
+  const updateData = ({ ...values }) => {
+    return setData({ ...data, ...values });
+  };
+  const [data, setData] = useState(defaultData);
+  useEffect(() => {
+    setData(defaultData);
+  }, [resetKey]);
+
   const chips = [
     {
       name: "Details",
@@ -87,6 +125,54 @@ export default function AddTaskDialog({ onClose, open, subjects, onSubmit }) {
       id: 0,
       remove: () => updateData({ details: "" }),
     },
+    {
+      name: "Time strategy",
+      field: (
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            // width: "100%",
+            mr: "auto",
+          }}
+        >
+          <FormLabel id="demo-radio-buttons-group-label">
+            Time strategy
+          </FormLabel>
+          <RadioGroup
+            aria-labelledby="demo-radio-buttons-group-label"
+            value={data.timeConf}
+            onChange={({ target }) => updateData({ timeConf: target.value })}
+            name="radio-buttons-group"
+          >
+            <FormControlLabel
+              value="same"
+              control={<Radio />}
+              label="Same amount each day"
+            />
+            <FormControlLabel
+              value="once"
+              control={<Radio />}
+              label="All at once"
+            />
+          </RadioGroup>
+        </Box>
+      ),
+      id: 1,
+      remove: () => updateData({ timeConf: "same" }),
+    },
+    {
+      name: "Sub Tasks",
+      field: (
+        <SubTaskEditor
+          subTasks={data.subTasks}
+          onChange={(newSubTasks) => updateData({ subTasks: newSubTasks })}
+        />
+      ),
+      id: 2,
+      remove: () => updateData({ subTasks: [] }),
+    },
   ];
 
   useEffect(() => {
@@ -95,202 +181,192 @@ export default function AddTaskDialog({ onClose, open, subjects, onSubmit }) {
 
   const [errorDialogOpen, setErrorDialogOpen] = useState(false);
 
-  /**
-   * @param {Partial<data>} data
-   */
-  const updateData = ({ ...values }) => {
-    return setData({ ...data, ...values });
-  };
-  const [data, setData] = useState({
-    subject: "",
-    name: "",
-    startDate: moment().startOf("day"),
-    dueDate: moment().add(1, "days"),
-    time: 60,
-    details: "",
-  });
-
   return (
-    <Dialog open={open} onClose={onClose}>
-      <LocalizationProvider dateAdapter={AdapterMoment}>
-        <DialogTitle>Create Task</DialogTitle>
-        {subjects ? (
-          subjects[0] ? (
-            <>
-              <DialogContent>
-                <Box sx={{ display: "flex", gap: 1, alignItems: "flex-end" }}>
-                  <Typography>Subject: </Typography>
-                  <Select
-                    value={data.subject}
-                    label="Subject"
-                    variant="standard"
-                    onChange={({ target }) => {
-                      updateData({ subject: target.value });
-                    }}
-                  >
-                    {subjects.map((subject, idx) => (
-                      <MenuItem value={subject.name} key={idx}>
-                        {subject.name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </Box>
-                <Stack gap={2} mb={2}>
-                  <TextField
-                    autoFocus
-                    margin="dense"
-                    id="task-name"
-                    label="Task Name"
-                    fullWidth
-                    variant="standard"
-                    onBlur={({ target }) => updateData({ name: target.value })}
-                  />
-                  <DatePicker
-                    mobile={smallScreen}
-                    label="Due Date"
-                    inputFormat="MM/DD/YYYY"
-                    value={data.dueDate}
-                    onChange={(newValue) => updateData({ dueDate: newValue })}
-                    renderInput={(params) => <TextField {...params} />}
-                  />
-                  <Box sx={{ display: "flex", alignItems: "end", gap: 1 }}>
-                    <TextField
-                      key={timeForceUpdate}
+    <CustomDialog open={open} onClose={onClose}>
+      <FormControl>
+        <LocalizationProvider dateAdapter={AdapterMoment}>
+          <DialogTitle>Create Task</DialogTitle>
+          {subjects ? (
+            subjects[0] ? (
+              <>
+                <DialogContent>
+                  <Box sx={{ display: "flex", gap: 1, alignItems: "flex-end" }}>
+                    <Typography>Subject: </Typography>
+                    <Select
+                      value={data.subject}
+                      label="Subject"
                       variant="standard"
-                      defaultValue={Math.floor(data.time / 60)}
-                      sx={{ width: 42 }}
-                      type="number"
-                      autoComplete="off"
-                      InputProps={{ inputProps: { min: 0, max: 59 } }}
-                      onBlur={({ target }) => {
-                        const value =
-                          target.value.length === 0
-                            ? 0
-                            : parseInt(target.value);
-                        updateData({
-                          time: value * 60 + (data.time % 60),
-                        });
-
-                        forceTimeUpdate();
+                      onChange={({ target }) => {
+                        updateData({ subject: target.value });
                       }}
-                    />
-                    <Typography>hours</Typography>
-                    <TextField
-                      key={timeForceUpdate + 10 ** 6}
-                      variant="standard"
-                      defaultValue={data.time % 60}
-                      sx={{ width: 42 }}
-                      type="number"
-                      autoComplete="off"
-                      InputProps={{ inputProps: { min: 0, max: 59 } }}
-                      onBlur={({ target }) => {
-                        const value =
-                          target.value.length === 0
-                            ? 0
-                            : parseInt(target.value);
-                        updateData({
-                          time: value + Math.floor(data.time / 60) * 60,
-                        });
-
-                        forceTimeUpdate();
-                      }}
-                    />
-                    <Typography>minutes</Typography>
+                    >
+                      {subjects.map((subject, idx) => (
+                        <MenuItem value={subject.name} key={idx}>
+                          {subject.name}
+                        </MenuItem>
+                      ))}
+                    </Select>
                   </Box>
-                </Stack>
-                <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
-                  {chips.map(
-                    (chip, idx) =>
-                      fields.findIndex((fieldId) => fieldId === chip.id) ===
-                        -1 && (
-                        <Chip
-                          sx={{
-                            background: `linear-gradient(315deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
-                            transition: theme.transitions.create("all", {
-                              duration: theme.transitions.duration.medium,
-                            }),
-                            ":hover": {
-                              boxShadow: "5px 10px 12px 0px rgba(0,0,0,0.3)",
-                              // right: '2px',
-                              // bottom: '2px',
-                            },
-                            ":focus": {
-                              boxShadow: "5px 10px 12px 0px rgba(0,0,0,0.3)",
-                              // right: '2px',
-                              // bottom: '2px',
-                            },
-                          }}
-                          label={chip.name}
-                          key={idx}
-                          onClick={addField({ id: chip.id })}
-                          onDelete={addField({ id: chip.id })}
-                          deleteIcon={<Add />}
-                        />
-                      )
-                  )}
-                </Box>
-                <Stack gap={2} sx={{ mt: 2 }}>
-                  {fields.map(
-                    /**
+                  <Stack gap={2} mb={2}>
+                    <TextField
+                      autoFocus
+                      margin="dense"
+                      id="task-name"
+                      label="Task Name"
+                      fullWidth
+                      variant="standard"
+                      onBlur={({ target }) =>
+                        updateData({ name: target.value })
+                      }
+                    />
+                    <DatePicker
+                      mobile={smallScreen}
+                      label="Due Date"
+                      inputFormat="MM/DD/YYYY"
+                      value={data.dueDate}
+                      onChange={(newValue) => updateData({ dueDate: newValue })}
+                      renderInput={(params) => <TextField {...params} />}
+                    />
+                    <Box sx={{ display: "flex", alignItems: "end", gap: 1 }}>
+                      <TextField
+                        key={timeForceUpdate}
+                        variant="standard"
+                        defaultValue={Math.floor(data.time / 60)}
+                        sx={{ width: 42 }}
+                        type="number"
+                        autoComplete="off"
+                        InputProps={{ inputProps: { min: 0, max: 59 } }}
+                        onBlur={({ target }) => {
+                          const value =
+                            target.value.length === 0
+                              ? 0
+                              : parseInt(target.value);
+                          updateData({
+                            time: value * 60 + (data.time % 60),
+                          });
+
+                          forceTimeUpdate();
+                        }}
+                      />
+                      <Typography>hours</Typography>
+                      <TextField
+                        key={timeForceUpdate + 10 ** 6}
+                        variant="standard"
+                        defaultValue={data.time % 60}
+                        sx={{ width: 42 }}
+                        type="number"
+                        autoComplete="off"
+                        InputProps={{ inputProps: { min: 0, max: 59 } }}
+                        onBlur={({ target }) => {
+                          const value =
+                            target.value.length === 0
+                              ? 0
+                              : parseInt(target.value);
+                          updateData({
+                            time: value + Math.floor(data.time / 60) * 60,
+                          });
+
+                          forceTimeUpdate();
+                        }}
+                      />
+                      <Typography>minutes</Typography>
+                    </Box>
+                  </Stack>
+                  <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
+                    {chips.map(
+                      (chip, idx) =>
+                        fields.findIndex((fieldId) => fieldId === chip.id) ===
+                          -1 && (
+                          <Chip
+                            sx={{
+                              background: `linear-gradient(315deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
+                              transition: theme.transitions.create("all", {
+                                duration: theme.transitions.duration.medium,
+                              }),
+                              ":hover": {
+                                boxShadow: "5px 10px 12px 0px rgba(0,0,0,0.3)",
+                                // right: '2px',
+                                // bottom: '2px',
+                              },
+                              ":focus": {
+                                boxShadow: "5px 10px 12px 0px rgba(0,0,0,0.3)",
+                                // right: '2px',
+                                // bottom: '2px',
+                              },
+                            }}
+                            label={chip.name}
+                            key={idx}
+                            onClick={addField({ id: chip.id })}
+                            onDelete={addField({ id: chip.id })}
+                            deleteIcon={<Add />}
+                          />
+                        )
+                    )}
+                  </Box>
+                  <Stack gap={2} sx={{ mt: 2 }}>
+                    {fields.map(
+                      /**
 											@param {number} id
 										*/
-                    (id, idx) => {
-                      const field = chips.find(
-                        ({ id: fieldId }) => id === fieldId
-                      );
-                      return (
-                        <Box
-                          sx={{
-                            display: "flex",
-                            alignItems: "flex-end",
-                            gap: 2,
-                          }}
-                          key={idx}
-                        >
-                          {field.field}
-                          <IconButton onClick={() => removeField(field.id)}>
-                            <Delete />
-                          </IconButton>
-                        </Box>
-                      );
-                    }
-                  )}
-                </Stack>
-              </DialogContent>
-              <DialogActions>
-                <Button onClick={onClose}>Cancel</Button>
-                <Button
-                  onClick={async () => {
-                    await onSubmit(data);
-                    onClose();
-                  }}
-                >
-                  Create
-                </Button>
-              </DialogActions>
-            </>
+                      (id, idx) => {
+                        const field = chips.find(
+                          ({ id: fieldId }) => id === fieldId
+                        );
+                        return (
+                          <Box
+                            sx={{
+                              display: "flex",
+                              alignItems: "flex-end",
+                              gap: 2,
+                            }}
+                            key={idx}
+                          >
+                            {field.field}
+                            <IconButton onClick={() => removeField(field.id)}>
+                              <Delete />
+                            </IconButton>
+                          </Box>
+                        );
+                      }
+                    )}
+                  </Stack>
+                </DialogContent>
+                <DialogActions>
+                  <Button onClick={onClose}>Cancel</Button>
+                  <Button
+                    onClick={async () => {
+                      console.log(data);
+                      await onSubmit(data);
+                      onClose();
+                    }}
+                  >
+                    Create
+                  </Button>
+                </DialogActions>
+              </>
+            ) : (
+              <Typography m={2}>
+                Go to accounts to add a subject and get started.
+              </Typography>
+            )
           ) : (
-            <Typography m={2}>
-              Go to accounts to add a subject and get started.
-            </Typography>
-          )
-        ) : (
-          <CircularProgress />
-        )}
-        <Dialog
-          open={errorDialogOpen}
-          onClose={() => setErrorDialogOpen(false)}
-        >
-          <DialogTitle>
-            Name, Subject, Date, and time length required
-          </DialogTitle>
-          <DialogActions>
-            <Button variant="text" onClick={() => setErrorDialogOpen(false)}>
-              Ok
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </LocalizationProvider>
-    </Dialog>
+            <CircularProgress />
+          )}
+          <Dialog
+            open={errorDialogOpen}
+            onClose={() => setErrorDialogOpen(false)}
+          >
+            <DialogTitle>
+              Name, Subject, Date, and time length required
+            </DialogTitle>
+            <DialogActions>
+              <Button variant="text" onClick={() => setErrorDialogOpen(false)}>
+                Ok
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </LocalizationProvider>
+      </FormControl>
+    </CustomDialog>
   );
 }

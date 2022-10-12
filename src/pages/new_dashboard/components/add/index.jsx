@@ -2,10 +2,8 @@ import { Fab } from "@mui/material";
 
 import { Add } from "@mui/icons-material";
 
-import { useState } from "react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { useEffectOnce } from "react-use";
 
 import { auth } from "../../../../lib/firebase";
 import { createTask } from "../../../../lib/firebase/firestore/task";
@@ -16,8 +14,9 @@ import AddTaskDialog from "./dialog";
 
 export default function AddButton() {
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [user, loading, error] = useAuthState(auth);
+  const [user, loading] = useAuthState(auth);
   const [subjects, setSubjects] = useState(null);
+  const [resetKey, setResetKey] = useState(0);
 
   const pullSubjectData = async () => {
     const compareSubjects = (first, second) => {
@@ -61,7 +60,10 @@ export default function AddButton() {
 
   const onSubmit = async (data) => {
     const clone = { ...data };
-    const days = clone.dueDate.diff(clone.startDate, "days");
+    const days =
+      data.timeConf === "once"
+        ? 1
+        : clone.dueDate.diff(clone.startDate, "days");
     const completes = Array(days).fill(false);
     clone.completes = completes;
     clone.startDate = clone.startDate.format("MM/DD/YYYY");
@@ -85,6 +87,7 @@ export default function AddButton() {
         }}
         onClick={() => {
           setDialogOpen(true);
+          setResetKey(resetKey + 1);
         }}
       >
         <Add />
@@ -94,6 +97,7 @@ export default function AddButton() {
         onClose={() => setDialogOpen(false)}
         subjects={subjects}
         onSubmit={onSubmit}
+        resetKey={resetKey}
       />
     </>
   );

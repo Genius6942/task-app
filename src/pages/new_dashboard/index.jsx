@@ -34,7 +34,7 @@ import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import PageAnimateLayout from "../../Animate";
 import { auth } from "../../lib/firebase";
 import { requestPermission, startFirebaseMessaging } from "../../lib/firebase";
-import { hideSplash, useSmallScreen } from "../../lib/utils";
+import { hideSplash, setDocumentTitle, useSmallScreen } from "../../lib/utils";
 import AddButton from "./components/add";
 import { TaskContextProvider } from "./components/task/context";
 
@@ -107,11 +107,23 @@ export default function NewDashboard({ changeTheme }) {
   const [navState, setNavState] = useState(
     getDashboardPath() === "" ? "home" : getDashboardPath()
   );
+  useEffect(() => {
+    setDocumentTitle(
+      "dashboard | " + navState.charAt(0).toUpperCase() + navState.slice(1)
+    );
+  }, [navState]);
 
   const handleNavChange = (event, newValue) => {
     setNavState(newValue);
     navigate(newValue === "home" ? "" : newValue);
   };
+  useEffect(() => {
+    const displayedPath = location.pathname.slice(11);
+    const currentUrl = displayedPath === "" ? "home" : displayedPath;
+    if (currentUrl !== navState) {
+      setNavState(currentUrl);
+    }
+  }, [location]);
 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [temporaryDrawerOpen, setTemporaryDrawerOpen] = useState(false);
