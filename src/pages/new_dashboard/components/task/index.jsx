@@ -40,10 +40,10 @@ import moment from "moment";
 
 import { useConfetti } from "../../../../components/confetti";
 import { useSnackbar } from "../../../../components/snackbar";
-import SubTaskEditor from "../../../../components/subTask";
 import { auth } from "../../../../lib/firebase";
 import { createTask } from "../../../../lib/firebase/firestore/task";
 import { useForceUpdate, useSmallScreen } from "../../../../lib/utils";
+import SubTaskEditor from "../../components/subTask";
 import { useTasks } from "./context";
 
 const DatePicker = ({ mobile, ...props }) =>
@@ -64,8 +64,8 @@ const ExpandMore = styled(IconButtonForward)(({ theme, expand }) => ({
 
 /**
  * @param {object} props
- * @param { import('../../../types').cardState } props.taskData
- * @param {(newState: import('../../../types').cardState ) => void} props.onChange
+ * @param { import('../../../../types').task } props.taskData
+ * @param {(newState: import('../../../../types').task ) => void} props.onChange
  * @param {boolean?} props.placeholder - makes the card invisible and not interactive
  * @param {() => void} props.onRemove
  * @param {number?} props.customWidth
@@ -88,6 +88,15 @@ export default function Task({
     shallowCopy.color = color.hex;
     onChange(shallowCopy);
   };
+
+  const snackbar = useSnackbar();
+
+  const [editing, setEditing] = useState(false);
+
+  const smallScreen = useSmallScreen();
+
+  const { createConfetti } = useConfetti();
+
   if (placeholder) {
     return <div style={{ width: customWidth || 398, height: 161 }}></div>;
   }
@@ -98,18 +107,9 @@ export default function Task({
   const [expanded, setExpanded] = useState(false);
   const handleExpandClick = () => setExpanded(!expanded);
 
-  const [data, setData] = useState({
-    ...taskData,
-    startDate: moment(taskData.startDate, "MM/DD/YYYY"),
-    dueDate: moment(taskData.dueDate, "MM/DD/YYYY"),
-  });
+  const [data, setData] = useState(taskData);
   useEffect(() => {
-    !editing &&
-      setData({
-        ...taskData,
-        startDate: moment(taskData.startDate, "MM/DD/YYYY"),
-        dueDate: moment(taskData.dueDate, "MM/DD/YYYY"),
-      });
+    !editing && setData(taskData);
   }, [taskData]);
   /**
    * @param {Partial<data>} newData
@@ -147,32 +147,25 @@ export default function Task({
 
   const finalText = output.map((item, idx) => <span key={idx}>{item}</span>);
 
-  const [editing, setEditing] = useState(false);
-
-  const smallScreen = useSmallScreen();
-
-  const { createConfetti } = useConfetti();
-
   // task status:
   // 1: good / green
   // 2: warn / orange
   // 3: bad / red
 
-  const snackbar = useSnackbar();
-
-  const timeToday =
+  const timeToday = Math.round(
     data.timeConf === "once"
       ? data.time
       : ((data.time / data.completes.length) *
           (data.completes.length -
             data.completes.filter((item) => item).length)) /
-        Math.max(1, data.dueDate.diff(moment().startOf("day"), "day"));
+          Math.max(1, data.dueDate.diff(moment().startOf("day"), "day") - 1)
+  );
 
   const taskHours = Math.floor(timeToday / 60);
   const taskMinutes = timeToday % 60;
 
   return (
-    <FormControl variant="standard">
+  <FormControl variant="standard">
       <Card
         sx={{
           width: customWidth || (smallScreen ? 375 : 450),
@@ -410,13 +403,13 @@ export default function Task({
                             completesCopy[currentCompletes] = true;
                           }
 
-                          const formatedData = {
+                          const formattedData = {
                             ...data,
                             completes: completesCopy,
                             startDate: data.startDate.format("MM/DD/YYYY"),
                             dueDate: data.dueDate.format("MM/DD/YYYY"),
                           };
-                          onChange(formatedData);
+                          onChange(formattedData);
                         }}
                       />
                     ))}
@@ -424,10 +417,28 @@ export default function Task({
                 </Stack>
                 {data.subTasks && data.subTasks.length > 0 && (
                   <Stack>
-                    <Typography>Sub Tasks:</Typography>
-                    {data.subTasks.map((subTask) => (
-                      <Box sx={{ display: "flex", alignItems: "center" }}>
-                        <Checkbox checked={subTask.completed} />
+                    <Typography>Subtask progress:</Typography>
+                    {data.subTasks.map((subTask, idx) => (
+                      <Box
+                        sx={{ display: "flex", alignItems: "center" }}
+                        key={idx}
+                      >
+                        <Checkbox
+                          checked={subTask.completed}
+                          onChange={({ target }) => {
+                            const copy = [...data.subTasks];
+                            copy[
+                              copy.findIndex((item) => item.id === subTask.id)
+                            ].completed = !subTask.completed;
+                            const formattedData = {
+                              ...data,
+                              subTasks: copy,
+                              startDate: data.startDate.format("MM/DD/YYYY"),
+                              dueDate: data.dueDate.format("MM/DD/YYYY"),
+                            };
+                            onChange(formattedData);
+                          }}
+                        />
                         {subTask.text}
                       </Box>
                     ))}
@@ -445,7 +456,18 @@ export default function Task({
                     label="Start Date"
                     inputFormat="MM/DD/YYYY"
                     value={data.startDate}
-                    onChange={(newValue) => updateData({ startDate: newValue })}
+                    onChange={
+                      /**
+                       * @param {moment.Moment} newValue
+                       */
+                      (newValue) =>
+                        updateData({
+                          startDate: newValue,
+                          dueDate: data.dueDate.isBefore(newValue.add(1, "day"))
+                            ? newValue.add(1, "day")
+                            : data.dueDate,
+                        })
+                    }
                     renderInput={(params) => <TextField {...params} />}
                   />
                   <DatePicker
@@ -454,7 +476,22 @@ export default function Task({
                     label="Due Date"
                     inputFormat="MM/DD/YYYY"
                     value={data.dueDate}
-                    onChange={(newValue) => updateData({ dueDate: newValue })}
+                    onChange={
+                      /**
+                       * @param {moment.Moment} newValue
+                       */
+                      (newValue) => {
+                        newValue = newValue.startOf("day");
+                        updateData({
+                          dueDate: newValue,
+                          startDate: newValue.isBefore(
+                            data.startDate.add(1, "day")
+                          )
+                            ? newValue.add(-2, "days")
+                            : data.startDate,
+                        });
+                      }
+                    }
                     renderInput={(params) => <TextField {...params} />}
                   />
                   <Box sx={{ display: "flex", alignItems: "end", gap: 1 }}>

@@ -33,7 +33,7 @@ import { useEffect, useState } from "react";
 import moment from "moment";
 
 import { useForceUpdate, useSmallScreen } from "../../../../lib/utils";
-import SubTaskEditor from "./subTask";
+import SubTaskEditor from "../../components/subTask";
 
 const DatePicker = (props) =>
   props.mobile ? (
@@ -335,7 +335,6 @@ export default function AddTaskDialog({
                   <Button onClick={onClose}>Cancel</Button>
                   <Button
                     onClick={async () => {
-                      console.log(data);
                       await onSubmit(data);
                       onClose();
                     }}

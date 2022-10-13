@@ -156,7 +156,7 @@ export default function NewDashboard({ changeTheme }) {
   return (
     <TaskContextProvider user={user}>
       {smallScreen ? (
-        <Box sx={{ display: "flex", flexDirection: "column", height: "100vh" }}>
+        <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
           <Box
             sx={{
               flexGrow: 1,
@@ -184,7 +184,7 @@ export default function NewDashboard({ changeTheme }) {
           </BottomNavigation>
         </Box>
       ) : (
-        <Box sx={{ display: "flex", height: "100vh" }}>
+        <Box sx={{ display: "flex", height: "100%" }}>
           <WrapperDrawer
             variant="permanent"
             open={drawerOpen || temporaryDrawerOpen}

@@ -5,7 +5,13 @@ import moment from "moment";
 
 import { getTasks } from "../../../../lib/firebase/firestore/task";
 
-const TaskContext = createContext({ fetchTaskUpdate: () => {}, tasks: [] });
+const TaskContext = createContext({
+  fetchTaskUpdate: () => {},
+  /**
+   * @type {import('../../../../types').task[]}
+   */
+  tasks: [],
+});
 
 const generateTaskStatus = (data) => {
   if (data.dueDate.isBefore(moment().startOf("day").add(1, "day"))) return 3;

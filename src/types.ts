@@ -1,3 +1,5 @@
+import { Moment } from "moment";
+
 type cardState = {
   id: number;
   text: string;
@@ -14,7 +16,16 @@ type colState = {
 };
 
 type task = {
-  
-}
+  id: string;
+  completes: boolean[];
+  dueDate: Moment;
+  startDate: Moment;
+  owner: string;
+  name: string;
+  subTasks: { completed: boolean; id: number; text: string }[] | undefined;
+  subject: string;
+  time: number;
+  timeConf: string;
+};
 
-export type { cardState, colState };
+export type { cardState, colState, task };

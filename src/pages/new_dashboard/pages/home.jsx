@@ -6,7 +6,6 @@ import moment from "moment";
 import { removeTask, updateTask } from "../../../lib/firebase/firestore/task";
 import Task from "../components/task";
 import { useTasks } from "../components/task/context";
-import { transformTask } from "../components/task/transform";
 
 export default function Home() {
   const today = moment().startOf("day");
@@ -15,10 +14,9 @@ export default function Home() {
     if (today.isBefore(task.startDate)) return false;
     if (task.completes.length === task.completes.filter((item) => item).length)
       return false;
-    console.log(today.diff(task.startDate, "days"));
     if (
       task.completes.filter((item) => item).length >=
-      today.diff(task.startDate, "days")
+      today.diff(task.startDate, "days") + 1
     )
       return false;
     return true;

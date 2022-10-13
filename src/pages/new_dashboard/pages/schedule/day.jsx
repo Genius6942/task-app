@@ -53,7 +53,7 @@ const MotionContainer = ({ task, delay }) => {
 /**
  * @param {object} props
  * @param {moment.Moment?} props.day
- * @param {array[object]?} props.presetTasks
+ * @param {array[import('../../../../types').task]?} props.presetTasks
  * @param {string?} props.title
  * @param {string?} props.presetMessage
  */
@@ -61,7 +61,7 @@ export default function Day({
   day = moment().startOf("day"),
   presetTasks = null,
   title = null,
-  defaultMessage = "Nothing overdue!",
+  defaultMessage = "Nothing for this day.",
 }) {
   const { tasks } = useTasks();
 
@@ -71,7 +71,18 @@ export default function Day({
       .filter((task) => {
         return (
           day.isBetween(task.startDate, task.dueDate, null, "[)") &&
-          task.completes.length != task.completes.filter((item) => item).length
+          task.completes.length !=
+            task.completes.filter((item) => item).length &&
+          task.completes.filter((item) => item).length <
+            day.diff(task.startDate, "days") + 1 && 
+          task.completes.length - task.completes.filter((item) => item).length >
+            day.diff(
+              task.startDate.add(
+                task.completes.filter((item) => item).length,
+                "days"
+              ),
+              "days"
+            )
         );
       })
       .sort((a, b) => {

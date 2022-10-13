@@ -28,15 +28,19 @@ export default function Schedule() {
       tasks.map(transformTask).filter((task) => {
         return (
           day.isBetween(task.startDate, task.dueDate, null, "[)") &&
-          task.completes.length != task.completes.filter((item) => item).length
+          task.completes.length !=
+            task.completes.filter((item) => item).length &&
+          task.completes.filter((item) => item).length <
+            day.diff(task.startDate, "days") + 1
         );
       }).length > 0
     );
   };
 
+  const sorted = tasks.sort((a, b) => a.dueDate.diff(b.dueDate, "days"));
   const days = [];
   let day = moment().startOf("day");
-  while (dayInTasks(day)) {
+  while (sorted[0] && day.isBefore(sorted.at(-1).dueDate)) {
     days.push(moment(day.format("MM/DD/YYYY"), "MM/DD/YYYY"));
     day = day.add(1, "day");
   }
@@ -66,7 +70,11 @@ export default function Schedule() {
         mx={!smallScreen && 2}
         direction={smallScreen ? "column" : "row"}
       >
-        <Day title="Overdue" presetTasks={tasksOverdue} />
+        <Day
+          title="Overdue"
+          presetTasks={tasksOverdue}
+          defaultMessage={"Nothing overdue!"}
+        />
         {days.map((day, idx) => (
           <Day day={day} key={idx} index={idx} />
         ))}

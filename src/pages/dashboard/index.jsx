@@ -198,7 +198,7 @@ export default function Dashboard() {
     <>
       <Menu open={menuOpen} setOpen={setMenuOpen}></Menu>
 
-      <Box sx={{ height: "100vh", display: "flex", flexDirection: "column" }}>
+      <Box sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
         <NavBar
           // disable for now
           openMenu={null}

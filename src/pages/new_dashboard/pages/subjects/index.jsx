@@ -97,7 +97,7 @@ export default function Subjects() {
             })
           ) : (
             <Typography mx="auto">
-              No subjects! Create one on your {" "}
+              No subjects! Create one on your{" "}
               <Link
                 href="/dashboard/account"
                 onClick={(e) => {

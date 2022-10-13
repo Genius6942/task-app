@@ -1,12 +1,14 @@
 import { ThemeProvider } from "@mui/material/styles";
 
 import {
+  Alert,
   Box,
   Button,
   Card,
   CardActions,
   CssBaseline,
   IconButton,
+  Link,
   Typography,
 } from "@mui/material";
 
@@ -22,9 +24,10 @@ import "fuckadblock";
 import { ConfettiProvider } from "./components/confetti";
 import { SnackbarProvider } from "./components/snackbar";
 import { AdBlockModal, detectAdblock } from "./lib/adblock";
-import { app_name } from "./lib/constants";
+import { app_name, feedback_url } from "./lib/constants";
 import { auth } from "./lib/firebase";
 import { getUser, updateUser } from "./lib/firebase/firestore/user";
+import { useSmallScreen } from "./lib/utils";
 import Dashboard from "./pages/dashboard";
 import Home from "./pages/home";
 import Login from "./pages/login";
@@ -40,6 +43,7 @@ import createTheme from "./theme";
 function App() {
   const [darkMode, setDarkMode] = useState(false);
   const theme = createTheme({ dark: darkMode });
+  const smallScreen = useSmallScreen();
 
   const [defferedEvent, setDefferedEvent] = useState(null);
 
@@ -126,42 +130,60 @@ function App() {
         <ConfettiProvider>
           <SnackbarProvider>
             <CssBaseline />
-            <Router>
-              <Routes>
-                <Route exact path="/" element={<Home />} />
-                <Route exact path="/login" element={<Login />} />
-                <Route exact path="/register" element={<Register />} />
-                <Route path="/old_dashboard" element={<Dashboard />} />
-                <Route
-                  path="dashboard"
-                  element={
-                    <NewDashboard
-                      changeTheme={({ dark = false }) => {
-                        setDarkMode(dark);
-                      }}
-                    />
-                  }
-                >
-                  <Route path="" element={<DashboardHome />} />
-                  <Route path="subjects" element={<Subjects />} />
-                  <Route path="schedule" element={<Schedule />} />
-                  <Route path="history" element={<History />} />
-                  <Route
-                    path="account"
-                    element={
-                      <Account
-                        changeTheme={({ dark = false }) => {
-                          setDarkMode(dark);
-                        }}
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                height: "100vh",
+                maxHeight: "100%",
+              }}
+            >
+              <Alert severity="info" sx={{ pl: !smallScreen && 10 }}>
+                This app is in beta. Please contribute by submiting a bug or
+                feedback{" "}
+                <Link href={feedback_url} target="_blank">
+                  here.
+                </Link> (Known bugs do exist)
+              </Alert>
+              <Box sx={{ flexGrow: 1, position: "relative", overflow: "auto" }}>
+                <Router>
+                  <Routes>
+                    <Route exact path="/" element={<Home />} />
+                    <Route exact path="/login" element={<Login />} />
+                    <Route exact path="/register" element={<Register />} />
+                    <Route path="/old_dashboard" element={<Dashboard />} />
+                    <Route
+                      path="dashboard"
+                      element={
+                        <NewDashboard
+                          changeTheme={({ dark = false }) => {
+                            setDarkMode(dark);
+                          }}
+                        />
+                      }
+                    >
+                      <Route path="" element={<DashboardHome />} />
+                      <Route path="subjects" element={<Subjects />} />
+                      <Route path="schedule" element={<Schedule />} />
+                      <Route path="history" element={<History />} />
+                      <Route
+                        path="account"
+                        element={
+                          <Account
+                            changeTheme={({ dark = false }) => {
+                              setDarkMode(dark);
+                            }}
+                          />
+                        }
                       />
-                    }
-                  />
-                </Route>
+                    </Route>
 
-                {/* 404 page */}
-                <Route path="*" element={<div>404</div>} />
-              </Routes>
-            </Router>
+                    {/* 404 page */}
+                    <Route path="*" element={<div>404</div>} />
+                  </Routes>
+                </Router>
+              </Box>
+            </Box>
             {defferedEvent && (
               <Card
                 sx={{

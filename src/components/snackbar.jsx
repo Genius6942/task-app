@@ -103,7 +103,7 @@ const SnackbarProvider = ({ ...props }) => {
             })
           }
           severity="warning"
-          sx={{ widht: "100%" }}
+          sx={{ width: "100%" }}
         >
           {snackbarData.undo.message}
           <Button
@@ -115,6 +115,7 @@ const SnackbarProvider = ({ ...props }) => {
                 undo: { message: "", onUndo: () => {}, open: false },
               });
             }}
+            color="secondary"
           >
             UNDO
           </Button>
