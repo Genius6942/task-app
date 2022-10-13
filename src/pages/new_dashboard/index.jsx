@@ -165,7 +165,7 @@ export default function NewDashboard({ changeTheme }) {
             }}
           >
             <Outlet />
-            <AddButton />
+            {navState !== "account" && <AddButton />}
           </Box>
 
           <BottomNavigation
@@ -313,7 +313,7 @@ export default function NewDashboard({ changeTheme }) {
           <PageAnimateLayout>
             <Outlet />
           </PageAnimateLayout>
-          <AddButton />
+          {navState !== "account" && <AddButton />}
         </Box>
       )}
     </TaskContextProvider>

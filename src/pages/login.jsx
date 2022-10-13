@@ -14,6 +14,7 @@ import { useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 
+import { useSnackbar } from "../components/snackbar";
 import { app_name } from "../lib/constants";
 import {
   auth,
@@ -42,10 +43,34 @@ export default function Login() {
   setDocumentTitle("Login");
   hideSplash();
 
-  const handleSubmit = (e) => {
+  const { openErrorSnackbar } = useSnackbar();
+
+  const throwError = (message) => {
+    return openErrorSnackbar(message);
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
-    logInWithEmailAndPassword(data.get("email"), data.get("password"));
+    if (data.get("password").length < 1) {
+      return throwError("Password required.");
+    } else if (data.get("email").length < 1) {
+      return throwError("Email required");
+    }
+    try {
+      await logInWithEmailAndPassword(data.get("email"), data.get("password"));
+    } catch (e) {
+      console.error(e);
+      throwError(
+        e.message
+          .replaceAll("Firebase: ", "")
+          .replaceAll("auth/", "")
+          .replaceAll("(", "")
+          .replaceAll(")", "")
+          .replaceAll("Error", "Error:")
+          .replaceAll("-", " ")
+      );
+    }
   };
 
   const [user, loading] = useAuthState(auth);
@@ -109,7 +134,22 @@ export default function Login() {
             variant="contained"
             fullWidth
             sx={{ mt: 3, mb: 2 }}
-            onClick={signInWithGoogle}
+            onClick={async () => {
+              try {
+                await signInWithGoogle();
+              } catch (e) {
+                console.error(e);
+                throwError(
+                  e.message
+                    .replaceAll("Firebase: ", "")
+                    .replaceAll("auth/", "")
+                    .replaceAll("(", "")
+                    .replaceAll(")", "")
+                    .replaceAll("Error", "Error:")
+                    .replaceAll("-", " ")
+                );
+              }
+            }}
             color="white"
           >
             <img

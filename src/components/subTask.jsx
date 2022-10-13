@@ -1,6 +1,6 @@
 import { Box, IconButton, TextField, Typography } from "@mui/material";
 
-import { Add, DragIndicator, Remove } from "@mui/icons-material";
+import { Add, DragIndicator, Close as Remove } from "@mui/icons-material";
 
 import { useState } from "react";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
@@ -35,7 +35,7 @@ export default function SubTaskEditor({ subTasks, onChange }) {
     <DragDropContext onDragEnd={onDragEnd}>
       <Box sx={{ width: "100%" }}>
         <Box sx={{ display: "flex", alignItems: "center" }}>
-          <Typography mr="auto">Sub Tasks</Typography>
+          <Typography>Sub Tasks</Typography>
           <IconButton
             onClick={() => {
               if (adding) {

@@ -1,12 +1,8 @@
-import { Button, IconButton, Snackbar } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 
-import { Close } from "@mui/icons-material";
+import { Alert, Button, Snackbar } from "@mui/material";
 
-import { createContext } from "react";
-import { useState } from "react";
-import { useContext } from "react";
-
-import { useTheme } from "@emotion/react";
+import { createContext, forwardRef, useContext, useState } from "react";
 
 const SnackbarContext = createContext({
   /**
@@ -19,6 +15,10 @@ const SnackbarContext = createContext({
    */
   openUndoSnackbar: (message, onUndo) => {},
 });
+
+const CustomAlert = forwardRef((props, ref) => (
+  <Alert elevation={6} ref={ref} variant="filled" {...props} />
+));
 
 const SnackbarProvider = ({ ...props }) => {
   const [snackbarData, setSnackbarData] = useState({
@@ -61,6 +61,7 @@ const SnackbarProvider = ({ ...props }) => {
       {props.children}
       {/* Error */}
       <Snackbar
+        color="error"
         open={snackbarData.error.open}
         autoHideDuration={6000}
         onClose={() =>
@@ -69,25 +70,20 @@ const SnackbarProvider = ({ ...props }) => {
             error: { message: "", open: false },
           })
         }
-        message={snackbarData.error.message}
-        action={
-          <>
-            <IconButton
-              size="small"
-              aria-label="close"
-              color={theme.palette.mode === "dark" ? "black" : "white"}
-              onClick={() =>
-                setSnackbarData({
-                  ...snackbarData,
-                  error: { message: "", open: false },
-                })
-              }
-            >
-              <Close fontSize="small" />
-            </IconButton>
-          </>
-        }
-      />
+      >
+        <CustomAlert
+          onClose={() =>
+            setSnackbarData({
+              ...snackbarData,
+              error: { message: "", open: false },
+            })
+          }
+          severity="error"
+          sx={{ width: "100%" }}
+        >
+          {snackbarData.error.message}
+        </CustomAlert>
+      </Snackbar>
       {/* Undo */}
       <Snackbar
         open={snackbarData.undo.open}
@@ -98,35 +94,32 @@ const SnackbarProvider = ({ ...props }) => {
             undo: { message: "", onUndo: () => {}, open: false },
           })
         }
-        message={snackbarData.undo.message}
-        action={
-          <>
-            <Button
-              size="small"
-              onClick={() => {
-                snackbarData.undo.onUndo();
-                setSnackbarData({
-                  ...snackbarData,
-                  undo: { message: "", onUndo: () => {}, open: false },
-                });
-              }}
-            >
-              UNDO
-            </Button>
-            <IconButton
-              color={theme.palette.mode === "dark" ? "black" : "white"}
-              onClick={() =>
-                setSnackbarData({
-                  ...snackbarData,
-                  undo: { message: "", onUndo: () => {}, open: false },
-                })
-              }
-            >
-              <Close fontSize="small" />
-            </IconButton>
-          </>
-        }
-      />
+      >
+        <CustomAlert
+          onClose={() =>
+            setSnackbarData({
+              ...snackbarData,
+              undo: { message: "", onUndo: () => {}, open: false },
+            })
+          }
+          severity="warning"
+          sx={{ widht: "100%" }}
+        >
+          {snackbarData.undo.message}
+          <Button
+            size="small"
+            onClick={() => {
+              snackbarData.undo.onUndo();
+              setSnackbarData({
+                ...snackbarData,
+                undo: { message: "", onUndo: () => {}, open: false },
+              });
+            }}
+          >
+            UNDO
+          </Button>
+        </CustomAlert>
+      </Snackbar>
     </SnackbarContext.Provider>
   );
 };

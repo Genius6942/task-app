@@ -8,7 +8,7 @@ import { getTasks } from "../../../../lib/firebase/firestore/task";
 const TaskContext = createContext({ fetchTaskUpdate: () => {}, tasks: [] });
 
 const generateTaskStatus = (data) => {
-  if (data.dueDate.isBefore(moment().startOf("day"))) return 3;
+  if (data.dueDate.isBefore(moment().startOf("day").add(1, "day"))) return 3;
   else if (
     data.completes.filter((item) => item).length <
     moment.duration(moment().startOf("day").diff(data.startDate)).asDays()
@@ -49,16 +49,20 @@ const TaskContextProvider = ({ user, ...props }) => {
 
     return false;
   };
+
+  const liveFetch = false;
   useEffect(() => {
     fetchTaskUpdate();
-    if ("connection" in navigator) {
-      if (!navigator.connection.saveData) {
+    if (liveFetch) {
+      if ("connection" in navigator) {
+        if (!navigator.connection.saveData) {
+          const interval = setInterval(() => fetchTaskUpdate(), 5000);
+          return () => clearInterval(interval);
+        }
+      } else {
         const interval = setInterval(() => fetchTaskUpdate(), 5000);
         return () => clearInterval(interval);
       }
-    } else {
-      const interval = setInterval(() => fetchTaskUpdate(), 5000);
-      return () => clearInterval(interval);
     }
   }, [user]);
 

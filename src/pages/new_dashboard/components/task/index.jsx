@@ -1,41 +1,38 @@
-// mui
 import { styled, useTheme } from "@mui/material/styles";
 
 import {
+  Box,
+  Card,
+  CardActions,
+  CardContent,
   Checkbox,
   Collapse,
+  Container,
   FormControl,
-  Select,
+  IconButton,
+  Link,
   Stack,
   TextField,
+  Tooltip,
+  Typography,
 } from "@mui/material";
 
-import Box from "@mui/material/Box";
-import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
-import CardContent from "@mui/material/CardContent";
-import Container from "@mui/material/Container";
-import IconButton from "@mui/material/IconButton";
-import Link from "@mui/material/Link";
-import Tooltip from "@mui/material/Tooltip";
-import Typography from "@mui/material/Typography";
-
-import { Circle, ExpandMore as ExpandMoreIcon } from "@mui/icons-material";
-
-import CheckBox from "@mui/icons-material/CheckBox";
-import Close from "@mui/icons-material/Close";
-import ColorLens from "@mui/icons-material/ColorLens";
-import Delete from "@mui/icons-material/Delete";
-import DragIndicator from "@mui/icons-material/DragIndicator";
-import Edit from "@mui/icons-material/Edit";
-import Save from "@mui/icons-material/Save";
+import {
+  CheckBoxOutlineBlank as CheckBox,
+  Circle,
+  Close,
+  ColorLens,
+  Delete,
+  Edit,
+  ExpandMore as ExpandMoreIcon,
+  Save,
+} from "@mui/icons-material";
 
 import { DesktopDatePicker, MobileDatePicker } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 
-import { Suspense, forwardRef, lazy, useState } from "react";
-import { useEffect } from "react";
+import { forwardRef, useEffect, useState } from "react";
 import { TwitterPicker } from "react-color";
 import { useAuthState } from "react-firebase-hooks/auth";
 
@@ -43,6 +40,7 @@ import moment from "moment";
 
 import { useConfetti } from "../../../../components/confetti";
 import { useSnackbar } from "../../../../components/snackbar";
+import SubTaskEditor from "../../../../components/subTask";
 import { auth } from "../../../../lib/firebase";
 import { createTask } from "../../../../lib/firebase/firestore/task";
 import { useForceUpdate, useSmallScreen } from "../../../../lib/utils";
@@ -356,10 +354,10 @@ export default function Task({
           <Collapse in={!editing} timeout="auto" unmountOnExit>
             <Typography my={1}>
               Time today:{" "}
-              {taskHours &&
+              {taskHours !== 0 &&
                 taskHours.toString() +
                   ` hour${taskHours != 1 ? "s" : ""}${taskMinutes ? "," : ""} `}
-              {taskMinutes ? taskMinutes.toString() + " minutes" : null}
+              {taskMinutes !== 0 && taskMinutes.toString() + " minutes"}
             </Typography>
           </Collapse>
           <Collapse in={editing || expanded} timeout="auto" unmountOnExit>
@@ -503,6 +501,12 @@ export default function Task({
                     />
                     <Typography>minutes</Typography>
                   </Box>
+                  <SubTaskEditor
+                    subTasks={data.subTasks}
+                    onChange={(newSubTasks) =>
+                      updateData({ subTasks: newSubTasks })
+                    }
+                  />
                 </Stack>
               </FormControl>
             </LocalizationProvider>

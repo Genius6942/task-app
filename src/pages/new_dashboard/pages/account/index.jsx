@@ -31,14 +31,14 @@ export default function Account({ changeTheme }) {
   const [user, loading, error] = useAuthState(auth);
 
   const [accountData, setAccountData] = useState(null);
-  const [userProfilePicture, setUserProfilePicture] = useState("");
+  const [userProfilePicture, setUserProfilePicture] = useState(null);
   useEffect(() => {
     if (!user || loading) return;
     (async () => {
       const data = await getUser(user.uid);
       setAccountData(data);
     })();
-    setUserProfilePicture(user.photoURL);
+    setUserProfilePicture(user.photoURL || "none");
   }, [user, loading]);
 
   const theme = useTheme();
@@ -190,7 +190,7 @@ export default function Account({ changeTheme }) {
             {userProfilePicture ? (
               <Avatar
                 alt={user && user.displayName}
-                src={userProfilePicture}
+                src={userProfilePicture != "none" && userProfilePicture}
                 sx={{ mb: 1, cursor: "pointer" }}
                 onClick={updatePhoto}
               >

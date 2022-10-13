@@ -14,6 +14,7 @@ import { useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 
+import { useSnackbar } from "../components/snackbar";
 import { app_name } from "../lib/constants";
 import {
   auth,
@@ -42,14 +43,40 @@ export default function Register() {
   setDocumentTitle("Register");
   hideSplash();
 
-  const handleSubmit = (e) => {
+  const { openErrorSnackbar } = useSnackbar();
+
+  const throwError = (message) => {
+    return openErrorSnackbar(message);
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
-    registerWithEmailAndPassword(
-      data.get("name"),
-      data.get("email"),
-      data.get("password")
-    );
+    if (data.get("password") !== data.get("confirm-password")) {
+      return throwError("Passwords do not match.");
+    } else if (data.get("password").length < 8) {
+      return throwError("Passwords must be at least 8 characters long");
+    } else if (data.get("name").length < 1) {
+      return throwError("Name required");
+    }
+    try {
+      await registerWithEmailAndPassword(
+        data.get("name"),
+        data.get("email"),
+        data.get("password")
+      );
+    } catch (e) {
+      console.error(e);
+      throwError(
+        e.message
+          .replaceAll("Firebase: ", "")
+          .replaceAll("auth/", "")
+          .replaceAll("(", "")
+          .replaceAll(")", "")
+          .replaceAll("Error", "Error:")
+          .replaceAll("-", " ")
+      );
+    }
   };
 
   const [user, loading] = useAuthState(auth);
@@ -110,6 +137,16 @@ export default function Register() {
             id="password"
             autoComplete="current-password"
           />
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            name="confirm-password"
+            label="Confirm Password"
+            type="password"
+            id="password"
+            autoComplete="current-password"
+          />
           <Button
             type="submit"
             fullWidth
@@ -123,7 +160,23 @@ export default function Register() {
             variant="contained"
             fullWidth
             sx={{ mt: 3, mb: 2 }}
-            onClick={signInWithGoogle}
+            onClick={async () => {
+              try {
+                await signInWithGoogle();
+              } catch (e) {
+                console.error(e);
+                throwError(
+                  e.message
+                    .replaceAll("Firebase: ", "")
+                    .replaceAll("auth/", "")
+                    .replaceAll("(", "")
+                    .replaceAll(")", "")
+                    .replaceAll("Error", "Error:")
+                    .replaceAll("-", " ")
+                );
+              }
+            }}
+            color="white"
           >
             <img
               src="/google_logo.png"
@@ -131,7 +184,6 @@ export default function Register() {
               width={31}
               height={30}
               style={{ marginRight: 10 }}
-              color="white"
             />
             Register with Google
           </Button>

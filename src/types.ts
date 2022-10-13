@@ -13,4 +13,8 @@ type colState = {
   items: cardState[];
 };
 
+type task = {
+  
+}
+
 export type { cardState, colState };

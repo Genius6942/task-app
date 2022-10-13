@@ -1,10 +1,9 @@
-import { Box, Typography } from "@mui/material";
-
-import { LegendToggleOutlined } from "@mui/icons-material";
+import { Box, Link, Typography } from "@mui/material";
 
 import { useEffect } from "react";
 import { useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
+import { useNavigate } from "react-router-dom";
 
 import { AnimatePresence, motion } from "framer-motion";
 
@@ -43,6 +42,8 @@ export default function Subjects() {
           : 1)
     );
   let taskAnimationCount = 0;
+
+  const navigate = useNavigate();
   return (
     <Box
       sx={{
@@ -67,32 +68,47 @@ export default function Subjects() {
         }}
       >
         <AnimatePresence>
-          {subjects.map((subject, idx) => {
-            taskAnimationCount += taskCounts[subject] || taskAnimation.delay;
-            return (
-              <motion.div
-                key={idx}
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                }}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{
-                  delay:
-                    (taskAnimationCount - (taskCounts[subject] || 0)) *
-                    taskAnimation.delay,
-                  duration: taskAnimation.duration,
+          {subjects.length > 0 ? (
+            subjects.map((subject, idx) => {
+              taskAnimationCount += taskCounts[subject] || taskAnimation.delay;
+              return (
+                <motion.div
+                  key={idx}
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                  }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{
+                    delay:
+                      (taskAnimationCount - (taskCounts[subject] || 0)) *
+                      taskAnimation.delay,
+                    duration: taskAnimation.duration,
+                  }}
+                >
+                  <Subject
+                    subject={subject}
+                    animateDelay={taskAnimationCount - taskCounts[subject]}
+                  />
+                </motion.div>
+              );
+            })
+          ) : (
+            <Typography mx="auto">
+              No subjects! Create one on your {" "}
+              <Link
+                href="/dashboard/account"
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate("../account");
                 }}
               >
-                <Subject
-                  subject={subject}
-                  animateDelay={taskAnimationCount - taskCounts[subject]}
-                />
-              </motion.div>
-            );
-          })}
+                account page.
+              </Link>
+            </Typography>
+          )}
         </AnimatePresence>
       </Box>
     </Box>

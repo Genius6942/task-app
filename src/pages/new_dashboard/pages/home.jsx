@@ -1,7 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material";
 
-import { useState } from "react";
-
 import { AnimatePresence, motion } from "framer-motion";
 import moment from "moment";
 
@@ -13,12 +11,16 @@ import { transformTask } from "../components/task/transform";
 export default function Home() {
   const today = moment().startOf("day");
   const { tasks, fetchTaskUpdate } = useTasks();
-  const dayTasks = tasks.map(transformTask).filter((task) => {
+  const dayTasks = tasks.filter((task) => {
     if (today.isBefore(task.startDate)) return false;
     if (task.completes.length === task.completes.filter((item) => item).length)
       return false;
-    if (task.completes.length > task.completes.filter((item) => item).length)
-      return true;
+    console.log(today.diff(task.startDate, "days"));
+    if (
+      task.completes.filter((item) => item).length >=
+      today.diff(task.startDate, "days")
+    )
+      return false;
     return true;
   });
   return (
