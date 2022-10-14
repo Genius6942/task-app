@@ -44,6 +44,10 @@
     <meta name="theme-color" content="#2074d4" />
     <title>doit</title>
     <script>
+      if (location.hostname === "task-app-faed4.web.app")
+        location.href = "https://doit-app.cf" + location.pathname;
+    </script>
+    <script>
       document.title = "doit | " + location.pathname.substring(1);
     </script>
     <style>
