@@ -125,7 +125,7 @@ export default function Login() {
             type="submit"
             fullWidth
             variant="contained"
-            sx={{ mt: 3, mb: 2 }}
+            sx={{ mt: 3, mb: 2, textTransform: "none" }}
             color="white"
           >
             Sign In
@@ -133,7 +133,7 @@ export default function Login() {
           <Button
             variant="contained"
             fullWidth
-            sx={{ mt: 3, mb: 2 }}
+            sx={{ mt: 3, mb: 2, textTransform: "none" }}
             onClick={async () => {
               try {
                 await signInWithGoogle();

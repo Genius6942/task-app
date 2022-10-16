@@ -151,7 +151,7 @@ export default function Register() {
             type="submit"
             fullWidth
             variant="contained"
-            sx={{ mt: 3, mb: 2 }}
+            sx={{ mt: 3, mb: 2, textTransform: "none" }}
             color="white"
           >
             Register
@@ -159,7 +159,7 @@ export default function Register() {
           <Button
             variant="contained"
             fullWidth
-            sx={{ mt: 3, mb: 2 }}
+            sx={{ mt: 3, mb: 2, textTransform: "none" }}
             onClick={async () => {
               try {
                 await signInWithGoogle();
