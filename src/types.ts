@@ -20,6 +20,7 @@ type task = {
   completes: boolean[];
   dueDate: Moment;
   startDate: Moment;
+  status: 1 | 2 | 3;
   owner: string;
   name: string;
   subTasks: { completed: boolean; id: number; text: string }[] | undefined;
