@@ -6,21 +6,14 @@ import moment from "moment";
 import { removeTask, updateTask } from "../../../lib/firebase/firestore/task";
 import Task from "../components/task";
 import { useTasks } from "../components/task/context";
+import { filterDayTask } from "../components/task/transform";
 
 export default function Home() {
-  const today = moment().startOf("day");
+  const ogToday = moment().startOf("day");
   const { tasks, fetchTaskUpdate } = useTasks();
-  const dayTasks = tasks.filter((task) => {
-    if (today.isBefore(task.startDate)) return false;
-    if (task.completes.length === task.completes.filter((item) => item).length)
-      return false;
-    if (
-      task.completes.filter((item) => item).length >=
-      today.diff(task.startDate, "days") + 1
-    )
-      return false;
-    return true;
-  });
+  const dayTasks = tasks
+    .filter(filterDayTask(ogToday))
+    .sort((a, b) => b.status - a.status);
   return (
     <Box
       sx={{

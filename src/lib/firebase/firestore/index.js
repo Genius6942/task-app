@@ -1,6 +1,7 @@
 import {
   addDoc,
   collection,
+  enableIndexedDbPersistence,
   getDocs,
   query,
   updateDoc,
@@ -8,6 +9,21 @@ import {
 } from "firebase/firestore";
 
 import { db } from "..";
+
+enableIndexedDbPersistence(db)
+  .then(() => console.log("db persistence enabled"))
+  .catch((err) => {
+    if (err.code == "failed-precondition") {
+      // Multiple tabs open, persistence can only be enabled
+      // in one tab at a a time.
+      // ...
+    } else if (err.code == "unimplemented") {
+      // The current browser does not support all of the
+      // features required to enable persistence
+      // ...
+    }
+    console.log("db persistence error:", err.code);
+  });
 
 // function to generate an id with numbers and letters of length 20
 const generateId = () => {

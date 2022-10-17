@@ -25,6 +25,7 @@ import {
   LightMode,
   List as ListIcon,
   PersonOutline,
+  Refresh,
 } from "@mui/icons-material";
 
 import { useEffect, useState } from "react";
@@ -36,7 +37,7 @@ import { auth } from "../../lib/firebase";
 import { requestPermission, startFirebaseMessaging } from "../../lib/firebase";
 import { hideSplash, setDocumentTitle, useSmallScreen } from "../../lib/utils";
 import AddButton from "./components/add";
-import { TaskContextProvider } from "./components/task/context";
+import { TaskContextProvider, useTasks } from "./components/task/context";
 
 const drawerWidth = 240;
 
@@ -153,8 +154,26 @@ export default function NewDashboard({ changeTheme }) {
     },
   ];
 
+  const { fetchTaskUpdate } = useTasks();
+  const [reloadRotate, setReloadRotate] = useState(0);
+
   return (
     <TaskContextProvider user={user}>
+      <span style={{ position: "absolute", top: 10, right: 10, zIndex: 20 }}>
+        <IconButton
+          onClick={() => {
+            setReloadRotate(reloadRotate + 360);
+            fetchTaskUpdate();
+          }}
+        >
+          <Refresh
+            sx={{
+              transform: `rotate(${reloadRotate}deg)`,
+              transition: "transform 1s cubic-bezier(0.66, -0.01, 0.3, 1)",
+            }}
+          />
+        </IconButton>
+      </span>
       {smallScreen ? (
         <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
           <Box

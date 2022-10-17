@@ -119,6 +119,12 @@ export default function Task({
     return setData({ ...data, ...values });
   };
 
+  useEffect(() => {
+    if (!editing) {
+      setData(taskData);
+    }
+  }, [editing]);
+
   const [timeForceUpdate, forceTimeUpdate] = useForceUpdate();
 
   const regexp = /(https?:\/\/[^\s]+)/g;
@@ -158,14 +164,14 @@ export default function Task({
       : ((data.time / data.completes.length) *
           (data.completes.length -
             data.completes.filter((item) => item).length)) /
-          Math.max(1, data.dueDate.diff(moment().startOf("day"), "day") - 1)
+          Math.max(1, data.dueDate.diff(moment().startOf("day"), "day"))
   );
 
   const taskHours = Math.floor(timeToday / 60);
   const taskMinutes = timeToday % 60;
 
   return (
-  <FormControl variant="standard">
+    <FormControl variant="standard">
       <Card
         sx={{
           width: customWidth || (smallScreen ? 375 : 450),
@@ -275,7 +281,7 @@ export default function Task({
                         ? "On track"
                         : data.status === 2
                         ? "Not on track"
-                        : "Over due")
+                        : "Overdue")
                     }
                   >
                     <span>
@@ -346,7 +352,7 @@ export default function Task({
           </Box>
           <Collapse in={!editing} timeout="auto" unmountOnExit>
             <Typography my={1}>
-              Time today:{" "}
+              Time:{" "}
               {taskHours !== 0 &&
                 taskHours.toString() +
                   ` hour${taskHours != 1 ? "s" : ""}${taskMinutes ? "," : ""} `}
@@ -460,13 +466,20 @@ export default function Task({
                       /**
                        * @param {moment.Moment} newValue
                        */
-                      (newValue) =>
+                      (newValue) => {
+                        const copyValue = moment(
+                          newValue.format("MM/DD/YYYY"),
+                          "MM/DD/YYYY"
+                        );
                         updateData({
                           startDate: newValue,
-                          dueDate: data.dueDate.isBefore(newValue.add(1, "day"))
-                            ? newValue.add(1, "day")
+                          dueDate: data.dueDate.isBefore(
+                            copyValue.add(1, "day")
+                          )
+                            ? copyValue.add(1, "day")
                             : data.dueDate,
-                        })
+                        });
+                      }
                     }
                     renderInput={(params) => <TextField {...params} />}
                   />
@@ -482,12 +495,21 @@ export default function Task({
                        */
                       (newValue) => {
                         newValue = newValue.startOf("day");
+                        const copyNewValue = moment(
+                          newValue.format("MM/DD/YYYY"),
+                          "MM/DD/YYYY"
+                        );
+                        const copyStartDate = moment(
+                          data.startDate.format("MM/DD/YYYY"),
+                          "MM/DD/YYYY"
+                        );
+
                         updateData({
                           dueDate: newValue,
                           startDate: newValue.isBefore(
-                            data.startDate.add(1, "day")
+                            copyStartDate.add(1, "day")
                           )
-                            ? newValue.add(-2, "days")
+                            ? copyNewValue.add(-2, "days")
                             : data.startDate,
                         });
                       }
@@ -538,12 +560,14 @@ export default function Task({
                     />
                     <Typography>minutes</Typography>
                   </Box>
-                  <SubTaskEditor
-                    subTasks={data.subTasks}
-                    onChange={(newSubTasks) =>
-                      updateData({ subTasks: newSubTasks })
-                    }
-                  />
+                  {data.subTasks && data.subTasks.length > 0 && (
+                    <SubTaskEditor
+                      subTasks={data.subTasks}
+                      onChange={(newSubTasks) =>
+                        updateData({ subTasks: newSubTasks })
+                      }
+                    />
+                  )}
                 </Stack>
               </FormControl>
             </LocalizationProvider>
