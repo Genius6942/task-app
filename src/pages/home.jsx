@@ -111,15 +111,15 @@ export default function Home() {
             }) ||
             {}
           }
-          width={1000}
-          height={562.5}
+          width={!smallScreen && 1000}
+          height={!smallScreen && 562.5}
         />
         <img
           draggable="false"
           src="/screenshots/screenshot-mobile.png"
           alt="mobile screenshot"
-          width={375}
-          height={600}
+          width={!smallScreen && 375}
+          height={!smallScreen && 600}
         />
       </Box>
       <Box sx={{ background: "#000851", color: "common.white", p: 2 }}>
