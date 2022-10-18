@@ -136,6 +136,7 @@ function App() {
                 flexDirection: "column",
                 height: "100vh",
                 maxHeight: "100%",
+                overflowX: "hidden",
               }}
             >
               <Alert severity="info" sx={{ pl: !smallScreen && 10 }}>
@@ -143,9 +144,16 @@ function App() {
                 feedback{" "}
                 <Link href={feedback_url} target="_blank">
                   here.
-                </Link> (Known bugs do exist)
+                </Link>
               </Alert>
-              <Box sx={{ flexGrow: 1, position: "relative", overflow: "auto" }}>
+              <Box
+                sx={{
+                  flexGrow: 1,
+                  position: "relative",
+                  overflow: "auto",
+                  overflowX: "hidden",
+                }}
+              >
                 <Router>
                   <Routes>
                     <Route exact path="/" element={<Home />} />

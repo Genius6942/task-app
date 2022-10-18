@@ -13,12 +13,15 @@ import {
   ListItemIcon,
   ListItemText,
   Switch,
+  Tooltip,
 } from "@mui/material";
 
 import {
   CalendarMonth,
   ChevronLeft,
   ChevronRight,
+  CloudDone,
+  CloudOff,
   DarkMode,
   History,
   Home,
@@ -31,6 +34,7 @@ import {
 import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { useEffectOnce } from "react-use";
 
 import PageAnimateLayout from "../../Animate";
 import { auth } from "../../lib/firebase";
@@ -157,22 +161,53 @@ export default function NewDashboard({ changeTheme }) {
   const { fetchTaskUpdate } = useTasks();
   const [reloadRotate, setReloadRotate] = useState(0);
 
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
+  useEffectOnce(() => {
+    window.addEventListener("online", () => setIsOnline(true));
+    window.addEventListener("offline", () => setIsOnline(false));
+  });
+
   return (
     <TaskContextProvider user={user}>
-      <span style={{ position: "absolute", top: 10, right: 10, zIndex: 20 }}>
-        <IconButton
-          onClick={() => {
-            setReloadRotate(reloadRotate + 360);
-            fetchTaskUpdate();
-          }}
+      <span
+        style={{
+          position: "absolute",
+          top: 10,
+          right: 10,
+          zIndex: 20,
+          display: "flex",
+        }}
+      >
+        <Tooltip
+          title={
+            isOnline
+              ? "Saving to the cloud"
+              : "Working offline - some features may not work"
+          }
         >
-          <Refresh
-            sx={{
-              transform: `rotate(${reloadRotate}deg)`,
-              transition: "transform 1s cubic-bezier(0.66, -0.01, 0.3, 1)",
+          <IconButton
+            onClick={() => {
+              // some offline easter egg?
             }}
-          />
-        </IconButton>
+          >
+            {isOnline ? <CloudDone /> : <CloudOff />}
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Refresh tasks">
+          <IconButton
+            onClick={() => {
+              setReloadRotate(reloadRotate + 360);
+              fetchTaskUpdate();
+            }}
+          >
+            <Refresh
+              sx={{
+                transform: `rotate(${reloadRotate}deg)`,
+                transition: "transform 1s cubic-bezier(0.66, -0.01, 0.3, 1)",
+              }}
+            />
+          </IconButton>
+        </Tooltip>
       </span>
       {smallScreen ? (
         <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>

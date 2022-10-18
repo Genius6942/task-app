@@ -10,6 +10,7 @@ import {
 } from "../../../../lib/firebase/firestore/task";
 import Task from "../../components/task";
 import { useTasks } from "../../components/task/context";
+import { filterDayTask } from "../../components/task/transform";
 
 /**
  * @param {object} props
@@ -68,23 +69,7 @@ export default function Day({
   const dayTasks =
     presetTasks ||
     tasks
-      .filter((task) => {
-        return (
-          day.isBetween(task.startDate, task.dueDate, null, "[)") &&
-          task.completes.length !=
-            task.completes.filter((item) => item).length &&
-          task.completes.filter((item) => item).length <
-            day.diff(task.startDate, "days") + 1 && 
-          task.completes.length - task.completes.filter((item) => item).length >
-            day.diff(
-              task.startDate.add(
-                task.completes.filter((item) => item).length,
-                "days"
-              ),
-              "days"
-            )
-        );
-      })
+      .filter(filterDayTask(day, { showOverdue: false, logOutput: true }))
       .sort((a, b) => {
         if (a.status - b.status !== 0) {
           return b.status - a.status;
