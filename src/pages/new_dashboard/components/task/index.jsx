@@ -41,7 +41,10 @@ import moment from "moment";
 import { useConfetti } from "../../../../components/confetti";
 import { useSnackbar } from "../../../../components/snackbar";
 import { auth } from "../../../../lib/firebase";
-import { createTask } from "../../../../lib/firebase/firestore/task";
+import {
+  createTask,
+  removeTask,
+} from "../../../../lib/firebase/firestore/task";
 import { useForceUpdate, useSmallScreen } from "../../../../lib/utils";
 import SubTaskEditor from "../../components/subTask";
 import { useTasks } from "./context";
@@ -302,7 +305,7 @@ export default function Task({
               )}
               <Tooltip title="Delete">
                 <IconButton
-                  onClick={() => {
+                  onClick={async () => {
                     const formatedData = {
                       ...data,
                       startDate: data.startDate.format("MM/DD/YYYY"),
@@ -314,7 +317,16 @@ export default function Task({
                       await createTask(user.uid, deepCopy);
                       fetchTaskUpdate();
                     });
-                    onRemove();
+                    // onRemove();
+                    try {
+                      await removeTask(data.id);
+                      fetchTaskUpdate();
+                    } catch (e) {
+                      snackbar.openErrorSnackbar(
+                        "Error: Failed to delete task. Try refreshing the page."
+                      );
+                      console.error(e);
+                    }
                   }}
                 >
                   <Delete />
