@@ -104,22 +104,31 @@ export default function Subjects({ subjects, updateSubjects }) {
         <Add />
       </IconButton>
       <AddSubjectDialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
-        <Box sx={{ display: "flex", alignItems: "flex-end", m: 1 }}>
+        <Box
+          sx={{ display: "flex", alignItems: "flex-end", m: 1 }}
+          component="form"
+          onSubmit={(e) => {
+            e.preventDefault();
+            const data = new FormData(e.currentTarget);
+            submitDialog(data.get("name"));
+          }}
+        >
           <TextField
-            error={dialogError}
+            error={!!dialogError}
             helperText={dialogError}
             variant="standard"
             sx={{ flexGrow: 1 }}
             autoFocus={dialogOpen}
             label="New Subject"
+            name="name"
             onBlur={({ target }) => {
               setDialogValue(target.value);
             }}
-
             // broken
             // onKeyDown={({ key, target }) => {
             //   if (key === "Enter") {
             //     submitDialog(target.value);
+            //     setDialogOpen(false);
             //   }
             // }}
           />

@@ -57,6 +57,7 @@
     </script>
     <style>
       #splash {
+        --size: 100px;
         position: fixed;
         top: 0;
         left: 0;
@@ -78,8 +79,7 @@
       }
 
       #splash .icon {
-        margin-bottom: 10px;
-        animation: spin 1s cubic-bezier(0.66, -0.01, 0.3, 1) infinite;
+        /* animation: spin 1s cubic-bezier(0.66, -0.01, 0.3, 1) infinite; */
       }
 
       #splash .title {
@@ -97,6 +97,66 @@
         }
       }
 
+      #splash .scene {
+        width: var(--size);
+        height: var(--size);
+        perspective: 600px;
+        margin-bottom: calc(var(--size) / 2);
+      }
+
+      #splash .scene .cube {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        transform-style: preserve-3d;
+        transform-origin: center center center;
+        transform: translateZ(calc(var(--size) / -2));
+        animation: cube 2s /* cubic-bezier(0.66, -0.01, 0.3, 1) */ linear
+          infinite;
+      }
+
+      @keyframes cube {
+        from {
+          transform: translateZ(calc(var(--size) / -2)) rotateY(0deg)
+            rotateX(0deg);
+        }
+
+        to {
+          transform: translateZ(calc(var(--size) / -2)) rotateY(360deg)
+            rotateX(360deg);
+        }
+      }
+
+      #splash .scene .cube .face {
+        position: absolute;
+        width: var(--size);
+        height: var(--size);
+      }
+
+      #splash .scene .cube .face .icon {
+        width: var(--size);
+        height: var(--size);
+      }
+
+      #splash .scene .cube .face.front {
+        transform: rotateY(0deg) translateZ(calc(var(--size) / 2));
+      }
+      #splash .scene .cube .face.right {
+        transform: rotateY(90deg) translateZ(calc(var(--size) / 2));
+      }
+      #splash .scene .cube .face.back {
+        transform: rotateY(180deg) translateZ(calc(var(--size) / 2));
+      }
+      #splash .scene .cube .face.left {
+        transform: rotateY(-90deg) translateZ(calc(var(--size) / 2));
+      }
+      #splash .scene .cube .face.top {
+        transform: rotateX(90deg) translateZ(calc(var(--size) / 2));
+      }
+      #splash .scene .cube .face.bottom {
+        transform: rotateX(-90deg) translateZ(calc(var(--size) / 2));
+      }
+
       #splash.hidden {
         display: none;
       }
@@ -105,7 +165,28 @@
   </head>
   <body>
     <div id="splash">
-      <img src="/favicon.ico" alt="doit logo" class="icon" />
+      <div class="scene">
+        <div class="cube">
+          <div class="face front">
+            <img src="/favicon.ico" alt="doit logo" class="icon" />
+          </div>
+          <div class="face back">
+            <img src="/favicon.ico" alt="doit logo" class="icon" />
+          </div>
+          <div class="face right">
+            <img src="/favicon.ico" alt="doit logo" class="icon" />
+          </div>
+          <div class="face left">
+            <img src="/favicon.ico" alt="doit logo" class="icon" />
+          </div>
+          <div class="face top">
+            <img src="/favicon.ico" alt="doit logo" class="icon" />
+          </div>
+          <div class="face bottom">
+            <img src="/favicon.ico" alt="doit logo" class="icon" />
+          </div>
+        </div>
+      </div>
       <div class="title">doit</div>
       is loading...
     </div>

@@ -21,7 +21,7 @@ const useSmallScreen = (smallSize = 600) => {
 };
 
 const hideSplash = () => {
-  document.getElementById("splash").style.display = "none";
+  document.getElementById("splash").classList.add("hidden");
 };
 
 const useForceUpdate = () => {
