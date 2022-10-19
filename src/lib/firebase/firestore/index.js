@@ -1,16 +1,16 @@
 import {
   addDoc,
   collection,
-  enableIndexedDbPersistence,
   getDocs,
   query,
   updateDoc,
   where,
+  enableMultiTabIndexedDbPersistence
 } from "firebase/firestore";
 
 import { db } from "..";
 
-enableIndexedDbPersistence(db)
+enableMultiTabIndexedDbPersistence(db)
   .then(() => console.log("db persistence enabled"))
   .catch((err) => {
     if (err.code == "failed-precondition") {
