@@ -2,7 +2,13 @@ import { useTheme } from "@mui/material/styles";
 
 import { Alert, Button, Snackbar } from "@mui/material";
 
-import { createContext, forwardRef, useContext, useState } from "react";
+import {
+  createContext,
+  forwardRef,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
 const SnackbarContext = createContext({
   /**
@@ -55,6 +61,20 @@ const SnackbarProvider = ({ ...props }) => {
   };
 
   const theme = useTheme();
+  useEffect(() => {
+    /**
+     * @param {KeyboardEvent} event
+     */
+    const listener = ({ key, ctrlKey }) => {
+      if (ctrlKey && key.toLowerCase() === "z") {
+        snackbarData.undo.onUndo();
+      }
+    };
+
+    window.addEventListener("keydown", listener, true);
+
+    return () => window.removeEventListener("keydown", listener);
+  }, [snackbarData]);
 
   return (
     <SnackbarContext.Provider value={{ openErrorSnackbar, openUndoSnackbar }}>
