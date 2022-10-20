@@ -32,6 +32,17 @@ export default function Subjects() {
   const [subjects, setSubjects] = useState([]);
   const { tasks } = useTasks();
   const taskCounts = {};
+  useEffect(() => {
+    if (!navigator.onLine && localStorage.getItem("uid")) {
+      (async () => {
+        const { subjects: loadedSubjects } = await getUser(
+          user ? user.uid : localStorage.getItem("uid")
+        );
+        const formattedSubjects = loadedSubjects.map((subject) => subject.name);
+        if (subjects !== formattedSubjects) setSubjects(formattedSubjects);
+      })();
+    }
+  });
   tasks
     .map(transformTask)
     .filter(filterTask())

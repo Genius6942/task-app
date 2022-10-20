@@ -36,8 +36,10 @@ const TaskContextProvider = ({ user, ...props }) => {
   }, [tasks]);
 
   const fetchTaskUpdate = async () => {
-    if (user) {
-      const fetchedTasks = await getTasks(user.uid);
+    if (user || localStorage.getItem("uid")) {
+      const fetchedTasks = await getTasks(
+        user ? user.uid : localStorage.getItem("uid")
+      );
       if (isEqual(tasks, fetchedTasks)) return false;
       const formattedFetchedTasks = fetchedTasks.map((task) => ({
         ...task,

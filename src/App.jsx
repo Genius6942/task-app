@@ -61,6 +61,7 @@ function App() {
   const [user, loading] = useAuthState(auth);
   useEffect(() => {
     if (!user || loading) return;
+    localStorage.setItem("uid", user.uid);
     (async () => {
       const userData = await getUser(user.uid);
       const dark = userData.darkMode;

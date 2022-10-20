@@ -5,6 +5,7 @@ import { Add } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 
+import { useSnackbar } from "../../../../components/snackbar";
 import { auth } from "../../../../lib/firebase";
 import { createTask } from "../../../../lib/firebase/firestore/task";
 import { getUser } from "../../../../lib/firebase/firestore/user";
@@ -58,6 +59,8 @@ export default function AddButton() {
 
   const { fetchTaskUpdate } = useTasks();
 
+  const { openErrorSnackbar } = useSnackbar();
+
   const onSubmit = async (data) => {
     const clone = { ...data };
     const days =
@@ -68,9 +71,13 @@ export default function AddButton() {
     clone.completes = completes;
     clone.startDate = clone.startDate.format("MM/DD/YYYY");
     clone.dueDate = clone.dueDate.format("MM/DD/YYYY");
-    await createTask(user.uid, clone);
-    fetchTaskUpdate();
-    return true;
+    try {
+      await createTask(user.uid, clone);
+      fetchTaskUpdate();
+    } catch (e) {
+      console.error(e);
+      openErrorSnackbar("Failed to create task.");
+    }
   };
 
   const smallScreen = useSmallScreen();

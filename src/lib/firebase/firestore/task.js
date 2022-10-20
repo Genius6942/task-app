@@ -32,7 +32,13 @@ const removeTask = async (taskId) => {
 
 const createTask = async (uid, task) => {
   const col = collection(db, "tasks");
-  await addDoc(col, { ...task, ownerId: uid, id: generateId() });
+  if (navigator.onLine)
+    await addDoc(col, { ...task, ownerId: uid, id: generateId() });
+  else {
+    addDoc(col, { ...task, ownerId: uid, id: generateId() });
+    // wait a little bit
+    await new Promise((r) => setTimeout(r, 300));
+  }
   return true;
 };
 
