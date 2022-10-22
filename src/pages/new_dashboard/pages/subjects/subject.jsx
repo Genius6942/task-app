@@ -29,7 +29,7 @@ export default function Subject({ subject, animateDelay }) {
       <Typography mt={3} fontWeight="bold" fontSize={35} whiteSpace="nowrap">
         {subject}
       </Typography>
-      <Stack gap={2} sx={{ alignItems: "center", overflow: "auto" }}>
+      <Stack gap={2} sx={{ alignItems: "center"}}>
         {subjectTasks.length > 0 ? (
           subjectTasks.map((task, idx) => (
             <motion.div

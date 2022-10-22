@@ -61,7 +61,6 @@ export default function Schedule() {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        overflow: "auto",
       }}
     >
       <Stack
