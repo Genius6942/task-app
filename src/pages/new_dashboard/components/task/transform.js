@@ -26,7 +26,10 @@ export const filterTask =
  * @param {moment.Moment} day
  */
 export const filterDayTask =
-  (day, { showOverdue = true, logOutput = false } = {}) =>
+  (
+    day = moment().startOf("day"),
+    { showOverdue = true, logOutput = false } = {}
+  ) =>
   /**
    * @param {import('../../../../types').task} task
    * @returns {boolean}

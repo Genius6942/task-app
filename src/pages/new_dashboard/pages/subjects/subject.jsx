@@ -11,7 +11,7 @@ import {
 import { useSmallScreen } from "../../../../lib/utils";
 import Task from "../../components/task";
 import { useTasks } from "../../components/task/context";
-import { filterTask, transformTask } from "../../components/task/transform";
+import { filterDayTask, transformTask } from "../../components/task/transform";
 
 /**
  * @param {object} props
@@ -21,7 +21,7 @@ export default function Subject({ subject, animateDelay }) {
   const { tasks, fetchTaskUpdate } = useTasks();
   const subjectTasks = tasks
     .map(transformTask)
-    .filter(filterTask())
+    .filter(filterDayTask(moment().startOf("day").add(360, "days")))
     .filter((task) => task.subject === subject);
   const smallScreen = useSmallScreen();
   return (

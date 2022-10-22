@@ -17,12 +17,13 @@ import { Close } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
-import { useEffectOnce, useWindowSize } from "react-use";
+import { useEffectOnce } from "react-use";
 
 import "fuckadblock";
 
 import { ConfettiProvider } from "./components/confetti";
 import { SnackbarProvider } from "./components/snackbar";
+import { SubjectContextProvider } from "./components/subjectContext";
 import { AdBlockModal, detectAdblock } from "./lib/adblock";
 import { app_name, feedback_url } from "./lib/constants";
 import { auth } from "./lib/firebase";
@@ -73,8 +74,8 @@ function App() {
   }, [user, loading]);
 
   useEffect(() => {
+    if (!user || loading) return;
     (async () => {
-      if (!user || loading) return;
       const userData = await getUser(user.uid);
       const newData = {
         ...userData,
@@ -129,119 +130,122 @@ function App() {
     <>
       <ThemeProvider theme={theme}>
         <ConfettiProvider>
-          <SnackbarProvider>
-            <CssBaseline />
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                height: "100vh",
-                maxHeight: "100%",
-                overflowX: "hidden",
-              }}
-            >
-              <Alert severity="info" sx={{ pl: !smallScreen && 10 }}>
-                This app is in beta. Please contribute by submiting a bug or
-                feedback{" "}
-                <Link href={feedback_url} target="_blank">
-                  here.
-                </Link>
-              </Alert>
+          <SubjectContextProvider>
+            <SnackbarProvider>
+              <CssBaseline />
               <Box
                 sx={{
-                  flexGrow: 1,
-                  position: "relative",
-                  overflow: "auto",
+                  display: "flex",
+                  flexDirection: "column",
+                  height: "100vh",
+                  maxHeight: "100%",
                   overflowX: "hidden",
                 }}
               >
-                <Router>
-                  <Routes>
-                    <Route exact path="/" element={<Home />} />
-                    <Route exact path="/login" element={<Login />} />
-                    <Route exact path="/register" element={<Register />} />
-                    <Route path="/old_dashboard" element={<Dashboard />} />
-                    <Route
-                      path="dashboard"
-                      element={
-                        <NewDashboard
-                          changeTheme={({ dark = false }) => {
-                            setDarkMode(dark);
-                          }}
-                        />
-                      }
-                    >
-                      <Route path="" element={<DashboardHome />} />
-                      <Route path="subjects" element={<Subjects />} />
-                      <Route path="schedule" element={<Schedule />} />
-                      <Route path="history" element={<History />} />
+                <Alert severity="info" sx={{ pl: !smallScreen && 10 }}>
+                  This app is in beta. Please contribute by submiting a bug or
+                  feedback{" "}
+                  <Link href={feedback_url} target="_blank">
+                    here.
+                  </Link>
+                </Alert>
+                <Box
+                  sx={{
+                    flexGrow: 1,
+                    position: "relative",
+                    overflow: "auto",
+                    overflowX: "hidden",
+                  }}
+                >
+                  <Router>
+                    <Routes>
+                      <Route exact path="/" element={<Home />} />
+                      <Route exact path="/login" element={<Login />} />
+                      <Route exact path="/register" element={<Register />} />
+                      <Route path="/old_dashboard" element={<Dashboard />} />
                       <Route
-                        path="account"
+                        path="dashboard"
                         element={
-                          <Account
+                          <NewDashboard
                             changeTheme={({ dark = false }) => {
                               setDarkMode(dark);
                             }}
                           />
                         }
-                      />
-                    </Route>
+                      >
+                        <Route path="" element={<DashboardHome />} />
+                        <Route path="subjects" element={<Subjects />} />
+                        <Route path="schedule" element={<Schedule />} />
+                        <Route path="history" element={<History />} />
+                        <Route
+                          path="account"
+                          element={
+                            <Account
+                              changeTheme={({ dark = false }) => {
+                                setDarkMode(dark);
+                              }}
+                            />
+                          }
+                        />
+                      </Route>
 
-                    {/* 404 page */}
-                    <Route path="*" element={<div>404</div>} />
-                  </Routes>
-                </Router>
-              </Box>
-            </Box>
-            {defferedEvent && (
-              <Card
-                sx={{
-                  position: "fixed",
-                  top: 20,
-                  right: 20,
-                  padding: 2,
-                  gap: 2,
-                  maxWidth: 200,
-                  zIndex: 100,
-                }}
-              >
-                <CardActions>
-                  <Box sx={{ display: "flex", flexGrow: 1 }}>
-                    <Typography
-                      fontSize={20}
-                      sx={{ marginRight: 1 }}
-                      whiteSpace="nowrap"
-                    >
-                      Install {app_name}
-                    </Typography>
-                    <img
-                      src="/icons/favicon-32x32.png"
-                      alt="logo"
-                      style={{ width: 32, height: 32 }}
-                    />
-                  </Box>
-                  <IconButton onClick={() => setDefferedEvent(null)}>
-                    <Close />
-                  </IconButton>
-                </CardActions>
-                <Box>
-                  <Typography marginBottom={1}>
-                    Install this site as an app for a better experience.
-                  </Typography>
-                  <Button variant="contained" onClick={onInstall}>
-                    Install
-                  </Button>
+                      {/* 404 page */}
+                      <Route path="*" element={<div>404</div>} />
+                    </Routes>
+                  </Router>
                 </Box>
-              </Card>
-            )}
-            <AdBlockModal
-              open={adBlockModalOpen}
-              onForceClose={() => {
-                localStorage.setItem("force-hide-adblock-msg", "1");
-                setAdBlockModalOpen(false);
-              }}
-            />
-          </SnackbarProvider>
+              </Box>
+              {defferedEvent && (
+                <Card
+                  sx={{
+                    position: "fixed",
+                    top: 20,
+                    right: 20,
+                    padding: 2,
+                    gap: 2,
+                    maxWidth: 200,
+                    zIndex: 100,
+                  }}
+                >
+                  <CardActions>
+                    <Box sx={{ display: "flex", flexGrow: 1 }}>
+                      <Typography
+                        fontSize={20}
+                        sx={{ marginRight: 1 }}
+                        whiteSpace="nowrap"
+                      >
+                        Install {app_name}
+                      </Typography>
+                      <img
+                        src="/icons/favicon-32x32.png"
+                        alt="logo"
+                        style={{ width: 32, height: 32 }}
+                      />
+                    </Box>
+                    <IconButton onClick={() => setDefferedEvent(null)}>
+                      <Close />
+                    </IconButton>
+                  </CardActions>
+                  <Box>
+                    <Typography marginBottom={1}>
+                      Install this site as an app for a better experience.
+                    </Typography>
+                    <Button variant="contained" onClick={onInstall}>
+                      Install
+                    </Button>
+                  </Box>
+                </Card>
+              )}
+              <AdBlockModal
+                // open={adBlockModalOpen}
+                open={false}
+                onForceClose={() => {
+                  localStorage.setItem("force-hide-adblock-msg", "1");
+                  setAdBlockModalOpen(false);
+                }}
+              />
+            </SnackbarProvider>
+          </SubjectContextProvider>
         </ConfettiProvider>
       </ThemeProvider>
     </>

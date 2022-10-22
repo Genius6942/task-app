@@ -345,7 +345,7 @@ export default function AddTaskDialog({
               </>
             ) : (
               <Typography m={2}>
-                Go to accounts to add a subject and get started.
+                Go to accounts to add you subjects and get started.
               </Typography>
             )
           ) : (

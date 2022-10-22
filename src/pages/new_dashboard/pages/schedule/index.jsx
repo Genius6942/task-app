@@ -56,7 +56,7 @@ export default function Schedule() {
   return (
     <Box
       sx={{
-        width: "100%",
+        maxWidth: "100%",
         maxHeight: "100%",
         display: "flex",
         flexDirection: "column",

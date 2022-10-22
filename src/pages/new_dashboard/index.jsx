@@ -37,8 +37,10 @@ import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useEffectOnce } from "react-use";
 
 import PageAnimateLayout from "../../Animate";
+import { useSubjects } from "../../components/subjectContext";
 import { auth } from "../../lib/firebase";
 import { requestPermission, startFirebaseMessaging } from "../../lib/firebase";
+import { getUser } from "../../lib/firebase/firestore/user";
 import { hideSplash, setDocumentTitle, useSmallScreen } from "../../lib/utils";
 import AddButton from "./components/add";
 import { TaskContextProvider, useTasks } from "./components/task/context";
@@ -75,6 +77,7 @@ const WrapperDrawer = styled(Drawer, {
   boxSizing: "border-box",
   display: "flex",
   flexDirection: "column",
+  position: "relative",
   ...(open && {
     ...openedMixin(theme),
     "& .MuiDrawer-paper": openedMixin(theme),
@@ -87,6 +90,8 @@ const WrapperDrawer = styled(Drawer, {
 
 export default function NewDashboard({ changeTheme }) {
   const [user, loading, error] = useAuthState(auth);
+
+  const { subjects, fetchSubjectUpdate } = useSubjects();
   useEffect(() => {
     if (loading) return;
     if (!user) return navigate("/login");
@@ -94,6 +99,9 @@ export default function NewDashboard({ changeTheme }) {
     requestPermission();
     startFirebaseMessaging(user.uid);
     hideSplash();
+
+    fetchSubjectUpdate();
+    fetchTaskUpdate();
   }, [user, loading]);
 
   const smallScreen = useSmallScreen();
@@ -198,6 +206,7 @@ export default function NewDashboard({ changeTheme }) {
             onClick={() => {
               setReloadRotate(reloadRotate + 360);
               fetchTaskUpdate();
+              fetchSubjectUpdate();
             }}
           >
             <Refresh
@@ -227,6 +236,34 @@ export default function NewDashboard({ changeTheme }) {
             onChange={handleNavChange}
             // showLabels
           >
+            {subjects.length < 1 && (
+              <Tooltip
+                placement="top"
+                open
+                title="Create your first subject to get started"
+                arrow
+              >
+                <Box
+                  sx={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: 9999,
+                    background: theme.palette.primary.main + "70",
+                    position: "absolute",
+                    bottom: 7,
+                    right: 24,
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    "&::after": {
+                      background: theme.palette.primary.main,
+                      width: 0,
+                      height: 0,
+                    },
+                  }}
+                />
+              </Tooltip>
+            )}
             {navItems.map((item, idx) => (
               <BottomNavigationAction
                 key={idx}
@@ -238,11 +275,39 @@ export default function NewDashboard({ changeTheme }) {
           </BottomNavigation>
         </Box>
       ) : (
-        <Box sx={{ display: "flex", height: "100%" }}>
+        <Box sx={{ display: "flex", height: "100%", maxWidth: "100%" }}>
           <WrapperDrawer
             variant="permanent"
             open={drawerOpen || temporaryDrawerOpen}
           >
+            {subjects.length < 1 && (
+              <Tooltip
+                placement="right"
+                open
+                title="Create your first subject to get started"
+                arrow
+              >
+                <Box
+                  sx={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: 9999,
+                    background: theme.palette.primary.main + "70",
+                    position: "absolute",
+                    top: 245,
+                    left: 8,
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    "&::after": {
+                      background: theme.palette.primary.main,
+                      width: 0,
+                      height: 0,
+                    },
+                  }}
+                />
+              </Tooltip>
+            )}
             <Box
               sx={{
                 display: "flex",
@@ -364,9 +429,18 @@ export default function NewDashboard({ changeTheme }) {
               )}
             </List>
           </WrapperDrawer>
-          <PageAnimateLayout>
-            <Outlet />
-          </PageAnimateLayout>
+          <Box
+            sx={{
+              flexGrow: 1,
+              position: "relative",
+              overflow: "auto",
+              display: "flex",
+            }}
+          >
+            <PageAnimateLayout>
+              <Outlet />
+            </PageAnimateLayout>
+          </Box>
           {navState !== "account" && <AddButton />}
         </Box>
       )}

@@ -17,6 +17,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 
 import { motion } from "framer-motion";
 
+import { useSubjects } from "../../../../components/subjectContext";
 import { app_name } from "../../../../lib/constants";
 import { auth } from "../../../../lib/firebase";
 import {
@@ -43,9 +44,14 @@ export default function Account({ changeTheme }) {
 
   const theme = useTheme();
 
+  const { fetchSubjectUpdate } = useSubjects();
+
   useEffect(() => {
     if (accountData) {
-      updateUser(user.uid, accountData);
+      (async () => {
+        await updateUser(user.uid, accountData);
+        fetchSubjectUpdate();
+      })();
     }
   }, [accountData]);
 

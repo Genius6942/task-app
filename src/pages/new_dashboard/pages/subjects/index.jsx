@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 
 import { AnimatePresence, motion } from "framer-motion";
 
+import { useSubjects } from "../../../../components/subjectContext";
 import { taskAnimation } from "../../../../lib/constants";
 import { auth } from "../../../../lib/firebase";
 import { getUser } from "../../../../lib/firebase/firestore/user";
@@ -17,32 +18,14 @@ import Subject from "./subject";
 
 export default function Subjects() {
   const smallScreen = useSmallScreen();
-  const [user, loading] = useAuthState(auth);
-  useEffect(() => {
-    if (!user || loading) return;
-    (async () => {
-      const { subjects: loadedSubjects } = await getUser(user.uid);
-      setSubjects(loadedSubjects.map((subject) => subject.name));
-    })();
-  }, [user, loading]);
 
   /**
    * @type {[string[], (value: string[]) => void]}
    */
-  const [subjects, setSubjects] = useState([]);
+  const { subjects: loadedSubjects } = useSubjects();
+  const subjects = loadedSubjects.map((subject) => subject.name);
   const { tasks } = useTasks();
   const taskCounts = {};
-  useEffect(() => {
-    if (!navigator.onLine && localStorage.getItem("uid")) {
-      (async () => {
-        const { subjects: loadedSubjects } = await getUser(
-          user ? user.uid : localStorage.getItem("uid")
-        );
-        const formattedSubjects = loadedSubjects.map((subject) => subject.name);
-        if (subjects !== formattedSubjects) setSubjects(formattedSubjects);
-      })();
-    }
-  });
   tasks
     .map(transformTask)
     .filter(filterTask())
