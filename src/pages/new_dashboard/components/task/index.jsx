@@ -488,7 +488,8 @@ export default function Task({
                           dueDate: data.dueDate.isBefore(
                             copyValue.add(1, "day")
                           )
-                            ? copyValue.add(1, "day")
+                            ? // note the not adding 1 day due to the mutation caused by moment.js
+                              copyValue
                             : data.dueDate,
                         });
                       }
@@ -521,7 +522,7 @@ export default function Task({
                           startDate: newValue.isBefore(
                             copyStartDate.add(1, "day")
                           )
-                            ? copyNewValue.add(-2, "days")
+                            ? copyNewValue.add(-1, "days")
                             : data.startDate,
                         });
                       }
@@ -635,13 +636,48 @@ export default function Task({
               <Tooltip title="Save">
                 <IconButton
                   onClick={() => {
-                    setEditing(false);
-                    const formatedData = {
-                      ...data,
-                      startDate: data.startDate.format("MM/DD/YYYY"),
-                      dueDate: data.dueDate.format("MM/DD/YYYY"),
-                    };
-                    onChange(formatedData);
+                    try {
+                      setEditing(false);
+
+                      let newCompletes = data.completes;
+                      const dayDiff = data.dueDate.diff(data.startDate, "days");
+                      console.log(dayDiff);
+                      if (data.completes.length !== dayDiff) {
+                        // redo completes
+                        const isCompleted =
+                          data.completes.length ===
+                          data.completes.filter((item) => item).length;
+
+                        if (isCompleted) {
+                          newCompletes = new Array(dayDiff).fill(true);
+                        } else {
+                          if (dayDiff > data.completes.length) {
+                            // grow larger
+                            newCompletes.push(
+                              ...Array(dayDiff - data.completes.length).fill(
+                                false
+                              )
+                            );
+                          } else {
+                            // grow smaller
+                            newCompletes.length = dayDiff;
+                            data.completes[data.completes.length - 1] = false;
+                          }
+                        }
+                      }
+
+                      const formatedData = {
+                        ...data,
+                        startDate: data.startDate.format("MM/DD/YYYY"),
+                        dueDate: data.dueDate.format("MM/DD/YYYY"),
+                        completes: newCompletes,
+                      };
+
+                      onChange(formatedData);
+                    } catch (e) {
+                      console.error(e);
+                      snackbar.openErrorSnackbar("Failed to save task: " + e);
+                    }
                   }}
                   sx={{ ml: "auto" }}
                 >
