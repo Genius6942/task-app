@@ -55,6 +55,7 @@ const CustomDialog = styled(Dialog)(() => ({
  * @param {() => void} onClose - function to call when dialog closed
  * @param {boolean} open - whether or not the dialog is open
  * @param {object} onSubmit
+ * @param {number} resetKey
  * @returns
  */
 export default function AddTaskDialog({
@@ -94,7 +95,7 @@ export default function AddTaskDialog({
     dueDate: moment().add(1, "days"),
     time: 60,
     details: "",
-    timeConf: "same",
+    timeConf: "once",
     subTasks: [],
   };
   /**
