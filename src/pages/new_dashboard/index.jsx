@@ -40,7 +40,7 @@ import PageAnimateLayout from "../../Animate";
 import { useSubjects } from "../../components/subjectContext";
 import { auth } from "../../lib/firebase";
 import { requestPermission, startFirebaseMessaging } from "../../lib/firebase";
-import { getUser } from "../../lib/firebase/firestore/user";
+import { createUser, getUser } from "../../lib/firebase/firestore/user";
 import { hideSplash, setDocumentTitle, useSmallScreen } from "../../lib/utils";
 import AddButton from "./components/add";
 import { TaskContextProvider, useTasks } from "./components/task/context";
@@ -96,12 +96,23 @@ export default function NewDashboard({ changeTheme }) {
     if (loading) return;
     if (!user) return navigate("/login");
 
-    requestPermission();
-    startFirebaseMessaging(user.uid);
-    hideSplash();
+    if (!user.emailVerified) return navigate("/notverified");
+    console.log("email verified");
+    (async () => {
+      try {
+        await getUser(user.uid);
+        requestPermission();
+        startFirebaseMessaging(user.uid);
+        hideSplash();
 
-    fetchSubjectUpdate();
-    fetchTaskUpdate();
+        fetchSubjectUpdate();
+        fetchTaskUpdate();
+      } catch (e) {
+        console.error(e);
+        console.log('create user')
+        await createUser(user);
+      }
+    })();
   }, [user, loading]);
 
   const smallScreen = useSmallScreen();

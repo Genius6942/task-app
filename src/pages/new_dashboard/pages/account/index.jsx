@@ -3,8 +3,11 @@ import {
   Box,
   Button,
   CircularProgress,
+  Dialog,
+  DialogTitle,
   Stack,
   Switch,
+  TextField,
   Typography,
   useTheme,
 } from "@mui/material";
@@ -15,6 +18,12 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 
+import {
+  EmailAuthProvider,
+  deleteUser,
+  reauthenticateWithCredential,
+} from "firebase/auth";
+
 import { motion } from "framer-motion";
 
 import { useSnackbar } from "../../../../components/snackbar";
@@ -23,6 +32,7 @@ import { app_name } from "../../../../lib/constants";
 import { auth, sendPasswordReset } from "../../../../lib/firebase";
 import {
   getUser,
+  removeUser,
   updateProfilePicture,
   updateUser,
 } from "../../../../lib/firebase/firestore/user";
@@ -33,6 +43,8 @@ export default function Account({ changeTheme }) {
   const [user, loading, error] = useAuthState(auth);
 
   const { openErrorSnackbar } = useSnackbar();
+
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
   const [accountData, setAccountData] = useState(null);
   const [userProfilePicture, setUserProfilePicture] = useState(null);
@@ -163,6 +175,17 @@ export default function Account({ changeTheme }) {
           >
             Log Out
           </Button>
+          <Button
+            onClick={async () => {
+              console.log("user provider:", user.providerId);
+              setDeleteModalOpen(true);
+            }}
+            fullWidth
+            variant="outlined"
+            color="error"
+          >
+            Delete Account
+          </Button>
         </Stack>
       ),
     },
@@ -262,6 +285,46 @@ export default function Account({ changeTheme }) {
       ) : (
         <CircularProgress />
       )}
+      <Dialog open={deleteModalOpen} onClose={() => setDeleteModalOpen(false)}>
+        <DialogTitle>Re-authenticate before deleting account</DialogTitle>
+        <Box
+          component="form"
+          sx={{ p: 3, display: "flex", flexDirection: "column", gap: 3 }}
+          onSubmit={async (e) => {
+            e.preventDefault();
+            const data = new FormData(e.currentTarget);
+            const email = data.get("email");
+            const password = data.get("password");
+            if (email !== user.email) {
+              openErrorSnackbar("Email does not match current user email");
+              setDeleteModalOpen(false);
+              return;
+            }
+            console.log(email, password);
+            await reauthenticateWithCredential(
+              user,
+              EmailAuthProvider.credential(email, password)
+            );
+            try {
+              await removeUser(user.uid);
+              deleteUser(user);
+            } catch (e) {
+              console.error(e);
+              openErrorSnackbar(e);
+            }
+          }}
+        >
+          <TextField label="email" name="email" />
+          <TextField
+            label="Password"
+            inputProps={{ type: "password" }}
+            name="password"
+          />
+          <Button type="submit" color="error" variant="contained">
+            Delete Account
+          </Button>
+        </Box>
+      </Dialog>
     </Box>
   );
 }

@@ -38,6 +38,7 @@ import History from "./pages/new_dashboard/pages/history";
 import DashboardHome from "./pages/new_dashboard/pages/home.jsx";
 import Schedule from "./pages/new_dashboard/pages/schedule";
 import Subjects from "./pages/new_dashboard/pages/subjects";
+import NotVerified from "./pages/notverifed";
 import Register from "./pages/register";
 import createTheme from "./theme";
 
@@ -163,6 +164,7 @@ function App() {
                       <Route exact path="/login" element={<Login />} />
                       <Route exact path="/register" element={<Register />} />
                       <Route path="/old_dashboard" element={<Dashboard />} />
+                      <Route path="/notverified" element={<NotVerified />} />
                       <Route
                         path="dashboard"
                         element={

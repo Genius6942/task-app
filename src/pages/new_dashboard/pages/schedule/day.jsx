@@ -69,7 +69,7 @@ export default function Day({
   const dayTasks =
     presetTasks ||
     tasks
-      .filter(filterDayTask(day, { showOverdue: false, logOutput: true }))
+      .filter(filterDayTask(day, { showOverdue: false, logOutput: false }))
       .sort((a, b) => {
         if (a.status - b.status !== 0) {
           return b.status - a.status;

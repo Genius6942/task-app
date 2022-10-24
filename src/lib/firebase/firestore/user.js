@@ -1,6 +1,8 @@
 import { updateProfile } from "firebase/auth";
 import {
+  addDoc,
   collection,
+  deleteDoc,
   getDocs,
   query,
   updateDoc,
@@ -10,6 +12,7 @@ import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 
 import { getDoc } from ".";
 import { app, db } from "..";
+import { getTasks } from "./task";
 
 const updateUser = async (uid, data) => {
   const col = collection(db, "users");
@@ -31,6 +34,42 @@ const getUser = async (uid) => {
     throw new Error("Error occured when getting account");
   });
 };
+const removeUser = async (uid) => {
+  const ref = await getDoc(
+    "users",
+    { field: "uid", value: uid },
+    () => {
+      throw new Error("User not found");
+    },
+    true
+  );
+  await deleteDoc(ref);
+  const col = collection(db, "tasks");
+  const q = query(col, where("ownerId", "==", uid));
+  const res = await getDocs(q);
+  await Promise.all(
+    res.docs
+      .map((doc) => doc.ref)
+      .map(async (docRef) => {
+        await deleteDoc(docRef);
+        return docRef;
+      })
+  );
+  return true;
+};
+
+/**
+ *
+ * @param {import('firebase/auth').User} user
+ */
+const createUser = async (user) => {
+  await addDoc(collection(db, "users"), {
+    uid: user.uid,
+    name: user.displayName,
+    authProvider: "local",
+    email: user.email,
+  });
+};
 
 const updateProfilePicture = async (user, file) => {
   const storage = getStorage(app);
@@ -41,4 +80,4 @@ const updateProfilePicture = async (user, file) => {
   return url;
 };
 
-export { updateUser, getUser, updateProfilePicture };
+export { updateUser, getUser, createUser, updateProfilePicture, removeUser };

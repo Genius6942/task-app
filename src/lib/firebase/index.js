@@ -3,6 +3,7 @@ import {
   GoogleAuthProvider,
   createUserWithEmailAndPassword,
   getAuth,
+  sendEmailVerification,
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signInWithPopup,
@@ -52,13 +53,7 @@ const logInWithEmailAndPassword = async (email, password) => {
 };
 const registerWithEmailAndPassword = async (name, email, password) => {
   const res = await createUserWithEmailAndPassword(auth, email, password);
-  const user = res.user;
-  await addDoc(collection(db, "users"), {
-    uid: user.uid,
-    name,
-    authProvider: "local",
-    email,
-  });
+  await sendEmailVerification(res.user);
 };
 const sendPasswordReset = async (email) => {
   await sendPasswordResetEmail(auth, email);
