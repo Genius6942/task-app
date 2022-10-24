@@ -70,6 +70,14 @@ export default function Day({
     presetTasks ||
     tasks
       .filter(filterDayTask(day, { showOverdue: false, logOutput: false }))
+      .filter((task) => {
+        if (task.timeConf === "once") {
+          if (
+            !day.isAfter(moment.max([task.startDate, moment().startOf("day")]))
+          )
+            return true;
+        } else return true;
+      })
       .sort((a, b) => {
         if (a.status - b.status !== 0) {
           return b.status - a.status;

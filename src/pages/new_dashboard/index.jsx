@@ -109,8 +109,9 @@ export default function NewDashboard({ changeTheme }) {
         fetchTaskUpdate();
       } catch (e) {
         console.error(e);
-        console.log('create user')
+        console.log("create user");
         await createUser(user);
+        console.log("user created");
       }
     })();
   }, [user, loading]);

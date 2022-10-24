@@ -236,7 +236,7 @@ export default function Account({ changeTheme }) {
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.7, delay: 0.4 }}
               >
-                {accountData.name || app_name + " user"}.
+                {accountData.name || user.displayName || app_name + " user"}.
               </motion.span>
             </Typography>
             {userProfilePicture ? (
