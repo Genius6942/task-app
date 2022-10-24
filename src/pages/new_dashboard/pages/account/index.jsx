@@ -17,9 +17,10 @@ import { useAuthState } from "react-firebase-hooks/auth";
 
 import { motion } from "framer-motion";
 
+import { useSnackbar } from "../../../../components/snackbar";
 import { useSubjects } from "../../../../components/subjectContext";
 import { app_name } from "../../../../lib/constants";
-import { auth } from "../../../../lib/firebase";
+import { auth, sendPasswordReset } from "../../../../lib/firebase";
 import {
   getUser,
   updateProfilePicture,
@@ -31,13 +32,27 @@ import EditableInfo from "./editableInfo";
 export default function Account({ changeTheme }) {
   const [user, loading, error] = useAuthState(auth);
 
+  const { openErrorSnackbar } = useSnackbar();
+
   const [accountData, setAccountData] = useState(null);
   const [userProfilePicture, setUserProfilePicture] = useState(null);
   useEffect(() => {
     if (!user || loading) return;
     (async () => {
-      const data = await getUser(user.uid);
-      setAccountData(data);
+      try {
+        const data = await getUser(user.uid);
+        setAccountData(data);
+      } catch (e) {
+        console.error(e);
+        openErrorSnackbar(
+          "Account fetch failed - try clearing cookies. Account may be deleted."
+        );
+        setTimeout(() => {
+          if (confirm("Log out and try again?")) {
+            auth.signOut();
+          }
+        }, 500);
+      }
     })();
     setUserProfilePicture(user.photoURL || "none");
   }, [user, loading]);
@@ -131,7 +146,15 @@ export default function Account({ changeTheme }) {
     {
       name: "Actions",
       component: (
-        <Box>
+        <Stack gap={2}>
+          <Button
+            onClick={() => sendPasswordReset(user.email)}
+            fullWidth
+            variant="outlined"
+            color="error"
+          >
+            Reset password
+          </Button>
           <Button
             onClick={() => auth.signOut()}
             fullWidth
@@ -140,7 +163,7 @@ export default function Account({ changeTheme }) {
           >
             Log Out
           </Button>
-        </Box>
+        </Stack>
       ),
     },
   ];

@@ -33,7 +33,7 @@ const SubjectContextProvider = ({ user, ...props }) => {
       );
       if (isEqual(subjects, fetchedSubjects)) return false;
 
-      setSubjects(fetchedSubjects);
+      setSubjects(fetchedSubjects || []);
       return fetchedSubjects;
     }
 

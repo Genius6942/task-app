@@ -9,6 +9,7 @@ import Link from "@mui/material/Link";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 
+import { useRef } from "react";
 // react
 import { useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
@@ -19,6 +20,7 @@ import { app_name } from "../lib/constants";
 import {
   auth,
   logInWithEmailAndPassword,
+  sendPasswordReset,
   signInWithGoogle,
 } from "../lib/firebase";
 // custom
@@ -129,6 +131,35 @@ export default function Login() {
             color="white"
           >
             Sign In
+          </Button>
+          <Button
+            onClick={async (e) => {
+              e.preventDefault();
+              const data = new FormData(e.currentTarget.parentNode);
+              if (data.get("email").length < 1) {
+                return throwError("Email required");
+              }
+              try {
+                await sendPasswordReset(data.get("email"));
+              } catch (e) {
+                console.error(e);
+                throwError(
+                  e.message
+                    .replaceAll("Firebase: ", "")
+                    .replaceAll("auth/", "")
+                    .replaceAll("(", "")
+                    .replaceAll(")", "")
+                    .replaceAll("Error", "Error:")
+                    .replaceAll("-", " ")
+                );
+              }
+            }}
+            fullWidth
+            variant="outlined"
+            sx={{ mt: 3, mb: 2, textTransform: "none" }}
+            color="error"
+          >
+            Reset password
           </Button>
           <Button
             variant="contained"
