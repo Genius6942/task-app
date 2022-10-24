@@ -92,7 +92,7 @@ export default function AddTaskDialog({
     subject: subjects && subjects[0] ? subjects[0].name : "",
     name: "",
     startDate: moment().startOf("day"),
-    dueDate: moment().add(1, "days"),
+    dueDate: moment().startOf('day').add(1, "days"),
     time: 60,
     details: "",
     timeConf: "once",
@@ -221,13 +221,65 @@ export default function AddTaskDialog({
                       }
                     />
                     <DatePicker
-                      mobile={smallScreen}
-                      label="Due Date"
-                      inputFormat="MM/DD/YYYY"
-                      value={data.dueDate}
-                      onChange={(newValue) => updateData({ dueDate: newValue })}
-                      renderInput={(params) => <TextField {...params} />}
-                    />
+                    mobile={smallScreen}
+                    label="Start Date"
+                    inputFormat="MM/DD/YYYY"
+                    value={data.startDate}
+                    onChange={
+                      /**
+                       * @param {moment.Moment} newValue
+                       */
+                      (newValue) => {
+                        const copyValue = moment(
+                          newValue.format("MM/DD/YYYY"),
+                          "MM/DD/YYYY"
+                        );
+                        updateData({
+                          startDate: newValue,
+                          dueDate: data.dueDate.isBefore(
+                            copyValue.add(1, "day")
+                          )
+                            ? // note the not adding 1 day due to the mutation caused by moment.js
+                              copyValue
+                            : data.dueDate,
+                        });
+                      }
+                    }
+                    renderInput={(params) => <TextField {...params} />}
+                  />
+                  <DatePicker
+                    variant="standard"
+                    mobile={smallScreen}
+                    label="Due Date"
+                    inputFormat="MM/DD/YYYY"
+                    value={data.dueDate}
+                    onChange={
+                      /**
+                       * @param {moment.Moment} newValue
+                       */
+                      (newValue) => {
+                        newValue = newValue.startOf("day");
+                        const copyNewValue = moment(
+                          newValue.format("MM/DD/YYYY"),
+                          "MM/DD/YYYY"
+                        );
+                        const copyStartDate = moment(
+                          data.startDate.format("MM/DD/YYYY"),
+                          "MM/DD/YYYY"
+                        );
+
+                        updateData({
+                          dueDate: newValue,
+                          startDate: newValue.isBefore(
+                            copyStartDate.add(1, "day")
+                          )
+                            ? copyNewValue.add(-1, "days")
+                            : data.startDate,
+                        });
+                      }
+                    }
+                    renderInput={(params) => <TextField {...params} />}
+                  />
                     <Box sx={{ display: "flex", alignItems: "end", gap: 1 }}>
                       <TextField
                         key={timeForceUpdate}
