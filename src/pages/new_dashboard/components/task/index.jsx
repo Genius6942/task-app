@@ -9,8 +9,12 @@ import {
   Collapse,
   Container,
   FormControl,
+  FormControlLabel,
+  FormLabel,
   IconButton,
   Link,
+  Radio,
+  RadioGroup,
   Stack,
   TextField,
   Tooltip,
@@ -572,6 +576,38 @@ export default function Task({
                       }}
                     />
                     <Typography>minutes</Typography>
+                  </Box>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      // width: "100%",
+                      mr: "auto",
+                    }}
+                  >
+                    <FormLabel id="demo-radio-buttons-group-label">
+                      Time strategy
+                    </FormLabel>
+                    <RadioGroup
+                      aria-labelledby="demo-radio-buttons-group-label"
+                      value={data.timeConf}
+                      onChange={({ target }) =>
+                        updateData({ timeConf: target.value })
+                      }
+                      name="radio-buttons-group"
+                    >
+                      <FormControlLabel
+                        value="same"
+                        control={<Radio />}
+                        label="Same amount each day"
+                      />
+                      <FormControlLabel
+                        value="once"
+                        control={<Radio />}
+                        label="All at once"
+                      />
+                    </RadioGroup>
                   </Box>
                   {data.subTasks && data.subTasks.length > 0 && (
                     <SubTaskEditor
