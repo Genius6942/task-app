@@ -135,9 +135,9 @@ export default function Account({ changeTheme }) {
       component: (
         <Subjects
           subjects={(accountData && accountData.subjects) || []}
-          updateSubjects={(newValue) =>
-            setAccountData({ ...accountData, subjects: newValue })
-          }
+          updateSubjects={(newValue) => {
+            setAccountData({ ...accountData, subjects: newValue });
+          }}
         />
       ),
     },

@@ -27,6 +27,7 @@ type task = {
   subject: string;
   time: number;
   timeConf: string;
+  subjectColor?: string;
 };
 
 export type { cardState, colState, task };

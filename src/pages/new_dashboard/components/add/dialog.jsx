@@ -389,7 +389,7 @@ export default function AddTaskDialog({
                   <Button onClick={onClose}>Cancel</Button>
                   <Button
                     onClick={async () => {
-                      await onSubmit(data);
+                      await onSubmit({...data, subjectColor: subjects.find(subject => subject.name === data.subject).color || 'default'});
                       onClose();
                     }}
                   >

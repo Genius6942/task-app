@@ -209,7 +209,9 @@ export default function Task({
             >
               <Box
                 sx={{
-                  background: `linear-gradient(315deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
+                  background:
+                    (data.subjectColor !== "default" && data.subjectColor) ||
+                    `linear-gradient(315deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
                   paddingX: 1,
                   borderRadius: 5,
                   mr: 2,
@@ -345,7 +347,7 @@ export default function Task({
               p: 1,
               pb: -2,
               borderRadius: 5,
-              background: theme.palette.primary.main,
+              background: '#ffbc84',
               mt: -2,
               display: "flex",
               justifyContent: "center",

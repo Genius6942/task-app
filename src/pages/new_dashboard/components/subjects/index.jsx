@@ -5,7 +5,10 @@ import {
   Button,
   Chip,
   Dialog,
+  DialogTitle,
   IconButton,
+  MenuItem,
+  Select,
   TextField,
   useTheme,
 } from "@mui/material";
@@ -42,11 +45,12 @@ export default function Subjects({ subjects, updateSubjects }) {
     return;
   };
 
-  const addSubject = (name) => {
+  const addSubject = (name, color) => {
     const copy = [...subjects];
 
     const newSubject = {
       name,
+      color,
       id: Math.max(...subjects.map((subject) => subject.id), 0) + 1,
       selected: true,
     };
@@ -56,13 +60,16 @@ export default function Subjects({ subjects, updateSubjects }) {
     updateSubjects(copy);
   };
 
+  const gradients = ["#FDDFDF", "#FCF7DE", "#DEFDE0", "#DEF3FD", "#F0DEFD"];
   const [dialogValue, setDialogValue] = useState("");
   const [dialogError, setDialogError] = useState(false);
+  const [dialogColor, setDialogColor] = useState(gradients[0]);
 
   const smallScreen = useSmallScreen();
   const AddSubjectDialog = smallScreen ? MobileDialog : Dialog;
 
-  const submitDialog = (value) => {
+  const submitDialog = (value, color) => {
+    console.log(color);
     if ((value || dialogValue).length < 1) {
       setDialogError("Name Required");
     } else if (
@@ -70,7 +77,7 @@ export default function Subjects({ subjects, updateSubjects }) {
     ) {
       setDialogError("Subject already exists");
     } else {
-      addSubject(value || dialogValue);
+      addSubject(value || dialogValue, color);
       setDialogError(false);
       setDialogValue("");
       setDialogOpen(false);
@@ -83,7 +90,9 @@ export default function Subjects({ subjects, updateSubjects }) {
         <Chip
           key={idx}
           sx={{
-            background: `linear-gradient(315deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
+            background:
+              (subject.color !== "default" && subject.color) ||
+              `linear-gradient(315deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
             transition: theme.transitions.create("all", {
               duration: theme.transitions.duration.medium,
             }),
@@ -104,13 +113,14 @@ export default function Subjects({ subjects, updateSubjects }) {
         <Add />
       </IconButton>
       <AddSubjectDialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
+        <DialogTitle>New Subject</DialogTitle>
         <Box
           sx={{ display: "flex", alignItems: "flex-end", m: 1 }}
           component="form"
           onSubmit={(e) => {
             e.preventDefault();
             const data = new FormData(e.currentTarget);
-            submitDialog(data.get("name"));
+            submitDialog(data.get("name"), data.get("color"));
           }}
         >
           <TextField
@@ -119,25 +129,40 @@ export default function Subjects({ subjects, updateSubjects }) {
             variant="standard"
             sx={{ flexGrow: 1 }}
             autoFocus={dialogOpen}
-            label="New Subject"
+            label="Name"
             name="name"
             onBlur={({ target }) => {
               setDialogValue(target.value);
             }}
-            // broken
-            // onKeyDown={({ key, target }) => {
-            //   if (key === "Enter") {
-            //     submitDialog(target.value);
-            //     setDialogOpen(false);
-            //   }
-            // }}
           />
-          <Button
-            variant="text"
-            onClick={() => {
-              submitDialog();
+          <Select
+            name="color"
+            value={dialogColor}
+            onChange={({ target }) => setDialogColor(target.value)}
+            sx={{
+              ml: 2,
+              background:
+                dialogColor === "default"
+                  ? `linear-gradient(315deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`
+                  : dialogColor,
             }}
           >
+            {gradients.map((gradient, idx) => (
+              <MenuItem
+                key={idx}
+                value={gradient}
+                sx={{
+                  background:
+                    gradient === "default"
+                      ? `linear-gradient(315deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`
+                      : gradient,
+                }}
+              >
+                color {idx + 1}
+              </MenuItem>
+            ))}
+          </Select>
+          <Button variant="text" type="submit">
             Add
           </Button>
           <Button variant="text" onClick={() => setDialogOpen(false)}>
