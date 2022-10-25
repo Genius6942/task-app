@@ -184,7 +184,7 @@ export default function AddTaskDialog({
   const [errorDialogOpen, setErrorDialogOpen] = useState(false);
 
   return (
-    <CustomDialog open={open} onClose={onClose}>
+    <CustomDialog open={open} onClose={onClose} keepMounted={false}>
       <FormControl>
         <LocalizationProvider dateAdapter={AdapterMoment}>
           <DialogTitle>Create Task</DialogTitle>
@@ -389,7 +389,13 @@ export default function AddTaskDialog({
                   <Button onClick={onClose}>Cancel</Button>
                   <Button
                     onClick={async () => {
-                      await onSubmit({...data, subjectColor: subjects.find(subject => subject.name === data.subject).color || 'default'});
+                      await onSubmit({
+                        ...data,
+                        subjectColor:
+                          subjects.find(
+                            (subject) => subject.name === data.subject
+                          ).color || "default",
+                      });
                       onClose();
                     }}
                   >
