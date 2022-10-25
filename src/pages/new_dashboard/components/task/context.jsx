@@ -6,7 +6,7 @@ import moment from "moment";
 import { getTasks } from "../../../../lib/firebase/firestore/task";
 
 const TaskContext = createContext({
-  fetchTaskUpdate: () => {},
+  fetchTaskUpdate: async () => {},
   /**
    * @type {import('../../../../types').task[]}
    */
@@ -46,6 +46,9 @@ const TaskContextProvider = ({ user, ...props }) => {
         startDate: moment(task.startDate, "MM/DD/YYYY"),
         dueDate: moment(task.dueDate, "MM/DD/YYYY"),
       }));
+      /**
+       * @type {import('../../../../types').task}
+       */
       const fetchedTasksWithStatus = formattedFetchedTasks.map((task) => ({
         ...task,
         status: generateTaskStatus(task),
@@ -73,7 +76,6 @@ const TaskContextProvider = ({ user, ...props }) => {
       }
     }
   }, [user]);
-
   return <TaskContext.Provider {...props} value={{ fetchTaskUpdate, tasks }} />;
 };
 

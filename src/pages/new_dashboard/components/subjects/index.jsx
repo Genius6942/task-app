@@ -10,10 +10,10 @@ import {
   MenuItem,
   Select,
   TextField,
-  useTheme,
+  useTheme
 } from "@mui/material";
 
-import { Add } from "@mui/icons-material";
+import { Add, HighlightOff } from "@mui/icons-material";
 
 import { useState } from "react";
 
@@ -104,7 +104,12 @@ export default function Subjects({ subjects, updateSubjects }) {
             ":focus": {
               boxShadow: "5px 10px 12px 0px rgba(0,0,0,0.3)",
             },
+            color: "black !important",
+            "& .MuiChip-deleteIcon": {
+              color: "black !important",
+            },
           }}
+          deleteIcon={<HighlightOff />}
           label={subject.name}
           onDelete={() => updateSubject(subject.id, null)}
         />

@@ -63,12 +63,16 @@ const removeUser = async (uid) => {
  * @param {import('firebase/auth').User} user
  */
 const createUser = async (user) => {
-  await addDoc(collection(db, "users"), {
-    uid: user.uid,
-    name: user.displayName,
-    authProvider: "local",
-    email: user.email,
-  });
+  try {
+    getUser(user.uid);
+  } catch (e) {
+    await addDoc(collection(db, "users"), {
+      uid: user.uid,
+      name: user.displayName,
+      authProvider: "local",
+      email: user.email,
+    });
+  }
 };
 
 const updateProfilePicture = async (user, file) => {

@@ -214,6 +214,7 @@ export default function Task({
                     `linear-gradient(315deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
                   paddingX: 1,
                   borderRadius: 5,
+                  color: "black",
                   mr: 2,
                 }}
               >

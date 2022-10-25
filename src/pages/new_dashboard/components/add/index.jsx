@@ -73,7 +73,7 @@ export default function AddButton() {
     clone.dueDate = clone.dueDate.format("MM/DD/YYYY");
     try {
       await createTask(user.uid, clone);
-      fetchTaskUpdate();
+      await fetchTaskUpdate();
     } catch (e) {
       console.error(e);
       openErrorSnackbar("Failed to create task.");

@@ -1,49 +1,35 @@
 import { styled, useTheme } from "@mui/material/styles";
 
-import {
-  BottomNavigation,
-  BottomNavigationAction,
-  Box,
-  Divider,
-  Drawer,
-  IconButton,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  Switch,
-  Tooltip,
-} from "@mui/material";
 
-import {
-  CalendarMonth,
-  ChevronLeft,
-  ChevronRight,
-  CloudDone,
-  CloudOff,
-  DarkMode,
-  History,
-  Home,
-  LightMode,
-  List as ListIcon,
-  PersonOutline,
-  Refresh,
-} from "@mui/icons-material";
+
+import { BottomNavigation, BottomNavigationAction, Box, Divider, Drawer, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Switch, Tooltip } from "@mui/material";
+
+
+
+import { CalendarMonth, ChevronLeft, ChevronRight, CloudDone, CloudOff, DarkMode, History, Home, LightMode, List as ListIcon, PersonOutline, Refresh } from "@mui/icons-material";
+
+
 
 import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useEffectOnce } from "react-use";
 
+
+
+import moment from "moment";
+
+
+
 import PageAnimateLayout from "../../Animate";
 import { useSubjects } from "../../components/subjectContext";
-import { auth } from "../../lib/firebase";
-import { requestPermission, startFirebaseMessaging } from "../../lib/firebase";
+import { auth, requestPermission, startFirebaseMessaging } from "../../lib/firebase";
+import { removeTask } from "../../lib/firebase/firestore/task";
 import { createUser, getUser } from "../../lib/firebase/firestore/user";
 import { hideSplash, setDocumentTitle, useSmallScreen } from "../../lib/utils";
 import AddButton from "./components/add";
-import { TaskContextProvider, useTasks } from "./components/task/context";
+import { useTasks } from "./components/task/context";
+
 
 const drawerWidth = 240;
 
@@ -92,6 +78,7 @@ export default function NewDashboard({ changeTheme }) {
   const [user, loading, error] = useAuthState(auth);
 
   const { subjects, fetchSubjectUpdate } = useSubjects();
+
   useEffect(() => {
     if (loading) return;
     if (!user) return navigate("/login");
@@ -178,7 +165,26 @@ export default function NewDashboard({ changeTheme }) {
     },
   ];
 
-  const { fetchTaskUpdate } = useTasks();
+  const { tasks, fetchTaskUpdate } = useTasks();
+  useEffect(() => {
+    (async () => {
+      const tasksToRemove = tasks.filter(
+        (task) =>
+          task.completes.length ===
+            task.completes.filter((item) => item).length &&
+          moment().startOf("day").diff(task.dueDate, "day") >= 30
+      );
+      if (tasksToRemove.length > 0) {
+        await Promise.all(
+          tasksToRemove.map(async (task) => {
+            await removeTask(task.id);
+            return true;
+          })
+        );
+        await fetchTaskUpdate();
+      }
+    })();
+  }, [tasks]);
   const [reloadRotate, setReloadRotate] = useState(0);
 
   const [isOnline, setIsOnline] = useState(navigator.onLine);
@@ -188,7 +194,7 @@ export default function NewDashboard({ changeTheme }) {
   });
 
   return (
-    <TaskContextProvider user={user}>
+    <>
       <span
         style={{
           position: "absolute",
@@ -215,10 +221,10 @@ export default function NewDashboard({ changeTheme }) {
         </Tooltip>
         <Tooltip title="Refresh tasks">
           <IconButton
-            onClick={() => {
+            onClick={async () => {
               setReloadRotate(reloadRotate + 360);
-              fetchTaskUpdate();
-              fetchSubjectUpdate();
+              await fetchTaskUpdate();
+              await fetchSubjectUpdate();
             }}
           >
             <Refresh
@@ -456,6 +462,6 @@ export default function NewDashboard({ changeTheme }) {
           {navState !== "account" && <AddButton />}
         </Box>
       )}
-    </TaskContextProvider>
+    </>
   );
 }
