@@ -146,6 +146,7 @@ export default function Subjects({ subjects, updateSubjects }) {
             onChange={({ target }) => setDialogColor(target.value)}
             sx={{
               ml: 2,
+              color: "black",
               background:
                 dialogColor === "default"
                   ? `linear-gradient(315deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`
