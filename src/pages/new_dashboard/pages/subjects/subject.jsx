@@ -43,7 +43,7 @@ export default function Subject({ subject, animateDelay }) {
             >
               <Task
                 taskData={task}
-                customWidth={!smallScreen && 350}
+                customWidth={!smallScreen && 400}
                 index={idx}
                 onChange={async (data) => {
                   await updateTask(task.id, data);

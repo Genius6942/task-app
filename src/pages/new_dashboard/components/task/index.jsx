@@ -214,11 +214,14 @@ export default function Task({
                     `linear-gradient(315deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
                   paddingX: 1,
                   borderRadius: 5,
-                  color: "black",
                   mr: 2,
                 }}
               >
-                <Typography fontSize={20} whiteSpace="nowrap">
+                <Typography
+                  fontSize={20}
+                  whiteSpace="nowrap"
+                  sx={{ color: "black !important" }}
+                >
                   {data.subject}
                 </Typography>
               </Box>
@@ -348,7 +351,7 @@ export default function Task({
               p: 1,
               pb: -2,
               borderRadius: 5,
-              background: '#ffbc84',
+              background: "#ffbc84",
               mt: -2,
               display: "flex",
               justifyContent: "center",
