@@ -1,35 +1,55 @@
 import { styled, useTheme } from "@mui/material/styles";
 
+import {
+  BottomNavigation,
+  BottomNavigationAction,
+  Box,
+  Divider,
+  Drawer,
+  IconButton,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Switch,
+  Tooltip,
+} from "@mui/material";
 
-
-import { BottomNavigation, BottomNavigationAction, Box, Divider, Drawer, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Switch, Tooltip } from "@mui/material";
-
-
-
-import { CalendarMonth, ChevronLeft, ChevronRight, CloudDone, CloudOff, DarkMode, History, Home, LightMode, List as ListIcon, PersonOutline, Refresh } from "@mui/icons-material";
-
-
+import {
+  CalendarMonth,
+  ChevronLeft,
+  ChevronRight,
+  CloudDone,
+  CloudOff,
+  DarkMode,
+  History,
+  Home,
+  LightMode,
+  List as ListIcon,
+  PersonOutline,
+  Refresh,
+} from "@mui/icons-material";
 
 import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useEffectOnce } from "react-use";
 
-
-
 import moment from "moment";
-
-
 
 import PageAnimateLayout from "../../Animate";
 import { useSubjects } from "../../components/subjectContext";
-import { auth, requestPermission, startFirebaseMessaging } from "../../lib/firebase";
+import {
+  auth,
+  requestPermission,
+  startFirebaseMessaging,
+} from "../../lib/firebase";
 import { removeTask } from "../../lib/firebase/firestore/task";
 import { createUser, getUser } from "../../lib/firebase/firestore/user";
 import { hideSplash, setDocumentTitle, useSmallScreen } from "../../lib/utils";
 import AddButton from "./components/add";
 import { useTasks } from "./components/task/context";
-
 
 const drawerWidth = 240;
 

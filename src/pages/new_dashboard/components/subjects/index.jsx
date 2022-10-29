@@ -10,7 +10,7 @@ import {
   MenuItem,
   Select,
   TextField,
-  useTheme
+  useTheme,
 } from "@mui/material";
 
 import { Add, HighlightOff } from "@mui/icons-material";

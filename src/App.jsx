@@ -9,14 +9,14 @@ import {
   CssBaseline,
   IconButton,
   Link,
-  Typography
+  Typography,
 } from "@mui/material";
 
 import { Close } from "@mui/icons-material";
 
 import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import { useEffectOnce } from "react-use";
 
 import "fuckadblock";

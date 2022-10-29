@@ -1,11 +1,11 @@
 import {
   addDoc,
   collection,
+  enableMultiTabIndexedDbPersistence,
   getDocs,
   query,
   updateDoc,
   where,
-  enableMultiTabIndexedDbPersistence
 } from "firebase/firestore";
 
 import { db } from "..";
