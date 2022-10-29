@@ -19,6 +19,7 @@ export default function NotVerified() {
     if (user.emailVerified) return navigate("/dashboard");
     console.log("user not verified", user.emailVerified);
   });
+  if (user && user.emailVerified) navigate("/dashboard");
   return (
     <Box
       sx={{
@@ -38,6 +39,8 @@ export default function NotVerified() {
         }}
       >
         One more step! You need to verify your email.
+        <br />
+        The email may be in your spam.
         <br />
         <Button
           onClick={async () => {

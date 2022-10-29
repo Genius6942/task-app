@@ -30,8 +30,12 @@ const updateUser = async (uid, data) => {
 };
 
 const getUser = async (uid) => {
-  return await getDoc("users", { field: "uid", value: uid }, () => {
-    throw new Error("Error occured when getting account");
+  return new Promise(async (resolve, reject) => {
+    const res = await getDoc("users", { field: "uid", value: uid }, () => {
+      reject("Error occured when getting account");
+    });
+
+    resolve(res);
   });
 };
 const removeUser = async (uid) => {
@@ -64,7 +68,7 @@ const removeUser = async (uid) => {
  */
 const createUser = async (user) => {
   try {
-    getUser(user.uid);
+    await getUser(user.uid);
   } catch (e) {
     await addDoc(collection(db, "users"), {
       uid: user.uid,

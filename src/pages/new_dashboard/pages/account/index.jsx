@@ -17,6 +17,7 @@ import { DarkMode, LightMode } from "@mui/icons-material";
 import { useEffect } from "react";
 import { useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
+import { useNavigate } from "react-router-dom";
 
 import {
   EmailAuthProvider,
@@ -191,6 +192,8 @@ export default function Account({ changeTheme }) {
     },
   ];
 
+  const navigate = useNavigate();
+
   return (
     <Box
       sx={{
@@ -308,6 +311,8 @@ export default function Account({ changeTheme }) {
             try {
               await removeUser(user.uid);
               deleteUser(user);
+              auth.signOut();
+              navigate("/login");
             } catch (e) {
               console.error(e);
               openErrorSnackbar(e);
