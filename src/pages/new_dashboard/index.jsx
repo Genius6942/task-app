@@ -127,7 +127,7 @@ export default function NewDashboard({ changeTheme }) {
 
   const location = useLocation();
   const navigate = useNavigate();
-  if (user && !user.emailVerified) navigate('/notverified');
+  if (user && !user.emailVerified) navigate("/notverified");
 
   const getDashboardPath = () => {
     const index = location.pathname.indexOf(

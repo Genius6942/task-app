@@ -93,7 +93,7 @@ export default function AddTaskDialog({
     name: "",
     startDate: moment().startOf("day"),
     dueDate: moment().startOf("day").add(1, "days"),
-    time: 60,
+    time: 30,
     details: "",
     timeConf: "once",
     subTasks: [],
